@@ -8,26 +8,20 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
-  const configService = new ConfigService();
+  const configService = app.get(ConfigService);
 
-  const rabbitMQ = {
-    username: configService.get('RABBITMQ_USERNAME'),
-    password: configService.get('RABBITMQ_PASSWORD'),
-    host: configService.get('RABBITMQ_HOST'),
-    port: configService.get('RABBITMQ_PORT'),
-    queueName: configService.get('RABBITMQ_QUEUE_NAME')
-  };
+  const username = configService.get('RABBITMQ_USERNAME');
+  const password = configService.get('RABBITMQ_PASSWORD');
+  const host = configService.get('RABBITMQ_HOST');
+  const queueName = configService.get('RABBITMQ_QUEUE_NAME');
 
-  app.setBaseViewsDir(join(__dirname, '..', 'client'));
-  app.setViewEngine('hbs');
-
-  app.connectMicroservice<MicroserviceOptions>({
+  await app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: [`amqp://${rabbitMQ.username}:${rabbitMQ.password}@${rabbitMQ.host}:${rabbitMQ.port}`],
-      queue: rabbitMQ.queueName,
+      urls: [`amqp://${username}:${password}@${host}`],
+      queue: queueName,
       queueOptions: {
-        durable: false
+        durable: true
       }
     }
   });

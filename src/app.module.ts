@@ -8,21 +8,20 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApiModule } from './api/api.module';
 import { ThingsboardModule } from './thingsboard/thingsboard.module';
-import { RabbitModule } from './rabbit/rabbit.module';
+import { RabbitmqClientModule } from './rabbitmq-client/rabbitmq-client.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     ApiModule,
     ThingsboardModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
-      exclude: ['/api*'],
-    }),
     MulterModule.register({
       dest: './upload'
     }),
-    RabbitModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client')
+    }),
+    ConfigModule.forRoot(),
+    RabbitmqClientModule
   ],
   controllers: [AppController],
   providers: [AppService],
