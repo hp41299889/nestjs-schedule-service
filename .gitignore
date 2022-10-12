@@ -1,4 +1,6 @@
 .env
+files
+upload
 
 # compiled output
 /dist

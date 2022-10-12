@@ -1,4 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { writeFileSync, writeFile, createWriteStream } from 'fs';
+import { exec, spawn, fork, execFile } from 'child_process';
+import * as iconv from 'iconv-lite';
+
+import { ApiMessageDto } from './api.dto';
 
 @Injectable()
-export class ApiService {}
+export class ApiService {
+    writeJS(data: ApiMessageDto) {
+        const { name, message } = data;
+        writeFile(`./files/${name}.js`, message, err => {
+            console.log('writeFile error', err);
+            return this.runNode(data);
+        });
+    };
+
+    runNode(data: ApiMessageDto) {
+        const { name, message } = data;
+        //BIG5 is decode to traditional Chinese
+        const encoding = 'BIG5';
+        const binaryEncoding = 'binary';
+
+        function iconvDecode(str = '') {
+            return iconv.decode(Buffer.from(str, binaryEncoding), encoding);
+        }
+        exec(`cd files && node ${name}.js`, { encoding: 'binary' }, (err, stdout, stderr) => {
+            const result = iconvDecode(stdout);
+            console.log(result);
+
+        });
+        // const node = exec(`cmd`);
+        // node.stdout.on('data', (data) => {
+        //     console.log(`stdout: ${data}`);
+        // });
+
+        // node.stderr.on('data', (data) => {
+        //     console.error(`stderr: ${data}`);
+        // });
+
+        // node.on('close', (code) => {
+        //     console.log(`child process exit code: ${code}`);
+        // });
+        // console.log(process.platform);
+
+    };
+};

@@ -8,25 +8,7 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
-  const configService = app.get(ConfigService);
-
-  const username = configService.get('RABBITMQ_USERNAME');
-  const password = configService.get('RABBITMQ_PASSWORD');
-  const host = configService.get('RABBITMQ_HOST');
-  const queueName = configService.get('RABBITMQ_QUEUE_NAME');
-
-  await app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [`amqp://${username}:${password}@${host}`],
-      queue: queueName,
-      queueOptions: {
-        durable: true
-      }
-    }
-  });
-
-  await app.startAllMicroservices();
+  app.setGlobalPrefix('api');
   await app.listen(3000);
 }
 bootstrap();

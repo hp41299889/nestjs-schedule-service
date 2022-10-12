@@ -1,4 +1,4 @@
-export class RabbitmqClientMessageDto {
+export class ApiMessageDto {
     name: string;
     message: string;
 };
