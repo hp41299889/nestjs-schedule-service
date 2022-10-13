@@ -24,7 +24,7 @@ export class ApiService {
         function iconvDecode(str = '') {
             return iconv.decode(Buffer.from(str, binaryEncoding), encoding);
         }
-        exec(`cd files && node ${name}.js`, { encoding: 'binary' }, (err, stdout, stderr) => {
+        exec(`node files/${name}.js`, { encoding: 'binary' }, (err, stdout, stderr) => {
             const result = iconvDecode(stdout);
             console.log(result);
 

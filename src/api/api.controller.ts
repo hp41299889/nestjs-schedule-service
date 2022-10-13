@@ -11,25 +11,21 @@ export class ApiController {
         private readonly service: ApiService
     ) { }
 
-    // @Post('/file')
-    // @UseInterceptors(
-    //     AnyFilesInterceptor({
-    //         storage: diskStorage({
-    //             destination: './upload',
-    //             filename(req, file, callback) {
-    //                 const name = file.originalname;
-    //                 callback(null, name);
-    //             },
-    //         })
-    //     }))
-    // uploadFile(@UploadedFiles() files: Array<Express.Multer.File>) {
-    //     console.log(files);
-    //     return 'upload OK!';
-    // };
-
     @Post('/message')
-    postMessage(@Body() data: ApiMessageDto) {
-        console.log(data);
+    @UseInterceptors(
+        AnyFilesInterceptor({
+            storage: diskStorage({
+                destination: './upload',
+                filename(req, file, callback) {
+                    const name = file.originalname;
+                    callback(null, name);
+                },
+            })
+        }))
+    postMessage(@Body() data: ApiMessageDto, @UploadedFiles() files: Array<Express.Multer.File>) {
+        console.log('data', data);
+        console.log('files', files);
+
         return this.service.writeJS(data);
     };
 };
