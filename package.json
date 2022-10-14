@@ -1,8 +1,8 @@
 {
   "name": "nest-server",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.1.1",
+  "description": "ba220904 unit test for 4.1.3.5 JWT",
+  "author": "LNT_Danny Lu",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
