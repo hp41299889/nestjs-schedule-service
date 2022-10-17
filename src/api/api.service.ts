@@ -3,7 +3,7 @@ import { writeFileSync, writeFile, createWriteStream } from 'fs';
 import { exec, spawn, fork, execFile } from 'child_process';
 import * as iconv from 'iconv-lite';
 
-import { ApiMessageDto } from './api.dto';
+import { ApiMessageDto, WhisperDto } from './api.dto';
 
 @Injectable()
 export class ApiService {
@@ -42,6 +42,10 @@ export class ApiService {
         //     console.log(`child process exit code: ${code}`);
         // });
         // console.log(process.platform);
+    };
 
+    handleWhisper(data: WhisperDto) {
+        const { name, age, sex, message } = data;
+        return `Hi ${name}, here is NestJS, your age is ${age} and sex is ${sex}, you said ${message}`;
     };
 };

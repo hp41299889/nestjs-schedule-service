@@ -3,7 +3,7 @@ import { AnyFilesInterceptor } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
 
 import { ApiService } from './api.service';
-import { ApiMessageDto } from './api.dto';
+import { ApiMessageDto, WhisperDto } from './api.dto';
 
 @Controller('/v1')
 export class ApiController {
@@ -27,5 +27,10 @@ export class ApiController {
         console.log('files', files);
 
         return this.service.writeJS(data);
+    };
+
+    @Post('/whisper')
+    postWhisper(@Body() data: WhisperDto) {
+        return this.service.handleWhisper(data);
     };
 };
