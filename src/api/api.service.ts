@@ -1,12 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { writeFileSync, writeFile, createWriteStream } from 'fs';
 import { exec, spawn, fork, execFile } from 'child_process';
 import * as iconv from 'iconv-lite';
 
 import { ApiMessageDto, WhisperDto } from './api.dto';
+import { CatService } from 'src/mongo/cat/cat.service';
+import { CreateCatDto } from 'src/mongo/cat/cat.dto';
 
 @Injectable()
 export class ApiService {
+    constructor(
+        private readonly catService: CatService
+    ) { }
+
     writeJS(data: ApiMessageDto) {
         const { name, message } = data;
         writeFile(`./files/${name}.js`, message, err => {
@@ -47,5 +53,13 @@ export class ApiService {
     handleWhisper(data: WhisperDto) {
         const { name, age, sex, message } = data;
         return `Hi ${name}, here is NestJS, your age is ${age} and sex is ${sex}, you said ${message}`;
+    };
+
+    async catCreate(createCatDto: CreateCatDto) {
+        await this.catService.create(createCatDto);
+    };
+
+    async catFindAll() {
+        return this.catService.findAll();
     };
 };

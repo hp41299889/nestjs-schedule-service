@@ -1,7 +1,7 @@
 {
   "name": "nest-server",
-  "version": "0.1.1",
-  "description": "ba220904 unit test for 4.1.3.5 JWT",
+  "version": "0.2.1",
+  "description": "ba220904 unit test for 4.1.3.7 MongoDB 操作性研究",
   "author": "LNT_Danny Lu",
   "private": true,
   "license": "UNLICENSED",

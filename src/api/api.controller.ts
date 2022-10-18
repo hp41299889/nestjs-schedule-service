@@ -4,11 +4,12 @@ import { diskStorage } from 'multer';
 
 import { ApiService } from './api.service';
 import { ApiMessageDto, WhisperDto } from './api.dto';
+import { CreateCatDto } from 'src/mongo/cat/cat.dto';
 
 @Controller('/v1')
 export class ApiController {
     constructor(
-        private readonly service: ApiService
+        private readonly service: ApiService,
     ) { }
 
     @Post('/message')
@@ -33,4 +34,14 @@ export class ApiController {
     postWhisper(@Body() data: WhisperDto) {
         return this.service.handleWhisper(data);
     };
+
+    @Post('/cat')
+    async create(@Body() createCatDto: CreateCatDto) {
+        return this.service.catCreate(createCatDto);
+    };
+
+    @Get('/cat')
+    async findAll() {
+        return this.service.catFindAll();
+    }
 };
