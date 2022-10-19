@@ -10,7 +10,11 @@ import { Cat, CatSchema } from './cat.schema';
       schema: CatSchema
     }])
   ],
-  providers: [CatService],
-  exports: [CatService]
+  providers: [
+    CatService
+  ],
+  exports: [
+    CatService
+  ]
 })
-export class CatModule { }
+export class CatModule { };

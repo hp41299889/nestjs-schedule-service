@@ -3,6 +3,7 @@ import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 
 import { Dog } from './dog/dog.entity';
+import { PostgreConfigService } from 'src/config/database/postgre/postgre.config.service';
 
 @Injectable()
 export class PostgreService implements TypeOrmOptionsFactory {
@@ -11,11 +12,9 @@ export class PostgreService implements TypeOrmOptionsFactory {
     ) { }
 
     createTypeOrmOptions(): TypeOrmModuleOptions {
-        const username = this.configService.get('POSTGRE_USERNAME');
-        const password = this.configService.get('POSTGRE_PASSWORD');
-        const host = this.configService.get('POSTGRE_HOST');
-        const port = this.configService.get('POSTGRE_PORT');
-        const database = this.configService.get('POSTGRE_DATABASE');
+        const postgreConfig: PostgreConfigService = this.configService.get('postgre');
+        const { username, password, host, port, database } = postgreConfig;
+
         return {
             type: 'postgres',
             username: username,

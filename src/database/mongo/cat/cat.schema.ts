@@ -13,6 +13,6 @@ export class Cat {
 
     @Prop()
     breed: string;
-}
+};
 
 export const CatSchema = SchemaFactory.createForClass(Cat);

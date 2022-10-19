@@ -4,13 +4,16 @@ import { exec, spawn, fork, execFile } from 'child_process';
 import * as iconv from 'iconv-lite';
 
 import { ApiMessageDto, WhisperDto } from './api.dto';
-import { CatService } from 'src/mongo/cat/cat.service';
-import { CreateCatDto } from 'src/mongo/cat/cat.dto';
+import { CatService } from 'src/database/mongo/cat/cat.service';
+import { CreateCatDto } from 'src/database/mongo/cat/cat.dto';
+import { DogService } from 'src/database/postgre/dog/dog.service';
+import { CreateDogDto } from 'src/database/postgre/dog/dog.dto';
 
 @Injectable()
 export class ApiService {
     constructor(
-        private readonly catService: CatService
+        private readonly catService: CatService,
+        private readonly dogService: DogService
     ) { }
 
     writeJS(data: ApiMessageDto) {
@@ -61,5 +64,13 @@ export class ApiService {
 
     async catFindAll() {
         return this.catService.findAll();
+    };
+
+    async dogCreate(createDogDto: CreateDogDto) {
+        await this.dogService.create(createDogDto);
+    };
+
+    async dogFindAll() {
+        return this.dogService.findAll();
     };
 };

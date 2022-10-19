@@ -1,27 +1,20 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule, SwaggerCustomOptions } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { AppConfigService } from './config/app/app.config.service';
+import { SwaggerService } from './swagger/swagger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
-  // app.setGlobalPrefix('api');
-  setupSwagger(app);
-  await app.listen(3000);
-};
+  const configService: ConfigService = app.get(ConfigService);
+  const appConfig: AppConfigService = configService.get('app');
+  const appSwagger: SwaggerService = app.get(SwaggerService);
+  const port = appConfig.port;
 
-function setupSwagger(app: NestExpressApplication) {
-  const builder = new DocumentBuilder();
-  const config = builder
-    .setTitle('TodoList')
-    .setDescription('This is a basic Swagger document.')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  const options: SwaggerCustomOptions = {
-    explorer: true
-  }
-  SwaggerModule.setup('api', app, document, options);
+  appSwagger.setupSwagger(app);
+
+  await app.listen(port);
 };
 bootstrap();

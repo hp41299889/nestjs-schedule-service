@@ -4,7 +4,8 @@ import { diskStorage } from 'multer';
 
 import { ApiService } from './api.service';
 import { ApiMessageDto, WhisperDto } from './api.dto';
-import { CreateCatDto } from 'src/mongo/cat/cat.dto';
+import { CreateCatDto } from 'src/database/mongo/cat/cat.dto';
+import { CreateDogDto } from 'src/database/postgre/dog/dog.dto';
 
 @Controller('/v1')
 export class ApiController {
@@ -36,12 +37,22 @@ export class ApiController {
     };
 
     @Post('/cat')
-    async create(@Body() createCatDto: CreateCatDto) {
+    async catCreate(@Body() createCatDto: CreateCatDto) {
         return this.service.catCreate(createCatDto);
     };
 
     @Get('/cat')
-    async findAll() {
+    async catFindAll() {
         return this.service.catFindAll();
-    }
+    };
+
+    @Post('/dog')
+    async dogCreate(@Body() createDogDto: CreateDogDto) {
+        return this.service.dogCreate(createDogDto);
+    };
+
+    @Get('/dog')
+    async dogFindAll() {
+        return this.service.dogFindAll();
+    };
 };

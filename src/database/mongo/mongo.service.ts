@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { MongooseModuleOptions, MongooseOptionsFactory } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 
+import { MongoConfigService } from 'src/config/database/mongo/mongo.config.service';
+
 @Injectable()
 export class MongoService implements MongooseOptionsFactory {
     constructor(
@@ -9,11 +11,9 @@ export class MongoService implements MongooseOptionsFactory {
     ) { }
 
     createMongooseOptions(): MongooseModuleOptions | Promise<MongooseModuleOptions> {
-        const username = this.configService.get("MONGO_USERNAME");
-        const password = this.configService.get("MONGO_PASSWORD");
-        const host = this.configService.get("MONGO_HOST");
-        const database = this.configService.get("MONGO_DATABASE");
-        const uri = `mongodb://${username}:${password}@${host}/${database}`
+        const mongoConfig: MongoConfigService = this.configService.get('mongo');
+        const { username, password, host, database } = mongoConfig;
+        const uri = `mongodb://${username}:${password}@${host}/${database}`;
 
         return {
             uri: uri

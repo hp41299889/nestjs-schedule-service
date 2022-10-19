@@ -8,7 +8,11 @@ import { Dog } from './dog.entity';
   imports: [
     TypeOrmModule.forFeature([Dog])
   ],
-  providers: [DogService],
-  exports: [DogService]
+  providers: [
+    DogService
+  ],
+  exports: [
+    DogService
+  ]
 })
-export class DogModule { }
+export class DogModule { };
