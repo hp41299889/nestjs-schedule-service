@@ -1,7 +1,7 @@
 {
   "name": "nest-server",
-  "version": "0.3.2",
-  "description": "ba220904 code refactoring",
+  "version": "0.4.1",
+  "description": "ba220904 unit test 4.1.3.4 Queue任務與分散式運算研究",
   "author": "LNT_Danny Lu",
   "private": true,
   "license": "UNLICENSED",
