@@ -15,6 +15,6 @@ export class SwaggerService {
         const options: SwaggerCustomOptions = {
             explorer: true
         };
-        SwaggerModule.setup('api', app, document, options);
+        SwaggerModule.setup('swagger', app, document, options);
     };
 };

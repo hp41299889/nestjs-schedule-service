@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
+// import { HttpModule } from '@nestjs/axios';
 import { MulterModule } from '@nestjs/platform-express';
-import { ServeStaticModule } from '@nestjs/serve-static';
+// import { ServeStaticModule } from '@nestjs/serve-static';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TypeOrmModule } from '@nestjs/typeorm';
+// import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 
 import { AppConfigModule } from './config/app.config.module';
 import { SwaggerModule } from './swagger/swagger.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
     AppConfigModule,
     SwaggerModule,
-    HttpModule,
+    RabbitmqModule
   ],
   controllers: [
     AppController

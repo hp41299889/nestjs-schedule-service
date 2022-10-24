@@ -11,11 +11,12 @@ async function bootstrap() {
   const configService: ConfigService = app.get(ConfigService);
   const appConfig: AppConfig = configService.get('app');
   const appSwagger: SwaggerService = app.get(SwaggerService);
-  const { appEnv, appName, appPrefix, appPort, appServices } = appConfig;
-  app.setGlobalPrefix(appPrefix);
+  const { appEnv, appName, appPrefix, appPort } = appConfig;
   const service = `${appName} is running on ${appPort} for ${appEnv}`;
 
+  app.setGlobalPrefix(appPrefix);
   appSwagger.setupSwagger(app);
+
   await app.listen(appPort);
   console.log(service);
 };

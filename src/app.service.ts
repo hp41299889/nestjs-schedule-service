@@ -1,20 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios/dist';
-import { map } from 'rxjs';
 
-import { PerfectCubicSumDto } from './math/cubicSum.dto';
+import { PerfectCubicSumDto } from './math/perfectCubicSum.dto';
+import { RabbitmqService } from './rabbitmq/rabbitmq.service';
 
 @Injectable()
 export class AppService {
     constructor(
-        private readonly httpService: HttpService
+        private readonly rabbitmqService: RabbitmqService
     ) { };
 
-    cubicSum(data: PerfectCubicSumDto) {
-        const url = 'http://localhost:3001/rabbitmq/perfectcubicsum';
-        return this.httpService.post(url, data)
-            .pipe(
-                map(res => res.data)
-            )
+    async perfectCubicSum(data: PerfectCubicSumDto) {
+        return await this.rabbitmqService.sendPerfectCubicSum(data);
     };
 };
