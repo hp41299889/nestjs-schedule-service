@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { timeout } from 'rxjs';
 
 import { PerfectCubicSumDto } from 'src/math/perfectCubicSum.dto';
+import { ChildProcessDto } from 'src/childProcess/childProcess.dto';
 
 @Injectable()
 export class RabbitmqService {
@@ -11,10 +12,14 @@ export class RabbitmqService {
     ) { };
 
     async sendPerfectCubicSum(data: PerfectCubicSumDto) {
-        console.log(this.client);
-
         return this.client
             .send('perfectCubicSum', data)
             .pipe(timeout(5000));
+    };
+
+    async sendChildProcess(data: ChildProcessDto) {
+        return this.client
+            .send('childProcess', data)
+            .pipe(timeout(5000))
     };
 };
