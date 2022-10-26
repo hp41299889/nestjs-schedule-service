@@ -14,12 +14,12 @@ export class RabbitmqService {
     async sendPerfectCubicSum(data: PerfectCubicSumDto) {
         return this.client
             .send('perfectCubicSum', data)
-            .pipe(timeout(5000));
+            .pipe(timeout(10000));
     };
 
     async sendChildProcess(data: ChildProcessDto) {
         return this.client
             .send('childProcess', data)
-            .pipe(timeout(5000))
+            .pipe(timeout(10000))
     };
 };
