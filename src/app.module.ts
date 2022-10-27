@@ -11,12 +11,16 @@ import { SwaggerModule } from './swagger/swagger.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
     AppConfigModule,
     SwaggerModule,
-    RabbitmqModule
+    RabbitmqModule,
+    ScheduleModule.forRoot(),
+    TaskModule
   ],
   controllers: [
     AppController
