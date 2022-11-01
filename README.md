@@ -13,9 +13,10 @@
 
 ## 開發
 * dev_frontend：Web Service的前端 -> Alice
-* dev_backend_MVC：Web Service的後端 -> Danny
+* dev_backend_MVC：Web Service的後端 -> 暫空
 * dev_backend_API：API Service的後端 -> 暫空
-* dev_backend_MiddleService：Middle Service的後端 -> Danny
+* dev_backend_ScheduleService：Schedule Service的前後端整合 -> Danny, Alice
+* dev_backend_MiddleService：Middle Service的前後端整合 -> Danny, Alice
 * dev_OT_Edge：邊緣運算 -> 暫空
 * dev_main：整合
 
