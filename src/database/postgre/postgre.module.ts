@@ -5,6 +5,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { PostgreConfig } from 'src/config/config.interface';
 import { AppConfigModule } from 'src/config/app.config.module';
 import { DogModule } from '../../model/dog/dog.module';
+import { Dog } from 'src/model/dog/dog.entity';
 
 @Module({
     imports: [
@@ -20,7 +21,7 @@ import { DogModule } from '../../model/dog/dog.module';
                     username: postgreUsername,
                     password: postgrePassword,
                     database: postgreDatabase,
-                    entities: [],
+                    entities: [Dog],
                     synchronize: true
                 }
             },

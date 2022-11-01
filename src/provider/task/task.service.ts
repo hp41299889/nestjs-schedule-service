@@ -18,7 +18,7 @@ export class TaskService {
         const callback = () => {
             this.logger.warn(`Interval ${name} executing at time (${seconds}), Said ${message}`);
         };
-        const interval = setInterval(callback, seconds);
+        const interval = setInterval(callback, seconds * 1000);
 
         this.schedulerRegistry.addInterval(name, interval);
     };
@@ -31,21 +31,22 @@ export class TaskService {
     };
 
     async getCrons() {
-        const jobs = this.schedulerRegistry.getCronJobs();
+        const jobs = this.schedulerRegistry.getIntervals();
         const crons = [];
-        return new Promise((resolve) => {
-            jobs.forEach((value, key, map) => {
-                const { source } = value['cronTime'];
-                let next;
-                try {
-                    next = value.nextDates().toISODate();
-                } catch (e) {
-                    next = 'error: next fire date is in the past!';
-                }
-                this.logger.log(`job: ${key} -> next: ${next}`);
-                crons.push({ 'jobName': key, 'source': source });
-            });
-            resolve(crons);
-        });
+        return jobs;
+        // return new Promise((resolve) => {
+        //     jobs.forEach((value, key, map) => {
+        //         const { source } = value['cronTime'];
+        //         let next;
+        //         try {
+        //             next = value;
+        //         } catch (e) {
+        //             next = 'error: next fire date is in the past!';
+        //         }
+        //         this.logger.log(`job: ${key} -> next: ${next}`);
+        //         crons.push({ 'jobName': key, 'source': source });
+        //     });
+        //     resolve(crons);
+        // });
     };
 };
