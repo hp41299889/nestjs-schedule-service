@@ -1,7 +1,7 @@
 {
   "name": "nest-server",
   "version": "0.1.0",
-  "description": "ba220904 unit test 4.1.3.14 JS實踐排程(動態生成)",
+  "description": "ba220904 unit test 4.1.3.7 MongoDB 操作性研究 and 4.1.3.8 PostgreDB 操作性研究",
   "author": "LNT_Danny Lu",
   "private": true,
   "license": "UNLICENSED",

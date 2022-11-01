@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
+import { Cron, CronExpression, SchedulerRegistry, Interval } from '@nestjs/schedule';
 import { CronJob } from 'cron';
+
 import { AddTaskDto, DeleteTaskDto } from './task.dto';
 
 @Injectable()
@@ -11,29 +12,22 @@ export class TaskService {
 
     private readonly logger = new Logger(TaskService.name);
 
-    // @Cron(CronExpression.EVERY_10_SECONDS)
-    // handleCron() {
-    //     this.logger.debug('Called every 10 secs');
-    // };
-
     addCronJob(data: AddTaskDto) {
-        const { name, seconds } = data;
-        const job = new CronJob(`${seconds} * * * * *`, () => {
-            this.logger.warn(`time (${seconds}) for job ${name} to run!`)
-        });
+        //now v2 is interval
+        const { name, seconds, message } = data;
+        const callback = () => {
+            this.logger.warn(`Interval ${name} executing at time (${seconds}), Said ${message}`);
+        };
+        const interval = setInterval(callback, seconds);
 
-        this.schedulerRegistry.addCronJob(name, job);
-        job.start();
-
-        this.logger.warn(
-            `job ${name} added for each minute at ${seconds} seconds`
-        );
+        this.schedulerRegistry.addInterval(name, interval);
     };
 
     deleteCron(data: DeleteTaskDto) {
+        //now v2 is interval
         const { name } = data;
-        this.schedulerRegistry.deleteCronJob(name);
-        this.logger.warn(`job ${name} deleted!`);
+        this.schedulerRegistry.deleteInterval(name);
+        this.logger.warn(`Interval ${name} deleted!`);
     };
 
     async getCrons() {

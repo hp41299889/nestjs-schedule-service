@@ -7,9 +7,7 @@ import { RabbitmqConfig } from 'src/config/config.interface';
 import { AppConfigModule } from 'src/config/app.config.module';
 
 @Module({
-  imports: [
-    AppConfigModule,
-  ],
+  imports: [AppConfigModule,],
   providers: [
     {
       provide: 'RabbitmqService',

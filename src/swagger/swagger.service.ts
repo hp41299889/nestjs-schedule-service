@@ -7,8 +7,8 @@ export class SwaggerService {
     setupSwagger(app: NestExpressApplication): void {
         const builder = new DocumentBuilder();
         const config = builder
-            .setTitle('TodoList')
-            .setDescription('This is a basic Swagger document.')
+            .setTitle('BA220904')
+            .setDescription('This is API document for BA220904')
             .setVersion('1.0')
             .build();
         const document = SwaggerModule.createDocument(app, config);

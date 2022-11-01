@@ -8,6 +8,9 @@ export class PerfectCubicSumDto {
     b: number;
 
     @ApiPropertyOptional()
+    reqNo: number;
+
+    @ApiPropertyOptional()
     name: string;
 
     @ApiPropertyOptional()
