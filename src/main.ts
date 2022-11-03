@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 import { AppModule } from './app.module';
 import { AppConfig } from './config/config.interface';
@@ -13,6 +14,10 @@ async function bootstrap() {
   const appSwagger: SwaggerService = app.get(SwaggerService);
   const { appEnv, appName, appPrefix, appPort } = appConfig;
   const service = `${appName} is running on ${appPort} for ${appEnv}`;
+
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'view'));
+  app.setViewEngine('hbs');
 
   app.setGlobalPrefix(appPrefix);
   appSwagger.setupSwagger(app);

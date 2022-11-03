@@ -1,7 +1,7 @@
 {
   "name": "nest-server",
   "version": "0.1.0",
-  "description": "ba220904 unit test 4.1.3.7 MongoDB 操作性研究 and 4.1.3.8 PostgreDB 操作性研究",
+  "description": "ba220904 ScheduleService",
   "author": "LNT_Danny Lu",
   "private": true,
   "license": "UNLICENSED",
@@ -38,6 +38,7 @@
     "amqp-connection-manager": "^4.1.7",
     "amqplib": "^0.10.3",
     "class-transformer": "^0.5.1",
+    "hbs": "^4.2.0",
     "iconv-lite": "^0.6.3",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

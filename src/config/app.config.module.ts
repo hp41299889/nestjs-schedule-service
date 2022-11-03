@@ -19,11 +19,7 @@ import {
             ]
         })
     ],
-    providers: [
-        ConfigService
-    ],
-    exports: [
-        ConfigService
-    ]
+    providers: [ConfigService],
+    exports: [ConfigService]
 })
 export class AppConfigModule { }
