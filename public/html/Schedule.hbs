@@ -1,0 +1,82 @@
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <link rel='stylesheet' href='../public/css/all.css' />
+    <link
+      rel='stylesheet'
+      href='../kit_module/bootstrap-5.2.2-dist/css/bootstrap.css'
+    />
+    <link rel='stylesheet' href='../kit_module/dataTables/datatables.css' />
+    <script src='../kit_module/bootstrap-5.2.2-dist/js/bootstrap.js'></script>
+    <script src='../kit_module/jquery-3.6.1.min.js'></script>
+    <script src='../kit_module/dataTables/datatables.js'></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <nav class='navbar navbar-expand-lg bg-light'>
+      <div class='container-fluid'>
+        <a class='navbar-brand'>Schedule Service</a>
+        <button
+          class='navbar-toggler'
+          type='button'
+          data-bs-toggle='collapse'
+          data-bs-target='#navbarNavAltMarkup'
+          aria-controls='navbarNavAltMarkup'
+          aria-expanded='false'
+          aria-label='Toggle navigation'
+        >
+          <span class='navbar-toggler-icon'></span>
+        </button>
+        <div class='collapse navbar-collapse' id='navbarNavAltMarkup'>
+          <div class='navbar-nav'>
+            <a class='nav-link active' aria-current='page' href='#'>排程</a>
+            <a class='nav-link' href='../html/Monitor.hbs'>監控</a>
+            <a class='nav-link' href='./ExecutionLog.hbs'>紀錄</a>
+            <a class='nav-link' href='./Setup.hbs'>設定</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <h1>排程</h1>
+    <div class='card'>
+      <div class='card-body'>
+        <div class='d-flex'>
+          <button
+            type='button'
+            id='add'
+            class='btn btn-outline-primary'
+          >新增</button>
+          <button
+            type='button'
+            id='edit'
+            class='btn btn-outline-primary'
+          >修改</button>
+          <button
+            type='button'
+            id='clone'
+            class='btn btn-outline-primary'
+          >克隆</button>
+          <button
+            type='button'
+            id='delete'
+            class='btn btn-outline-primary'
+          >刪除</button>
+          <button
+            type='button'
+            id='export'
+            class='btn btn-outline-primary'
+          >匯出</button>
+        </div>
+        <table id='schedule' class='display' style='width: 100%'>
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src='../js/fakeData.js'></script>
+  <script src='../js/column.js'></script>
+  <script src='../js/schedule.js'></script>
+</html>

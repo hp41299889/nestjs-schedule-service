@@ -16,7 +16,7 @@ async function bootstrap() {
   const service = `${appName} is running on ${appPort} for ${appEnv}`;
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'view'));
+  app.setBaseViewsDir(join(__dirname, '..', 'public/html'));
   app.setViewEngine('hbs');
 
   app.setGlobalPrefix(appPrefix);
