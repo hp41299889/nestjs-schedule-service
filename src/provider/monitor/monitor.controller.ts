@@ -1,14 +1,24 @@
-import { Controller, Post, Get } from '@nestjs/common';
+import { Controller, Post, Get, Body } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('monitor')
+import { MonitorService } from './monitor.service';
+import { ResendMonitorDto } from './monitor.dto';
+import * as CONST from './monitor.constants';
+
+@ApiTags(CONST.API_TAGS)
+@Controller(CONST.API_ROUTES)
 export class MonitorController {
-    @Get()
-    async read() {
+    constructor(
+        private readonly monitorService: MonitorService
+    ) { };
 
+    @Get(CONST.READ)
+    read() {
+        return this.monitorService.read();
     };
 
-    @Post()
-    async resend() {
-
+    @Post(CONST.RESEND)
+    resend(@Body() data: ResendMonitorDto) {
+        return this.monitorService.resend(data);
     };
 };

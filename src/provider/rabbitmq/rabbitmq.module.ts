@@ -4,13 +4,13 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 import { RabbitmqService } from './rabbitmq.service';
 import { RabbitmqConfig } from 'src/config/config.interface';
-import { AppConfigModule } from 'src/config/app.config.module';
+import { ConfigModule } from 'src/config/config.module';
 
 @Module({
-  imports: [AppConfigModule,],
+  imports: [ConfigModule,],
   providers: [
     {
-      provide: 'RabbitmqService',
+      provide: 'RabbitMQ',
       useFactory: (configService: ConfigService) => {
         const rabbitmqConfig: RabbitmqConfig = configService.get('rabbitmq');
         const { rabbitmqUsername, rabbitmqPassword, rabbitmqHost, rabbitmqQueueName } = rabbitmqConfig;
@@ -20,6 +20,7 @@ import { AppConfigModule } from 'src/config/app.config.module';
           options: {
             urls: [`amqp://${rabbitmqUsername}:${rabbitmqPassword}@${rabbitmqHost}`],
             queue: rabbitmqQueueName,
+            noAck: false,
             queueOptions: {
               durable: true
             }

@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateScheduleDto {
     @ApiProperty()
@@ -10,37 +10,37 @@ export class CreateScheduleDto {
     @ApiProperty()
     schduleType: string;
 
-    @ApiProperty()
-    regular: [];
+    @ApiPropertyOptional()
+    regular: [string];
 
-    @ApiProperty()
-    cycle: [];
+    @ApiPropertyOptional()
+    cycle: [string];
 
     @ApiProperty()
     MQCLI: string;
 };
 
-export class UpdateScheduleDto extends CreateScheduleDto {
+export class UpdateScheduleDto {
     @ApiProperty()
     scheduleID: string;
 
-    // @ApiProperty()
-    // commandSource: string;
+    @ApiPropertyOptional()
+    commandSource: string;
 
-    // @ApiProperty()
-    // scheduleName: string;
+    @ApiPropertyOptional()
+    scheduleName: string;
 
-    // @ApiProperty()
-    // schduleType: string;
+    @ApiPropertyOptional()
+    schduleType: string;
 
-    // @ApiProperty()
-    // regular: [];
+    @ApiPropertyOptional()
+    regular: [string];
 
-    // @ApiProperty()
-    // cycle: [];
+    @ApiPropertyOptional()
+    cycle: [string];
 
-    // @ApiProperty()
-    // MQCLI: string;
+    @ApiPropertyOptional()
+    MQCLI: string;
 };
 
 export class DeleteScheduleDto {

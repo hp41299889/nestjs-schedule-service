@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule as NestConfigModule, ConfigService } from '@nestjs/config';
 
 import {
     appConfig,
@@ -10,7 +10,7 @@ import {
 
 @Module({
     imports: [
-        ConfigModule.forRoot({
+        NestConfigModule.forRoot({
             load: [
                 appConfig,
                 mongoConfig,
@@ -22,4 +22,4 @@ import {
     providers: [ConfigService],
     exports: [ConfigService]
 })
-export class AppConfigModule { }
+export class ConfigModule { }

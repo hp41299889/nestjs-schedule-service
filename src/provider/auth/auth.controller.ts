@@ -1,14 +1,18 @@
 import { Controller, Post, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('auth')
+import * as CONST from './auth.constants';
+
+@ApiTags(CONST.API_TAGS)
+@Controller(CONST.API_ROUTES)
 export class AuthController {
-    @Post()
-    async login() {
+    @Post(CONST.LOGIN)
+    login() {
 
     };
 
-    @Get()
-    async logout() {
+    @Get(CONST.LOGOUT)
+    logout() {
 
     };
 };

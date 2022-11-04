@@ -3,13 +3,13 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
 
 import { MongoConfig } from "src/config/config.interface";
-import { AppConfigModule } from "src/config/app.config.module";
+import { ConfigModule } from "src/config/config.module";
 import { CatModule } from "../../model/cat/cat.module";
 
 @Module({
     imports: [
         MongooseModule.forRootAsync({
-            imports: [AppConfigModule],
+            imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => {
                 const mongoConfig: MongoConfig = configService.get('mongo');
                 const { mongoUsername, mongoPassword, mongoHost, mongoDatabase } = mongoConfig;

@@ -3,14 +3,15 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { PostgreConfig } from 'src/config/config.interface';
-import { AppConfigModule } from 'src/config/app.config.module';
-import { DogModule } from '../../model/dog/dog.module';
-import { Dog } from 'src/model/dog/dog.entity';
+import { ConfigModule } from 'src/config/config.module';
+import { ScheduleExecutionLogModule } from 'src/model/scheduleExecutionLog/scheduleExecutionLog.module';
+import { ScheduleExecutionLog } from 'src/model/scheduleExecutionLog/scheduleExecutionLog.entity';
+import { ProstgreService } from './postgre.service';
 
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
-            imports: [AppConfigModule],
+            imports: [ConfigModule],
             useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
                 const postgreConfig: PostgreConfig = configService.get('postgre');
                 const { postgreUsername, postgrePassword, postgreHost, postgrePort, postgreDatabase } = postgreConfig;
@@ -21,13 +22,15 @@ import { Dog } from 'src/model/dog/dog.entity';
                     username: postgreUsername,
                     password: postgrePassword,
                     database: postgreDatabase,
-                    entities: [Dog],
+                    entities: [ScheduleExecutionLog],
                     synchronize: true
                 }
             },
             inject: [ConfigService]
         }),
-        DogModule
+        ScheduleExecutionLogModule
     ],
+    // providers: [ProstgreService],
+    // exports: [ProstgreService]
 })
 export class PostgreModule { }
