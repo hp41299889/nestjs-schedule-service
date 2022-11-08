@@ -1,6 +1,41 @@
+.navbar .navForm {
+  width: 50%;
+  margin: 0;
+  align-self: center;
+  text-align: end;
+}
+.navbar .navForm .navButton {
+  width: 80px;
+}
+
 .card {
   margin-top: 20px;
 }
 .card .card-body .btn {
   margin-right: 10px;
+}
+.card .card-body #edit,
+.card .card-body #clone,
+.card .card-body #delete {
+  display: none;
+}
+.card .card-body .showBtn {
+  display: inline-block !important;
+}
+.card .card-body .searchBox {
+  text-align: end;
+}
+.card .card-body .searchBox .searchFilter {
+  margin-bottom: 10px;
+}
+.card .card-body .dataTables_wrapper .bottom {
+  margin-top: 20px;
+}
+
+.modal .modal-dialog .modal-content .modal-body #cycle {
+  display: none;
+}
+
+.formDeleteBtn {
+  align-self: flex-end;
 }/*# sourceMappingURL=all.css.map */

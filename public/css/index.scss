@@ -1,10 +1,61 @@
-.card{
-  margin-top: 20px;
+.navbar {
+  .navForm {
+    width: 50%;
+    margin: 0;
+    align-self: center;
+    text-align: end;
 
-  .card-body{
-
-    .btn{
-      margin-right: 10px;
+    .navButton {
+      width: 80px;
     }
   }
+}
+
+.card {
+  margin-top: 20px;
+
+  .card-body {
+    .btn {
+      margin-right: 10px;
+    }
+
+    #edit,
+    #clone,
+    #delete{
+      display: none;
+    }
+
+    .showBtn{
+      display: inline-block !important;
+    }
+
+    .searchBox {
+      text-align: end;
+
+      .searchFilter {
+        margin-bottom: 10px;
+      }
+    }
+    .dataTables_wrapper {
+      .bottom {
+        margin-top: 20px;
+      }
+    }
+  }
+}
+
+.modal{
+  .modal-dialog{
+    .modal-content{
+      .modal-body{
+        #cycle{
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.formDeleteBtn{
+  align-self: flex-end;
 }

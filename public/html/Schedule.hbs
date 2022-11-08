@@ -3,80 +3,263 @@
     <meta charset='UTF-8' />
     <meta http-equiv='X-UA-Compatible' content='IE=edge' />
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <link rel='stylesheet' href='../public/css/all.css' />
+    <link rel='stylesheet' href='../../css/all.css' />
     <link
       rel='stylesheet'
-      href='../kit_module/bootstrap-5.2.2-dist/css/bootstrap.css'
+      href='../../kit_module/bootstrap-5.2.2-dist/css/bootstrap.css'
     />
-    <link rel='stylesheet' href='../kit_module/dataTables/datatables.css' />
-    <script src='../kit_module/bootstrap-5.2.2-dist/js/bootstrap.js'></script>
-    <script src='../kit_module/jquery-3.6.1.min.js'></script>
-    <script src='../kit_module/dataTables/datatables.js'></script>
+    <link rel='stylesheet' href='../../kit_module/dataTables/datatables.css' />
+    <link
+      rel='stylesheet'
+      href='../../kit_module/dataTables/DataTables-1.12.1/css/dataTables.bootstrap5.min.css'
+    />
+    <script
+      src='../../kit_module/bootstrap-5.2.2-dist/js/bootstrap.js'
+    ></script>
+    <script src='../../kit_module/jquery-3.6.1.min.js'></script>
+    <script src='../../kit_module/dataTables/datatables.js'></script>
     <title>Document</title>
   </head>
   <body>
-    <nav class='navbar navbar-expand-lg bg-light'>
+    <nav class='navbar sticky-top navbar-expand-lg navbar-dark bg-primary'>
       <div class='container-fluid'>
         <a class='navbar-brand'>Schedule Service</a>
-        <button
-          class='navbar-toggler'
-          type='button'
-          data-bs-toggle='collapse'
-          data-bs-target='#navbarNavAltMarkup'
-          aria-controls='navbarNavAltMarkup'
-          aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
-          <span class='navbar-toggler-icon'></span>
-        </button>
         <div class='collapse navbar-collapse' id='navbarNavAltMarkup'>
           <div class='navbar-nav'>
-            <a class='nav-link active' aria-current='page' href='#'>排程</a>
-            <a class='nav-link' href='../html/Monitor.hbs'>監控</a>
-            <a class='nav-link' href='./ExecutionLog.hbs'>紀錄</a>
-            <a class='nav-link' href='./Setup.hbs'>設定</a>
+            <a class='nav-link active' aria-current='page'>排程</a>
+            <a class='nav-link' href='../Monitor/view'>監控</a>
+            <a class='nav-link' href='../ExecutionLog/view'>紀錄</a>
+            <a class='nav-link' href='../Setup/view'>設定</a>
+          </div>
+        </div>
+        <form class='navForm'>
+          <button
+            class='btn btn-outline-light navButton'
+            type='button'
+          >登出</button>
+        </form>
+      </div>
+    </nav>
+    <div class='m-4'>
+      <h1>排程</h1>
+      <div class='card'>
+        <div class='card-body'>
+          <div class='d-flex'>
+            <button
+              type='button'
+              id='add'
+              class='btn btn-outline-primary'
+              data-bs-toggle='modal'
+              data-bs-target='#scheduleModal'
+              data-bs-whatever='新增'
+            >新增</button>
+            <button
+              type='button'
+              id='edit'
+              class='btn btn-outline-primary'
+              data-bs-toggle='modal'
+              data-bs-target='#scheduleModal'
+              data-bs-whatever='修改'
+            >修改</button>
+            <button
+              type='button'
+              id='clone'
+              class='btn btn-outline-primary'
+              data-bs-toggle='modal'
+              data-bs-target='#scheduleModal'
+              data-bs-whatever='克隆'
+            >克隆</button>
+            <button
+              type='button'
+              id='delete'
+              class='btn btn-outline-primary'
+            >刪除</button>
+            <button
+              type='button'
+              id='export'
+              class='btn btn-outline-primary'
+            >匯出</button>
+          </div>
+          <div class='searchBox w-100'>
+            <input
+              id='searchFilter'
+              placeholder='Search'
+              class='searchFilter'
+            />
+          </div>
+          <table id='schedule' class='display' style='width: 100%'>
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div
+      class='modal fade'
+      id='scheduleModal'
+      tabindex='-1'
+      aria-labelledby='scheduleModalLabel'
+      aria-hidden='true'
+      data-bs-backdrop='static'
+    >
+      <div class='modal-dialog modal-dialog-centered'>
+        <div class='modal-content'>
+          <div class='modal-header'>
+            <h1
+              class='modal-title fs-5 fw-bolder'
+              id='scheduleModalLabel'
+            >表單</h1>
+            <button
+              type='button'
+              class='btn-close'
+              data-bs-dismiss='modal'
+              aria-label='Close'
+            ></button>
+          </div>
+          <div class='modal-body'>
+            <form>
+              <div class='d-flex mb-3 row'>
+                <div class='col-6'>
+                  <label
+                    for='scheduleName'
+                    class='col-form-label fw-bolder'
+                  >排程名稱:</label>
+                  <input type='text' class='form-control' id='scheduleName' />
+                </div>
+                <div class='col-6'>
+                  <label
+                    for='scheduleType'
+                    class='col-form-label fw-bolder'
+                  >排程類型:</label>
+                  <select class='form-select' id='scheduleType'></select>
+                </div>
+              </div>
+              <hr />
+              <div id='reqular'>
+                <div>
+                  <label
+                    for='reqularAdd'
+                    class='col-form-label fw-bolder'
+                  >定期排程:</label>
+                </div>
+                <div class='mb-3'>
+                  <button
+                    type='button'
+                    class='btn btn-outline-primary'
+                    id='reqularAdd'
+                  >新增</button>
+                </div>
+                <div id='reqularRecord'>
+                  <div class='d-flex mb-3 row d-none' id='reqularTemplate'>
+                    <div class='col-3'>
+                      <label
+                        for='reqularWeek'
+                        class='col-form-label fw-bolder'
+                      >星期:</label>
+                      <select class='form-select' id='reqularWeek'>
+                        {{! <option id="reqularWeekDefault" selected>一-日</option> }}
+                      </select>
+                    </div>
+                    <div class='col-3'>
+                      <label
+                        for='reqularHour'
+                        class='col-form-label fw-bolder'
+                      >小時:</label>
+                      <select class='form-select' id='reqularHour'>
+                        {{! <option selected>0-23</option> }}
+                      </select>
+                    </div>
+                    <div class='col-3'>
+                      <label
+                        for='reqularMinute'
+                        class='col-form-label fw-bolder'
+                      >分鐘:</label>
+                      <select class='form-select' id='reqularMinute'>
+                        {{! <option selected>0-59</option> }}
+                      </select>
+                    </div>
+                    <div class='col-3 formDeleteBtn'>
+                      <button
+                        type='button'
+                        class='btn btn-outline-danger'
+                        id='reqularDelete'
+                      >刪除</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id='cycle'>
+                <div>
+                  <label
+                    for='reqularAdd'
+                    class='col-form-label fw-bolder'
+                  >週期排程:</label>
+                </div>
+                <div class='mb-3'>
+                  <button
+                    type='button'
+                    class='btn btn-outline-primary'
+                    id='cycleAdd'
+                  >新增</button>
+                </div>
+                <div id='cycleRecord'>
+                  <div class='d-flex mb-3 row' id='cycleTemplate'>
+                    <div class='col-3'>
+                      <label
+                        for='cycleHour'
+                        class='col-form-label fw-bolder'
+                      >每小時:</label>
+                      <input type='text' class='form-control' id='cycleHour' />
+                    </div>
+                    <div class='col-3'>
+                      <label
+                        for='cycleMinute'
+                        class='col-form-label fw-bolder'
+                      >每分鐘:</label>
+                      <input
+                        type='text'
+                        class='form-control'
+                        id='cycleMinute'
+                      />
+                    </div>
+                    <div class='col-3 formDeleteBtn'>
+                      <button
+                        type='button'
+                        class='btn btn-outline-danger'
+                        id='cycleDelete'
+                      >刪除</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div class='mb-3'>
+                <label
+                  for='mqcliText'
+                  class='col-form-label fw-bolder'
+                >MQCLI:</label>
+                <textarea
+                  class='form-control'
+                  id='mqcliText'
+                  placeholder='Text Area'
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class='modal-footer'>
+            <button
+              type='button'
+              class='btn btn-secondary'
+              data-bs-dismiss='modal'
+            >Close</button>
+            <button type='button' class='btn btn-primary'>Send message</button>
           </div>
         </div>
       </div>
-    </nav>
-    <h1>排程</h1>
-    <div class='card'>
-      <div class='card-body'>
-        <div class='d-flex'>
-          <button
-            type='button'
-            id='add'
-            class='btn btn-outline-primary'
-          >新增</button>
-          <button
-            type='button'
-            id='edit'
-            class='btn btn-outline-primary'
-          >修改</button>
-          <button
-            type='button'
-            id='clone'
-            class='btn btn-outline-primary'
-          >克隆</button>
-          <button
-            type='button'
-            id='delete'
-            class='btn btn-outline-primary'
-          >刪除</button>
-          <button
-            type='button'
-            id='export'
-            class='btn btn-outline-primary'
-          >匯出</button>
-        </div>
-        <table id='schedule' class='display' style='width: 100%'>
-          <thead></thead>
-          <tbody></tbody>
-        </table>
-      </div>
     </div>
   </body>
-  <script src='../js/fakeData.js'></script>
-  <script src='../js/column.js'></script>
-  <script src='../js/schedule.js'></script>
+  <script src='../../js/fakeData.js'></script>
+  <script src='../../js/column.js'></script>
+  <script src='../../js/option.js'></script>
+  <script src='../../js/schedule.js'></script>
 </html>
