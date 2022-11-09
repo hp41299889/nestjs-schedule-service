@@ -5,7 +5,8 @@ import {
     appConfig,
     mongoConfig,
     postgreConfig,
-    rabbitmqConfig
+    rabbitmqConfig,
+    adminConfig
 } from './configuration';
 
 @Module({
@@ -15,7 +16,8 @@ import {
                 appConfig,
                 mongoConfig,
                 postgreConfig,
-                rabbitmqConfig
+                rabbitmqConfig,
+                adminConfig
             ]
         })
     ],

@@ -13,13 +13,13 @@ import { ConfigModule } from 'src/config/config.module';
       provide: 'RabbitMQ',
       useFactory: (configService: ConfigService) => {
         const rabbitmqConfig: RabbitmqConfig = configService.get('rabbitmq');
-        const { rabbitmqUsername, rabbitmqPassword, rabbitmqHost, rabbitmqQueueName } = rabbitmqConfig;
+        const { IP, port, account, password, inputQueueName, outputQueueName } = rabbitmqConfig;
 
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-            urls: [`amqp://${rabbitmqUsername}:${rabbitmqPassword}@${rabbitmqHost}`],
-            queue: rabbitmqQueueName,
+            urls: [`amqp://${account}:${password}@${IP}:${port}`],
+            queue: inputQueueName,
             noAck: false,
             queueOptions: {
               durable: true

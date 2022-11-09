@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class PostgreConnectTestSetupDto {
     @ApiProperty()
@@ -35,18 +35,18 @@ export class MongoConnectTestSetupDto {
 };
 
 export class SaveSetupDto {
-    @ApiProperty()
+    @ApiPropertyOptional()
     enableScheduleService: boolean;
 
-    @ApiProperty()
+    @ApiPropertyOptional()
     queue: object;
 
-    @ApiProperty()
+    @ApiPropertyOptional()
     admin: object;
 
-    @ApiProperty()
+    @ApiPropertyOptional()
     postgreSQL: PostgreConnectTestSetupDto;
 
-    @ApiProperty()
+    @ApiPropertyOptional()
     mongoDB: MongoConnectTestSetupDto;
 };

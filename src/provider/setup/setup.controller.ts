@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Post } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Body } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 import * as CONST from './setup.constants';
@@ -18,17 +18,17 @@ export class SetupController {
     };
 
     @Post(CONST.POSTGRECONNECTTEST)
-    postgreConnectTest(data: PostgreConnectTestSetupDto) {
+    postgreConnectTest(@Body() data: PostgreConnectTestSetupDto) {
         return this.setupService.postgreConnectTest(data);
     };
 
     @Post(CONST.MONGOCONNECTTEST)
-    mongoConnectTest(data: MongoConnectTestSetupDto) {
+    mongoConnectTest(@Body() data: MongoConnectTestSetupDto) {
         return this.setupService.mongoConnectTest(data);
     };
 
     @Patch(CONST.SAVE)
-    save(data: SaveSetupDto) {
-        return this.setupService.save();
+    save(@Body() data: SaveSetupDto) {
+        return this.setupService.save(data);
     };
 };

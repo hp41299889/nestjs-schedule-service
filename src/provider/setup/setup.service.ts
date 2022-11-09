@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ProstgreService } from 'src/database/postgre/postgre.service';
+import * as fs from 'fs';
+import { join } from 'path';
 
-import { PostgreConnectTestSetupDto, MongoConnectTestSetupDto } from './setup.dto';
+import { ProstgreService } from 'src/database/postgres/postgres.service';
+import { PostgreConnectTestSetupDto, MongoConnectTestSetupDto, SaveSetupDto } from './setup.dto';
 
 @Injectable()
 export class SetupService {
-    // constructor(
-    //     private readonly postgreService: ProstgreService
-    // ) { };
+    constructor(
+        // private readonly postgreService: ProstgreService
+    ) { };
     read() {
         //TODO
     };
@@ -20,7 +22,12 @@ export class SetupService {
         //TODO
     };
 
-    save() {
+    async save(data: SaveSetupDto) {
         //TODO
+        // const f = fs.readFileSync(join(__dirname + '../../' + '.env'));
+        // const origin = fs.readFileSync('./.env', 'utf8');
+        // console.log(data);  
+
+
     };
 };

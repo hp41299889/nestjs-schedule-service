@@ -10,16 +10,15 @@ import { CatModule } from "../../model/cat/cat.module";
     imports: [
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
+            inject: [ConfigService],
             useFactory: async (configService: ConfigService) => {
-                const mongoConfig: MongoConfig = configService.get('mongo');
-                const { mongoUsername, mongoPassword, mongoHost, mongoDatabase } = mongoConfig;
-                const uri = `mongodb://${mongoUsername}:${mongoPassword}@${mongoHost}/${mongoDatabase}`;
+                const mongoConfig: MongoConfig = configService.get('mongoDB');
+                const { IP, port, account, password, DBName } = mongoConfig;
+                const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
 
                 return { uri };
-            },
-            inject: [ConfigService]
-        }),
-        CatModule
+            }
+        })
     ]
 })
 export class MongoModule { }

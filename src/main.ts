@@ -8,21 +8,24 @@ import { AppConfig } from './config/config.interface';
 import { SwaggerService } from './swagger/swagger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+    logger: ['log', 'error', 'debug', 'warn', 'verbose']
+  });
   const configService: ConfigService = app.get(ConfigService);
   const appConfig: AppConfig = configService.get('app');
   const appSwagger: SwaggerService = app.get(SwaggerService);
-  const { appEnv, appName, appPrefix, appPort } = appConfig;
-  const service = `${appName} is running on ${appPort} for ${appEnv}`;
+  const { name, env, prefix, port } = appConfig;
+  const service = `${name} is running on ${port} for ${env}`;
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'public/html'));
   app.setViewEngine('hbs');
 
-  app.setGlobalPrefix(appPrefix);
+  app.setGlobalPrefix(prefix);
   appSwagger.setupSwagger(app);
 
-  await app.listen(appPort);
+  await app.listen(port);
   console.log(service);
 };
 bootstrap();

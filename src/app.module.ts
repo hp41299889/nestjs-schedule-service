@@ -11,16 +11,20 @@ import { SetupModule } from './provider/setup/setup.module';
 import { MonitorModule } from './provider/monitor/monitor.module';
 import { ExecutionLogModule } from './provider/executionLog/executionLog.module';
 import { ProviderModule } from './provider/provider.module';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
     ConfigModule,
     SwaggerModule,
-    ProviderModule
+    ProviderModule,
+    DatabaseModule
     // ScheduleModule.forRoot(),
     // TaskModule,
     // DatabaseModule,
   ],
-  controllers: [AppController]
+  controllers: [AppController],
+  providers: [AppService],
+  exports: [AppService]
 })
 export class AppModule { }

@@ -1,8 +1,10 @@
 import { registerAs } from '@nestjs/config';
 
 export default registerAs('rabbitmq', () => ({
-    rabbitmqUsername: process.env.RABBITMQ_USERNAME,
-    rabbitmqPassword: process.env.RABBITMQ_PASSWORD,
-    rabbitmqHost: process.env.RABBITMQ_HOST,
-    rabbitmqQueueName: process.env.RABBITMQ_QUEUE_NAME,
+    IP: process.env.RABBITMQ_USERNAME,
+    port: process.env.RABBITMQ_PORT,
+    account: process.env.RABBITMQ_ACCOUNT,
+    password: process.env.RABBITMQ_PASSWORD,
+    inputQueueName: process.env.RABBITMQ_INPUTQUEUENAME,
+    outputQueueName: process.env.RABBITMQ_OUTPUTQUEUENAME
 }));

@@ -5,7 +5,7 @@ import { ScheduleExecutionLogDto } from "src/provider/executionLog/executionLog.
 @Entity()
 export class ScheduleExecutionLog {
     @PrimaryGeneratedColumn()
-    scheduleID: string;
+    scheduleID: number;
 
     @Column()
     scheduleType: string;
@@ -13,6 +13,6 @@ export class ScheduleExecutionLog {
     @Column()
     schedule: string;
 
-    @Column()
-    wiikLog: ScheduleExecutionLogDto;
+    @Column({ type: "jsonb" })
+    weakLog: ScheduleExecutionLogDto[];
 };

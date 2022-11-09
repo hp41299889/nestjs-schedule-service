@@ -8,13 +8,13 @@ export class CreateScheduleDto {
     scheduleName: string;
 
     @ApiProperty()
-    schduleType: string;
+    scheduleType: string;
 
     @ApiPropertyOptional()
-    regular: [string];
+    regular: [];
 
     @ApiPropertyOptional()
-    cycle: [string];
+    cycle: [];
 
     @ApiProperty()
     MQCLI: string;
@@ -22,7 +22,7 @@ export class CreateScheduleDto {
 
 export class UpdateScheduleDto {
     @ApiProperty()
-    scheduleID: string;
+    scheduleID: number;
 
     @ApiPropertyOptional()
     commandSource: string;
@@ -45,5 +45,5 @@ export class UpdateScheduleDto {
 
 export class DeleteScheduleDto {
     @ApiProperty()
-    scheduleID: string;
+    scheduleID: number;
 };
