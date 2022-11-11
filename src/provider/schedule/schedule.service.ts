@@ -22,6 +22,7 @@ export class ScheduleService {
             return this.scheduleModelService.create(data);
         } catch (err) {
             this.logger.error(err);
+            //TODO
             return err;
         };
     };

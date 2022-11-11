@@ -1,18 +1,18 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ConfigService } from "@nestjs/config";
 
-import { MongoConfig } from "src/config/config.interface";
 import { ConfigModule } from "src/config/config.module";
+import { JsonService } from "src/config/json/json.service";
+import { MongoDBConfigDto } from "src/config/json/json.dto";
 import { CatModule } from "../../model/cat/cat.module";
 
 @Module({
     imports: [
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => {
-                const mongoConfig: MongoConfig = configService.get('mongoDB');
+            inject: [JsonService],
+            useFactory: async (jsonService: JsonService) => {
+                const mongoConfig: MongoDBConfigDto = jsonService.read('mongoDB');
                 const { IP, port, account, password, DBName } = mongoConfig;
                 const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
 

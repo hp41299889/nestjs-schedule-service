@@ -1,0 +1,25 @@
+{
+  "enableScheduleService": true,
+  "queue": {
+    "inputQueueName": "danny_queue",
+    "outputQueueName": "danny_queue"
+  },
+  "admin": {
+    "account": "admin",
+    "password": "admin"
+  },
+  "postgreSQL": {
+    "IP": "192.168.36.51",
+    "port": "5432",
+    "account": "postgres",
+    "password": "69507518",
+    "DBName": "test"
+  },
+  "mongoDB": {
+    "IP": "192.168.36.51",
+    "port": "27017",
+    "account": "admin",
+    "password": "a3345678",
+    "DBName": "test"
+  }
+}

@@ -4,7 +4,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
-import { AppConfig } from './config/config.interface';
+// import { AppConfig } from './config/config.interface';
+import { AppConfigDto } from './config/json/json.dto';
 import { SwaggerService } from './swagger/swagger.service';
 
 async function bootstrap() {
@@ -13,7 +14,7 @@ async function bootstrap() {
     logger: ['log', 'error', 'debug', 'warn', 'verbose']
   });
   const configService: ConfigService = app.get(ConfigService);
-  const appConfig: AppConfig = configService.get('app');
+  const appConfig: AppConfigDto = configService.get('app');
   const appSwagger: SwaggerService = app.get(SwaggerService);
   const { name, env, prefix, port } = appConfig;
   const service = `${name} is running on ${port} for ${env}`;

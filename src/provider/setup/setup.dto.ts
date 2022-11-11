@@ -1,4 +1,7 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+import { LoginAuthDto } from '../auth/auth.dto';
+import { QueueConfigDto } from 'src/config/json/json.dto';
 
 export class PostgreConnectTestSetupDto {
     @ApiProperty()
@@ -39,10 +42,10 @@ export class SaveSetupDto {
     enableScheduleService: boolean;
 
     @ApiPropertyOptional()
-    queue: object;
+    queue: QueueConfigDto;
 
     @ApiPropertyOptional()
-    admin: object;
+    admin: LoginAuthDto;
 
     @ApiPropertyOptional()
     postgreSQL: PostgreConnectTestSetupDto;

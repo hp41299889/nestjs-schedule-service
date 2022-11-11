@@ -1,16 +1,21 @@
-import { Controller, Get, Patch, Post, Body } from '@nestjs/common';
-
+import { Controller, Get, Patch, Post, Body, BadRequestException, UseFilters, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+
 import * as CONST from './setup.constants';
 import { MongoConnectTestSetupDto, PostgreConnectTestSetupDto, SaveSetupDto } from './setup.dto';
 import { SetupService } from './setup.service';
+import { Exception } from 'src/util/exception/exception';
 
 @ApiTags(CONST.API_TAGS)
 @Controller(CONST.API_ROUTES)
+@UseFilters(Exception)
 export class SetupController {
     constructor(
         private readonly setupService: SetupService
     ) { };
+
+    private readonly logger = new Logger(SetupController.name);
+    private readonly debugMessage = 'Calling setup.';
 
     @Get(CONST.READ)
     read() {
@@ -29,6 +34,12 @@ export class SetupController {
 
     @Patch(CONST.SAVE)
     save(@Body() data: SaveSetupDto) {
-        return this.setupService.save(data);
+        try {
+            this.logger.debug(`${this.debugMessage}save()`);
+            return this.setupService.save(data);
+        } catch (err) {
+            this.logger.error(err);
+            throw new BadRequestException(err);
+        }
     };
 };

@@ -1,27 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule as NestConfigModule, ConfigService } from '@nestjs/config';
 
-import {
-    appConfig,
-    mongoConfig,
-    postgreConfig,
-    rabbitmqConfig,
-    adminConfig
-} from './configuration';
+import { EnvModule } from './env/env.module';
+import { JsonModule } from './json/json.module';
+import { JsonService } from './json/json.service';
 
 @Module({
-    imports: [
-        NestConfigModule.forRoot({
-            load: [
-                appConfig,
-                mongoConfig,
-                postgreConfig,
-                rabbitmqConfig,
-                adminConfig
-            ]
-        })
-    ],
-    providers: [ConfigService],
-    exports: [ConfigService]
+    imports: [JsonModule, EnvModule],
+    providers: [JsonService],
+    exports: [JsonService]
 })
 export class ConfigModule { }

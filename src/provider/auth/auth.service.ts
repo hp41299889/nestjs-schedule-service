@@ -1,17 +1,19 @@
 import { BadRequestException, Injectable, Logger, Render, Res } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+// import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 
-import { AdminConfig } from 'src/config/config.interface';
+// import { AdminConfig } from 'src/config/config.interface';
 import { LoginAuthDto } from './auth.dto';
+import { JsonService } from 'src/config/json/json.service';
+import { AdminConfigDto } from 'src/config/json/json.dto';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly configSerivce: ConfigService
+        private readonly jsonSerivce: JsonService
     ) { };
 
-    private readonly adminConfig: AdminConfig = this.configSerivce.get('admin');
+    private readonly adminConfig: AdminConfigDto = this.jsonSerivce.read('admin');
     private readonly logger = new Logger(AuthService.name);
 
     async login(data: LoginAuthDto) {

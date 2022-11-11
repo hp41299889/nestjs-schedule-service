@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+// import { ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 import { RabbitmqService } from './rabbitmq.service';
-import { RabbitmqConfig } from 'src/config/config.interface';
 import { ConfigModule } from 'src/config/config.module';
+import { JsonService } from 'src/config/json/json.service';
+import { QueueConfigDto } from 'src/config/json/json.dto';
 
 @Module({
   imports: [ConfigModule,],
   providers: [
     {
       provide: 'RabbitMQ',
-      useFactory: (configService: ConfigService) => {
-        const rabbitmqConfig: RabbitmqConfig = configService.get('rabbitmq');
+      useFactory: (jsonService: JsonService) => {
+        const rabbitmqConfig: QueueConfigDto = jsonService.read('queue');
         const { IP, port, account, password, inputQueueName, outputQueueName } = rabbitmqConfig;
 
         return ClientProxyFactory.create({
@@ -27,7 +28,7 @@ import { ConfigModule } from 'src/config/config.module';
           }
         })
       },
-      inject: [ConfigService]
+      inject: [JsonService]
     },
     RabbitmqService,
   ],
