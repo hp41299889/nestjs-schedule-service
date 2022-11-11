@@ -1,7 +1,7 @@
-$(document).ready(function () {
-  const apiUrl = '/ScheduleService/Schedule';
-  let datas = [];
+const apiUrl = '/ScheduleService/Schedule';
+let datas = [];
 
+$(document).ready(function () {
   //讀取全部資料(未完成)
   // $.ajax({
   //   url: `${apiUrl}/readAll/`,
@@ -101,7 +101,7 @@ $(document).ready(function () {
     console.log('children =', children);
     children.forEach((element) => {
       console.log('element =', element.innerHTML);
-      sessionStorage.setItem();
+      // sessionStorage.setItem();
       // scheduleID;
       // scheduleName;
       // commandSource;
@@ -118,7 +118,19 @@ $(document).ready(function () {
   });
   //--
 
-  //動態 modal title
+  modalTitle(); //動態 modal title
+  scheduleTypeOptionChoice(); //排程類型option動態塞入
+  scheduleTypeChange(); //依照排程類型選項顯示不同內容
+  reqularAdd(); //定期排程-新增
+  //deleteItem()//定期排程-刪除
+  reqularWeek(); //定期排程-星期
+  reqularHour(); //定期排程-小時
+  reqularMinute(); //定期排程-分鐘
+  cycleAdd(); //週期排程-新增
+});
+
+//動態 modal title
+function modalTitle() {
   const scheduleModal = document.getElementById('scheduleModal');
 
   scheduleModal.addEventListener('show.bs.modal', (event) => {
@@ -146,9 +158,11 @@ $(document).ready(function () {
       console.log('new or other true');
     }
   });
-  //--
+}
+//--
 
-  //排程類型option動態塞入
+//排程類型option動態塞入
+function scheduleTypeOptionChoice() {
   const scheduleTypeSelect = document.getElementById('scheduleType');
 
   let scheduleTypeOption = '';
@@ -163,9 +177,11 @@ $(document).ready(function () {
   });
 
   scheduleTypeSelect.innerHTML = scheduleTypeOption;
-  //--
+}
+//--
 
-  //依照排程類型選項顯示不同內容
+//依照排程類型選項顯示不同內容
+function scheduleTypeChange() {
   $('#scheduleType').change(function () {
     console.log('this =', this);
     console.log('this.value =', this.value);
@@ -177,9 +193,11 @@ $(document).ready(function () {
       $('#reqular').removeClass('d-none');
     }
   });
-  //--
+}
+//--
 
-  //定期排程-新增
+//定期排程-新增
+function reqularAdd() {
   $('#reqularAdd').on('click', function () {
     $('#reqularRecord')
       .find('#reqularTemplate')
@@ -188,12 +206,11 @@ $(document).ready(function () {
       .removeClass('d-none')
       .removeAttr('id');
   });
-  //--
+}
+//--
 
-  //定期排程-刪除
-  //132行
-
-  //定期排程-星期
+//定期排程-星期
+function reqularWeek() {
   const reqularWeekSelect = document.getElementById('reqularWeek');
 
   let reqularWeekOption = '';
@@ -213,11 +230,12 @@ $(document).ready(function () {
       '</option>';
   });
 
-  // reqularWeekSelect.selectedIndex = -1
   reqularWeekSelect.innerHTML = reqularWeekOption;
-  //--
+}
+//--
 
-  //定期排程-小時
+//定期排程-小時
+function reqularHour() {
   const reqularHourSelect = document.getElementById('reqularHour');
 
   let reqularHourOption = '';
@@ -233,9 +251,11 @@ $(document).ready(function () {
   }
 
   reqularHourSelect.innerHTML = reqularHourOption;
-  //--
+}
+//--
 
-  //定期排程-分鐘
+//定期排程-分鐘
+function reqularMinute() {
   const reqularMinuteSelect = document.getElementById('reqularMinute');
 
   let reqularMinuteOption = '';
@@ -251,9 +271,16 @@ $(document).ready(function () {
   }
 
   reqularMinuteSelect.innerHTML = reqularMinuteOption;
-  //--
+}
+//--
 
-  //週期排程-新增
+//定期/週期排程-刪除
+function deleteItem(e) {
+  $(e).parent().parent().remove();
+}
+
+//週期排程-新增
+function cycleAdd() {
   $('#cycleAdd').on('click', function () {
     $('#cycleRecord')
       .find('#cycleTemplate')
@@ -262,10 +289,5 @@ $(document).ready(function () {
       .removeClass('d-none')
       .removeAttr('id');
   });
-  //--
-});
-
-//定期/週期排程-刪除
-function deleteItem(e) {
-  $(e).parent().parent().remove();
 }
+//--
