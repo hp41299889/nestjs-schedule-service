@@ -32,10 +32,10 @@
   margin-top: 20px;
 }
 
-.modal .modal-dialog .modal-content .modal-body #cycle {
-  display: none;
-}
-
 .formDeleteBtn {
   align-self: flex-end;
+}
+
+.modal .modal-dialog .modal-content .modal-footer {
+  border-top: 0;
 }/*# sourceMappingURL=all.css.map */
