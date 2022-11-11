@@ -1,4 +1,4 @@
-const apiUrl = '/ScheduleServcie/Auth';
+const apiUrl = '/ScheduleService/Auth';
 
 $(document).ready(function () {
   showModal();
