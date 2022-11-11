@@ -24,12 +24,24 @@ export class SetupController {
 
     @Post(CONST.POSTGRECONNECTTEST)
     postgreConnectTest(@Body() data: PostgreConnectTestSetupDto) {
-        return this.setupService.postgreConnectTest(data);
+        try {
+            this.logger.debug(`${this.debugMessage}postgreConnectTest()`);
+            return this.setupService.postgreConnectTest(data);
+        } catch (err) {
+            this.logger.error(err);
+            throw new BadRequestException(err);
+        };
     };
 
     @Post(CONST.MONGOCONNECTTEST)
     mongoConnectTest(@Body() data: MongoConnectTestSetupDto) {
-        return this.setupService.mongoConnectTest(data);
+        try {
+            this.logger.debug(`${this.debugMessage}mongoConnectTest()`);
+            return this.setupService.mongoConnectTest(data);
+        } catch (err) {
+            this.logger.error(err);
+            throw new BadRequestException(err);
+        };
     };
 
     @Patch(CONST.SAVE)

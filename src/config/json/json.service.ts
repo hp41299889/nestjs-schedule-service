@@ -30,7 +30,7 @@ export class JsonService {
         }
     };
 
-    save(data: SaveSetupDto) {
+    async save(data: SaveSetupDto) {
         try {
             let config = JSON.parse(this.readAll());
             Object.keys(data).map(key => {

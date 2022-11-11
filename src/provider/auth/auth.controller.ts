@@ -1,6 +1,6 @@
-import { Controller, Post, Get, Body, Logger, BadRequestException, Res } from '@nestjs/common';
+import { Controller, Post, Get, Body, Logger, BadRequestException, Req, Res, Session } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import * as CONST from './auth.constants';
 import { LoginAuthDto } from './auth.dto';
@@ -17,15 +17,15 @@ export class AuthController {
     private readonly debugMessage = 'Calling AuthService.';
 
     @Post(CONST.LOGIN)
-    async login(@Body() data: LoginAuthDto, @Res() response: Response) {
+    async login(@Body() data: LoginAuthDto, @Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.debug(`${this.debugMessage}login`);
-            // return response.send('');
             return await this.authService.login(data).then(res => {
                 if (res) {
                     this.logger.debug('Login error', res);
                     response.send(res);
                 } else {
+                    session.visits = session.visits ? session.visits + 1 : 1;
                     response.redirect('../Schedule/view');
                 };
             })

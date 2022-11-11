@@ -1,32 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { getConnectionToken, InjectDataSource } from '@nestjs/typeorm';
-import { createConnection, DataSource, getConnection } from 'typeorm';
+import { createConnection } from 'typeorm';
+
+import { PostgreConnectTestSetupDto, MongoConnectTestSetupDto } from 'src/provider/setup/setup.dto';
 
 @Injectable()
 export class DatabaseService {
     constructor(
-        // @InjectDataSource('postgreConnection')
-        // private dataSource: DataSource
+
     ) { };
 
-    async testConnection(data: any) {
-        // await this.dataSource.destroy();
-        // return createConnection({
-        //     ...data
-        // }).then(async connection => {
-        //     console.log(connection);
-
-        //     await connection.close();
-        // })
+    async testPostgresConnection(data: PostgreConnectTestSetupDto) {
+        const { IP, port, account, password, DBName } = data;
+        return createConnection({
+            type: 'postgres',
+            username: account,
+            password: password,
+            host: IP,
+            port: +port,
+            database: DBName
+        }).then(async connection => {
+            await connection.close();
+        });
     };
 
-    async editConnection(data: any) {
-        // await this.dataSource.destroy();
-        // console.log(this.dataSource);
-
-        // return createConnection({
-        //     name: 'postgreConnection',
-        //     ...data
-        // })
+    async testMongoConnection(data: MongoConnectTestSetupDto) {
+        const { IP, port, account, password, DBName } = data;
+        return createConnection({
+            type: 'mongodb',
+            username: account,
+            password: password,
+            host: IP,
+            port: +port,
+            database: DBName
+        }).then(async connection => {
+            await connection.close();
+        });
     };
 };

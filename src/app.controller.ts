@@ -1,31 +1,48 @@
-import { Get, Controller, Render } from '@nestjs/common';
+import { Get, Controller, Render, Req, Res, Session } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 
 @ApiExcludeController()
 @Controller()
 export class AppController {
     @Get('/Schedule/view')
     @Render('Schedule')
-    schedule() {
-        return;
+    schedule(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+        if (session.visits) {
+            return;
+        } else {
+            response.redirect('../Auth/view');
+        };
     };
 
     @Get('/Monitor/view')
     @Render('Monitor')
-    monitor() {
-        return;
+    monitor(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+        if (session.visits) {
+            return;
+        } else {
+            response.redirect('../Auth/view');
+        };
     };
 
     @Get('/ExecutionLog/view')
     @Render('ExecutionLog')
-    executionLog() {
-        return;
+    executionLog(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+        if (session.visits) {
+            return;
+        } else {
+            response.redirect('../Auth/view');
+        };
     };
 
     @Get('/Setup/view')
     @Render('Setup')
-    setup() {
-        return;
+    setup(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+        if (session.visits) {
+            return;
+        } else {
+            response.redirect('../Auth/view');
+        };
     };
 
     @Get('/Auth/view')

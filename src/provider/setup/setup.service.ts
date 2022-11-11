@@ -1,55 +1,61 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService as NestConfigService } from '@nestjs/config';
-import pm2 from 'pm2';
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import { join } from 'path';
+import pm2, { restart } from 'pm2';
 
-import { ProstgreService } from 'src/database/postgres/postgres.service';
 import { PostgreConnectTestSetupDto, MongoConnectTestSetupDto, SaveSetupDto } from './setup.dto';
-import { log } from 'console';
 import { JsonService } from 'src/config/json/json.service';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class SetupService {
     constructor(
-        // private readonly postgreService: ProstgreService
-        private readonly jsonService: JsonService
-
+        private readonly jsonService: JsonService,
+        private readonly databaseService: DatabaseService
     ) { };
 
     private readonly logger = new Logger(SetupService.name);
 
     read() {
-        //TODO
+        try {
+            this.logger.debug('Calling jsonService.readAll()');
+            return this.jsonService.readAll();
+        } catch (err) {
+            this.logger.error(err);
+            return err;
+        };
     };
 
     postgreConnectTest(data: PostgreConnectTestSetupDto) {
-        //TODO
+        try {
+            this.logger.debug('Calling databaseService.testPostgresConnection()');
+            return this.databaseService.testPostgresConnection(data);
+        } catch (err) {
+            return err;
+        };
     };
 
     mongoConnectTest(data: MongoConnectTestSetupDto) {
-        //TODO
-        console.log(this.jsonService);
-        return this.jsonService;
+        try {
+            this.logger.debug('Calling databaseService.testMongoConnection()');
+            return this.databaseService.testMongoConnection(data);
+        } catch (err) {
+            return err;
+        };
     };
 
     async save(data: SaveSetupDto) {
         try {
             this.logger.debug('Calling jsonService.save()');
-            return this.jsonService.save(data);
+            await this.jsonService.save(data);
+            try {
+                await this.restart();
+            } catch (err) {
+                return 'pm2 not working';
+            };
         } catch (err) {
             this.logger.error(err);
             return err;
-        }
-
-
-
-
-
-
-
-
+        };
+        // should call restart server
         // this.restart();
     };
 
