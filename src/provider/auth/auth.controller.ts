@@ -26,7 +26,7 @@ export class AuthController {
                     this.logger.debug('Login error', res);
                     response.send(res);
                 } else {
-                    response.render('Schedule');
+                    response.redirect('../Schedule/view');
                 };
             })
         } catch (err) {

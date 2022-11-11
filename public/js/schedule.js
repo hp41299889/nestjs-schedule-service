@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  const apiUrl = '/ScheduleServcie/Schedule';
+  const apiUrl = '/ScheduleService/Schedule';
   let datas = [];
 
   //讀取全部資料(未完成)

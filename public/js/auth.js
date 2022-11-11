@@ -1,4 +1,4 @@
-const apiUrl = '/ScheduleServcie/Auth';
+const apiUrl = '/ScheduleService/Auth';
 
 $(document).ready(function () {
   showModal();
@@ -18,19 +18,30 @@ function login() {
     console.log('account =', account);
     console.log('password =', password);
 
-    $.ajax({
-      url: `${apiUrl}/login/`,
-      type: 'POST',
-      data: { account: account, password: password },
-      dataType: 'json',
-      success: function (response) {
-        console.log(response);
-        // window.location.reload();
+    // $.ajax({
+    //   url: `${apiUrl}/login/`,
+    //   type: 'POST',
+    //   data: { account: account, password: password },
+    //   dataType: 'json',
+    //   success: function (response) {
+    //     console.log(response);
+    //     location.href(response);
+    //   },
+    //   error: function (xhr) {
+    //     console.log('xhr =', xhr);
+    //     alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+    //   },
+    // });
+    fetch(`${apiUrl}/login`, {
+      headers: {
+        "Content-Type": "application/json"
       },
-      error: function (xhr) {
-        console.log('xhr =', xhr);
-        alert('Error: ' + xhr.status + ' ' + xhr.statusText);
-      },
-    });
+      method: 'POST',
+      body: JSON.stringify({
+        account: account,
+        password: password
+      }),
+      redirect: "follow"
+    }).then(res => res.redirected && (location.href = res.url))
   });
 }
