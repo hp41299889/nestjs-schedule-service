@@ -1,17 +1,12 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { CreateScheduleDto } from "../schedule/schedule.dto";
 
-export class AddTaskDto {
-    @ApiProperty()
-    name: string;
-
-    @ApiProperty()
-    seconds: number;
-
-    @ApiProperty()
-    message: string;
+export class UpdateTaskDto {
+    scheduleName: string;
+    scheduleType: string;
+    newData: CreateScheduleDto;
 };
 
 export class DeleteTaskDto {
-    @ApiProperty()
-    name: string;
+    scheduleName: string;
+    scheduleType: string;
 };

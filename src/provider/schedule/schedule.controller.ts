@@ -15,15 +15,14 @@ export class ScheduleController {
     ) { };
 
     private readonly logger = new Logger(ScheduleController.name);
-    private readonly debugMessage = 'Calling scheduleService.';
+    private readonly debugMessage = 'Trying call ScheduleController.';
 
     @Post(CONST.CREATE)
     @ApiOperation({ summary: `Create a row of Schedule in postgres` })
     async create(@Body() data: CreateScheduleDto) {
+        this.logger.debug(`${this.debugMessage}create()`, data);
         try {
-            this.logger.debug(`${this.debugMessage}create()`, data);
-            await this.scheduleService.create(data);
-            return { results: 'Success' };
+            return await this.scheduleService.create(data);
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);
@@ -33,8 +32,8 @@ export class ScheduleController {
     @Get(CONST.READALL)
     @ApiOperation({ summary: 'Read all rows of Schedule in postgres' })
     async readAll() {
+        this.logger.debug(`${this.debugMessage}readAll()`);
         try {
-            this.logger.debug(`${this.debugMessage}readAll()`);
             return await this.scheduleService.readAll();
         } catch (err) {
             this.logger.error(err);
@@ -45,10 +44,9 @@ export class ScheduleController {
     @Patch(CONST.UPDATE)
     @ApiOperation({ summary: 'Update a row of Schedule in postgres by scheduleID' })
     async update(@Body() data: UpdateScheduleDto) {
+        this.logger.debug(`${this.debugMessage}update()`);
         try {
-            this.logger.debug(`${this.debugMessage}update()`);
-            await this.scheduleService.update(data);
-            return { results: 'Success' };
+            return await this.scheduleService.update(data);
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);
@@ -56,12 +54,11 @@ export class ScheduleController {
     };
 
     @Delete(CONST.DELETE)
-    @ApiOperation({ summary: 'Delete a row of Schedule in postgres  by scheduleID' })
+    @ApiOperation({ summary: 'Delete a row of Schedule in postgres by scheduleID' })
     async delete(@Body() data: DeleteScheduleDto) {
+        this.logger.debug(`${this.debugMessage}delete()`);
         try {
-            this.logger.debug(`${this.debugMessage}delete()`);
-            await this.scheduleService.delete(data);
-            return { results: 'Success' };
+            return await this.scheduleService.delete(data);
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);

@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { timeout, map } from 'rxjs';
 
@@ -12,27 +12,30 @@ export class RabbitmqService {
         @Inject('RabbitMQ') private readonly client: ClientProxy,
     ) { };
 
+    private readonly logger = new Logger(RabbitmqService.name);
+    private readonly baseMethod = 'ScheduleService/ScheduleSetup/';
     private messageID = 1;
 
-    buildMessage(cmd: string, baseMethod?: any, data?: any) {
-        const method = `${baseMethod}/${cmd}`;
-        const message = {
+    buildMessage(method: string, data: any) {
+        return {
             jsonrpc: '2.0',
-            method: method,
+            method: `${this.baseMethod}${method}`,
             params: data,
-            id: this.messageID++,
-            cmd: cmd
+            id: this.messageID++
         };
-
-        return this.sendMessage(message);
     };
 
-    sendMessage(message: MessageMQCLIDto) {
-        const { cmd } = message;
-        this.client
-            .emit({ cmd }, message)
-            .pipe(timeout(10000));
-        return 'sent message ok!';
+    sendMessage(pattern: string, data: any) {
+        try {
+            this.logger.debug('Sending message');
+            this.client
+                .emit({ pattern }, this.buildMessage(pattern, data))
+                .pipe(timeout(10000));
+            return 'sent message ok!';
+        } catch (err) {
+            this.logger.error(err);
+            return err;
+        };
     };
 
     // create(data: CreateScheduleDto) {

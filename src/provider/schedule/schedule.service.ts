@@ -1,63 +1,93 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 
 import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
-import * as CONST from './schedule.constants';
 import { ScheduleModelService } from 'src/model/postgre/schedule/schedule.service';
+import { TaskService } from '../task/task.service';
+import { Schedule } from 'src/model/postgre/schedule/schedule.entity';
 
 @Injectable()
 export class ScheduleService {
     constructor(
-        private readonly rabbitmqService: RabbitmqService,
         private readonly scheduleModelService: ScheduleModelService,
+        private readonly taskService: TaskService
     ) { }
 
-    private readonly baseMethod = CONST.BASEMETHOD;
     private readonly logger = new Logger(ScheduleService.name);
-    private readonly debugMessage = 'Calling scheduleModelService.';
+    private readonly debugMessage = 'Trying call ScheduleService.';
 
-    create(data: CreateScheduleDto) {
+    create(data: CreateScheduleDto): object {
+        this.logger.debug(`${this.debugMessage}create()`);
         try {
-            this.logger.debug(`${this.debugMessage}create()`);
-            return this.scheduleModelService.create(data);
+            return new Promise((resolve) => {
+                resolve(this.taskService.create(data));
+            }).then(() => {
+                return this.scheduleModelService.create(data);
+            }).then(() => {
+                return { results: 'Success' };
+            });
         } catch (err) {
             this.logger.error(err);
-            //TODO
             return err;
         };
     };
 
-    readAll() {
+    async readAll(): Promise<Schedule[]> {
+        this.logger.debug(`${this.debugMessage}readAll()`);
         try {
-            this.logger.debug(`${this.debugMessage}readAll()`);
-            return this.scheduleModelService.readAll();
+            return await this.scheduleModelService.readAll();
         } catch (err) {
             this.logger.error(err);
             return err;
         }
     };
 
-    update(data: UpdateScheduleDto) {
+    async update(data: UpdateScheduleDto): Promise<object> {
+        this.logger.debug(`${this.debugMessage}update()`);
+        const { scheduleID } = data;
         try {
-            this.logger.debug(`${this.debugMessage}update()`);
-            return this.scheduleModelService.update(data);
+            const target = await this.scheduleModelService.read({ scheduleID });
+            const { scheduleName, scheduleType } = target;
+            const targetTask = {
+                scheduleName: scheduleName,
+                scheduleType: scheduleType,
+                newData: data
+            };
+            return new Promise((resolve) => {
+                resolve(this.taskService.update(targetTask));
+            }).then(() => {
+                return this.scheduleModelService.update(data);
+            }).then(() => {
+                return { results: 'Success' };
+            })
         } catch (err) {
             this.logger.error(err);
             return err;
         };
     };
 
-    delete(data: DeleteScheduleDto) {
+    async delete(data: DeleteScheduleDto): Promise<object> {
+        this.logger.debug(`${this.debugMessage}delete()`);
         try {
-            this.logger.debug(`${this.debugMessage}delete()`);
-            return this.scheduleModelService.delete(data);
+            const target = await this.scheduleModelService.read(data);
+            const { scheduleName, scheduleType } = target;
+            const targetTask = {
+                scheduleName: scheduleName,
+                scheduleType: scheduleType
+            };
+            return new Promise((resolve) => {
+                resolve(this.taskService.delete(targetTask));
+            }).then(() => {
+                return this.scheduleModelService.delete(target);
+            }).then(() => {
+                return { results: 'Success' };
+            });
         } catch (err) {
             this.logger.error(err);
             return err;
         };
     };
 
-    export() {
+    // export() {
 
-    };
+    // };
 };

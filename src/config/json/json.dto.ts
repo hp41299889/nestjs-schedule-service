@@ -31,7 +31,6 @@ export class QueueConfigDto {
     port: string;
     account: string;
     password: string;
-    DBName: string;
     inputQueueName: string;
     outputQueueName: string;
 };

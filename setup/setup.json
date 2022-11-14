@@ -1,6 +1,10 @@
 {
   "enableScheduleService": true,
   "queue": {
+    "IP": "192.168.36.51",
+    "port": "5672",
+    "account": "dannylu",
+    "password": "roxy1029",
     "inputQueueName": "danny_queue",
     "outputQueueName": "danny_queue"
   },

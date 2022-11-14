@@ -1,23 +1,28 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateScheduleDto {
-    @ApiProperty()
+    @ApiProperty({ default: 'Swagger' })
     commandSource: string;
 
     @ApiProperty()
     scheduleName: string;
 
-    @ApiProperty()
+    @ApiProperty({ default: 'cycle' })
     scheduleType: string;
 
     @ApiPropertyOptional()
-    regular: [];
+    regular: string[];
 
     @ApiPropertyOptional()
-    cycle: [];
+    cycle: string[];
 
-    @ApiProperty()
+    @ApiProperty({ default: '' })
     MQCLI: string;
+};
+
+export class ReadScheduleDto {
+    @ApiProperty()
+    scheduleID: number;
 };
 
 export class UpdateScheduleDto {
@@ -31,7 +36,7 @@ export class UpdateScheduleDto {
     scheduleName: string;
 
     @ApiPropertyOptional()
-    schduleType: string;
+    scheduleType: string;
 
     @ApiPropertyOptional()
     regular: [string];
