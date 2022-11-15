@@ -5,7 +5,7 @@ import { ScheduleSetupModelService } from './scheduleSetup.service';
 import { ScheduleSetup } from './scheduleSetup.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ScheduleSetup])],
+    imports: [TypeOrmModule.forFeature([ScheduleSetup], 'postgresConnection')],
     providers: [ScheduleSetupModelService],
     exports: [ScheduleSetupModelService]
 })

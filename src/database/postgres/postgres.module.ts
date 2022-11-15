@@ -27,6 +27,10 @@ import { PostgreSQLConfigDto } from 'src/config/json/json.dto';
                     entities: [ScheduleSetup],
                     synchronize: true
                 }
+            },
+            dataSourceFactory: async (options) => {
+                const datasource = new DataSource(options).initialize();
+                return datasource;
             }
         }),
         ScheduleSetupModelModule,

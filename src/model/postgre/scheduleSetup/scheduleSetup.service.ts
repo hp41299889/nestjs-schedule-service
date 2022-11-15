@@ -23,8 +23,8 @@ const {
 @Injectable()
 export class ScheduleSetupModelService {
     constructor(
-        @InjectRepository(ScheduleSetup)
-        private readonly scheduleSetupRepository: Repository<ScheduleSetup>
+        @InjectDataSource(DATASOURCE_CONNECTION)
+        private datasource: DataSource
     ) { };
 
     private readonly logger = new Logger(ScheduleSetupModelService.name);
@@ -42,7 +42,7 @@ export class ScheduleSetupModelService {
         schedule.MQCLI = MQCLI;
         this.logger.debug(DEBUG_CREATE, { schedule });
         try {
-            await this.scheduleSetupRepository.save(schedule);
+            await this.datasource.manager.save(schedule);
             this.logger.debug(DEBUG_CREATE_SUCCESS, { schedule });
         } catch (err) {
             this.logger.error(err);
@@ -53,7 +53,7 @@ export class ScheduleSetupModelService {
     async readAll(): Promise<ScheduleSetup[]> {
         this.logger.debug(DEBUG_READALL);
         try {
-            const rows = await this.scheduleSetupRepository.find();
+            const rows = await this.datasource.manager.find(ScheduleSetup);
             this.logger.debug(DEBUG_READALL_SUCCESS, { rows });
             return rows;
         } catch (err) {
@@ -68,7 +68,7 @@ export class ScheduleSetupModelService {
         schedule.scheduleID = scheduleID;
         this.logger.debug(DEBUG_READ, data);
         try {
-            const row = await this.scheduleSetupRepository.findOneBy({ scheduleID });
+            const row = await this.datasource.manager.findOneBy(ScheduleSetup, { scheduleID });
             this.logger.debug(DEBUG_READ_SUCCESS, { row });
             return row;
         } catch (err) {
@@ -83,7 +83,7 @@ export class ScheduleSetupModelService {
         schedule.scheduleID = scheduleID;
         this.logger.debug(DEBUG_UPDATE, data);
         try {
-            const target = await this.scheduleSetupRepository.findOneBy({ scheduleID });
+            const target = await this.datasource.manager.findOneBy(ScheduleSetup, { scheduleID });
             target.createDatetime = target.createDatetime;
             target.lastEditDatetime = new Date();
             target.commandSource = commandSource;
@@ -92,7 +92,7 @@ export class ScheduleSetupModelService {
             target.regular = regular;
             target.cycle = cycle;
             target.MQCLI = MQCLI;
-            await this.scheduleSetupRepository.save(target);
+            await this.datasource.manager.save(target);
             this.logger.debug(DEBUG_UPDATE_SUCCESS, { target });
         } catch (err) {
             this.logger.error(err);
@@ -103,7 +103,7 @@ export class ScheduleSetupModelService {
     async delete(data: ScheduleSetup): Promise<void> {
         this.logger.debug(DEBUG_DELETE, { data });
         try {
-            await this.scheduleSetupRepository.remove(data);
+            await this.datasource.manager.remove(data);
             this.logger.debug(DEBUG_DELETE_SUCCESS, { data });
         } catch (err) {
             this.logger.error(err);
