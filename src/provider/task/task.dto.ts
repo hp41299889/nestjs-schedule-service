@@ -1,9 +1,12 @@
-import { CreateScheduleDto } from "../schedule/schedule.dto";
+import { CreateScheduleDto, UpdateScheduleDto } from "../schedule/schedule.dto";
+
+export class CreateTaskDto extends CreateScheduleDto {
+
+};
 
 export class UpdateTaskDto {
-    scheduleName: string;
-    scheduleType: string;
-    newData: CreateScheduleDto;
+    oldTask: CreateTaskDto;
+    newData: UpdateScheduleDto;
 };
 
 export class DeleteTaskDto {

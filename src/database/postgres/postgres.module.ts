@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
-// import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 import { ConfigModule } from 'src/config/config.module';
-import { Schedule } from 'src/model/postgre/schedule/schedule.entity';
-import { ScheduleModelModule } from 'src/model/postgre/schedule/schedule.module';
+import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
+import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 import { JsonService } from 'src/config/json/json.service';
 import { PostgreSQLConfigDto } from 'src/config/json/json.dto';
-import { ScheduleExecutionLogModule } from 'src/model/postgre/scheduleExecutionLog/scheduleExecutionLog.module';
-import { ScheduleExecutionLog } from 'src/model/postgre/scheduleExecutionLog/scheduleExecutionLog.entity';
 
 @Module({
     imports: [
@@ -27,16 +24,12 @@ import { ScheduleExecutionLog } from 'src/model/postgre/scheduleExecutionLog/sch
                     host: IP,
                     port: +port,
                     database: DBName,
-                    entities: [Schedule],
+                    entities: [ScheduleSetup],
                     synchronize: true
                 }
-            },
-            dataSourceFactory: async (options) => {
-                const datasource = new DataSource(options).initialize();
-                return datasource;
             }
         }),
-        ScheduleModelModule,
+        ScheduleSetupModelModule,
     ],
 })
 export class PostgresModule { }

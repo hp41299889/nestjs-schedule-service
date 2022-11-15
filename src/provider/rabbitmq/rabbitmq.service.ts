@@ -3,7 +3,6 @@ import { ClientProxy } from '@nestjs/microservices';
 import { timeout, map } from 'rxjs';
 
 // import { PerfectCubicSumDto } from 'src/common/math/math.dto';
-import { ChildProcessDto } from 'src/provider/childProcess/childProcess.dto';
 import { MessageMQCLIDto } from './rabbitmq.dto';
 
 @Injectable()
@@ -16,7 +15,7 @@ export class RabbitmqService {
     private readonly baseMethod = 'ScheduleService/ScheduleSetup/';
     private messageID = 1;
 
-    buildMessage(method: string, data: any) {
+    buildMessage(method: string, data?: any) {
         return {
             jsonrpc: '2.0',
             method: `${this.baseMethod}${method}`,
@@ -25,7 +24,7 @@ export class RabbitmqService {
         };
     };
 
-    sendMessage(pattern: string, data: any) {
+    sendMessage(pattern: string, data?: any) {
         try {
             this.logger.debug('Sending message');
             this.client
@@ -57,10 +56,4 @@ export class RabbitmqService {
     //         .send({ cmd }, data)
     //         .pipe(timeout(10000));
     // };
-
-    async sendChildProcess(data: ChildProcessDto) {
-        return this.client
-            .send('childProcess', data)
-            .pipe(timeout(10000))
-    };
 };

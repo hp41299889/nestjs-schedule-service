@@ -1,39 +1,46 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
-import { ScheduleModelService } from 'src/model/postgre/schedule/schedule.service';
+import { ScheduleSetupModelService } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 import { TaskService } from '../task/task.service';
-import { Schedule } from 'src/model/postgre/schedule/schedule.entity';
+import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
+import { SERVICE } from './schedule.constants';
+
+const {
+    DEBUG_MESSAGE,          //
+    DEBUG_MESSAGE_SUCCESS,  //
+    CREATE_FUNCTION,        //
+    READALL_FUNCTION,       //
+    UPDATE_FUNCTION,        //
+    DELETE_FUNCTION         //
+} = SERVICE;
 
 @Injectable()
 export class ScheduleService {
     constructor(
-        private readonly scheduleModelService: ScheduleModelService,
+        private readonly scheduleModelService: ScheduleSetupModelService,
         private readonly taskService: TaskService
     ) { }
 
     private readonly logger = new Logger(ScheduleService.name);
-    private readonly debugMessage = 'Trying call ScheduleService.';
 
-    create(data: CreateScheduleDto): object {
-        this.logger.debug(`${this.debugMessage}create()`);
+    async create(data: CreateScheduleDto): Promise<object> {
+        this.logger.debug(`${DEBUG_MESSAGE} ${CREATE_FUNCTION}`);
         try {
-            return new Promise((resolve) => {
-                resolve(this.taskService.create(data));
-            }).then(() => {
-                return this.scheduleModelService.create(data);
-            }).then(() => {
-                return { results: 'Success' };
-            });
+            await this.taskService.create(data);
+            await this.scheduleModelService.create(data);
+            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${CREATE_FUNCTION}`);
+            return { results: 'Success' };
         } catch (err) {
             this.logger.error(err);
             return err;
         };
     };
 
-    async readAll(): Promise<Schedule[]> {
-        this.logger.debug(`${this.debugMessage}readAll()`);
+    async readAll(): Promise<ScheduleSetup[]> {
+        this.logger.debug(`${DEBUG_MESSAGE} ${READALL_FUNCTION}`);
         try {
+            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${READALL_FUNCTION}`);
             return await this.scheduleModelService.readAll();
         } catch (err) {
             this.logger.error(err);
@@ -42,23 +49,18 @@ export class ScheduleService {
     };
 
     async update(data: UpdateScheduleDto): Promise<object> {
-        this.logger.debug(`${this.debugMessage}update()`);
+        this.logger.debug(`${DEBUG_MESSAGE} ${UPDATE_FUNCTION}`);
         const { scheduleID } = data;
         try {
             const target = await this.scheduleModelService.read({ scheduleID });
-            const { scheduleName, scheduleType } = target;
-            const targetTask = {
-                scheduleName: scheduleName,
-                scheduleType: scheduleType,
+            const payload = {
+                oldTask: target,
                 newData: data
-            };
-            return new Promise((resolve) => {
-                resolve(this.taskService.update(targetTask));
-            }).then(() => {
-                return this.scheduleModelService.update(data);
-            }).then(() => {
-                return { results: 'Success' };
-            })
+            }
+            await this.taskService.update(payload);
+            await this.scheduleModelService.update(data);
+            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${UPDATE_FUNCTION}`);
+            return { results: 'Success' };
         } catch (err) {
             this.logger.error(err);
             return err;
@@ -66,7 +68,7 @@ export class ScheduleService {
     };
 
     async delete(data: DeleteScheduleDto): Promise<object> {
-        this.logger.debug(`${this.debugMessage}delete()`);
+        this.logger.debug(`${DEBUG_MESSAGE} ${DELETE_FUNCTION}`);
         try {
             const target = await this.scheduleModelService.read(data);
             const { scheduleName, scheduleType } = target;
@@ -74,13 +76,10 @@ export class ScheduleService {
                 scheduleName: scheduleName,
                 scheduleType: scheduleType
             };
-            return new Promise((resolve) => {
-                resolve(this.taskService.delete(targetTask));
-            }).then(() => {
-                return this.scheduleModelService.delete(target);
-            }).then(() => {
-                return { results: 'Success' };
-            });
+            await this.taskService.delete(targetTask);
+            await this.scheduleModelService.delete(target);
+            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${DELETE_FUNCTION}`);
+            return { results: 'Success' };
         } catch (err) {
             this.logger.error(err);
             return err;
