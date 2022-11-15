@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigModule } from 'src/config/config.module';
-import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
-import { JsonService } from 'src/config/json/json.service';
 import { PostgreSQLConfigDto } from 'src/config/json/json.dto';
+import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
+import { JsonService } from 'src/config/json/json.service';
 
 @Module({
     imports: [

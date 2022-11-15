@@ -1,6 +1,6 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import * as fs from 'fs';
 import { join } from 'path';
+import * as fs from 'fs';
 
 import { SaveSetupDto } from 'src/provider/setup/setup.dto';
 

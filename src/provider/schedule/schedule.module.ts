@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { ScheduleService } from './schedule.service';
-import { ScheduleController } from './schedule.controller';
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 import { TaskModule } from '../task/task.module';
+import { ScheduleController } from './schedule.controller';
+import { ScheduleService } from './schedule.service';
 
 @Module({
   imports: [ScheduleSetupModelModule, TaskModule],

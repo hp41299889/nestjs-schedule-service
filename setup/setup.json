@@ -5,8 +5,8 @@
     "port": "5672",
     "account": "dannylu",
     "password": "roxy1029",
-    "inputQueueName": "danny_queue",
-    "outputQueueName": "danny_queue"
+    "inputQueueName": "schedule_queue",
+    "outputQueueName": "task_queue"
   },
   "admin": {
     "account": "admin",

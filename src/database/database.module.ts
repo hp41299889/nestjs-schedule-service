@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DatabaseService } from './database.service';
+
 import { MongoModule } from './mongo/mongo.module';
 import { PostgresModule } from './postgres/postgres.module';
+import { DatabaseService } from './database.service';
 
 @Module({
     imports: [

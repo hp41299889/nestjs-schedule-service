@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
-import { ScheduleSetupModelService } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
-import { TaskService } from '../task/task.service';
-import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 import { SERVICE } from './schedule.constants';
+import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
+import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
+import { TaskService } from '../task/task.service';
+import { ScheduleSetupModelService } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 
 const {
     DEBUG_MESSAGE,          //

@@ -1,14 +1,17 @@
 import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { timeout, map } from 'rxjs';
+import { timeout } from 'rxjs';
 
-// import { PerfectCubicSumDto } from 'src/common/math/math.dto';
-import { MessageMQCLIDto } from './rabbitmq.dto';
+import { SCHEDULE_QUEUE } from './rabbitmq.constants';
+
+const {
+    PROVIDE,
+} = SCHEDULE_QUEUE;
 
 @Injectable()
 export class RabbitmqService {
     constructor(
-        @Inject('RabbitMQ') private readonly client: ClientProxy,
+        @Inject(PROVIDE) private readonly client: ClientProxy,
     ) { };
 
     private readonly logger = new Logger(RabbitmqService.name);

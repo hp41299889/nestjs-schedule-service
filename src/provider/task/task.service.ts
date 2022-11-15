@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression, SchedulerRegistry, Interval } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 
-import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
-import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto } from './task.dto';
 import { SERVICE } from './task.constants';
+import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto } from './task.dto';
+import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 
 const {
     DEBUG_MESSAGE,          //

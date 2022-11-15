@@ -4,7 +4,6 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "src/config/config.module";
 import { JsonService } from "src/config/json/json.service";
 import { MongoDBConfigDto } from "src/config/json/json.dto";
-import { CatModule } from "../../model/cat/cat.module";
 
 @Module({
     imports: [
@@ -15,7 +14,6 @@ import { CatModule } from "../../model/cat/cat.module";
                 const mongoConfig: MongoDBConfigDto = jsonService.read('mongoDB');
                 const { IP, port, account, password, DBName } = mongoConfig;
                 const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
-
                 return { uri };
             }
         })

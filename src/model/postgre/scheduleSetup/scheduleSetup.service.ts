@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
+import { SERVICE } from './scheduleSetup.constants';
 import { CreateScheduleDto, ReadScheduleDto, UpdateScheduleDto } from 'src/provider/schedule/schedule.dto';
 import { ScheduleSetup } from './scheduleSetup.entity';
-import { SERVICE } from './scheduleSetup.constants';
 
 const {
     DATASOURCE_CONNECTION,  //
