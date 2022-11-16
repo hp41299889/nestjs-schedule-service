@@ -1,3 +1,7 @@
+export const MODULE = {
+    CONNECTION_NAME: 'postgresConnection'
+};
+
 export const SERVICE = {
     DATASOURCE_CONNECTION: 'postgresConnection',
     DEBUG_CREATE: 'Trying create schedule in postgres',

@@ -1,9 +1,13 @@
+//import packages
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
+//import constants
 import { SERVICE } from './scheduleSetup.constants';
+//import dtos
 import { CreateScheduleDto, ReadScheduleDto, UpdateScheduleDto } from 'src/provider/schedule/schedule.dto';
+//import models
 import { ScheduleSetup } from './scheduleSetup.entity';
 
 const {
@@ -62,13 +66,13 @@ export class ScheduleSetupModelService {
         };
     };
 
-    async read(data: ReadScheduleDto): Promise<ScheduleSetup> {
+    async read(data: any): Promise<ScheduleSetup> {
         const { scheduleID } = data;
         const schedule = new ScheduleSetup();
         schedule.scheduleID = scheduleID;
         this.logger.debug(DEBUG_READ, data);
         try {
-            const row = await this.datasource.manager.findOneBy(ScheduleSetup, { scheduleID });
+            const row = await this.datasource.manager.findOneBy(ScheduleSetup, data);
             this.logger.debug(DEBUG_READ_SUCCESS, { row });
             return row;
         } catch (err) {

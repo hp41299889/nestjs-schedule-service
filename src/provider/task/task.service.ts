@@ -1,10 +1,16 @@
+//import packages
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression, SchedulerRegistry, Interval } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 
+//import constants
 import { SERVICE } from './task.constants';
+//import dtos
 import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto } from './task.dto';
+import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
+//import services
 import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
+import { ScheduleExecutionLogService } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 
 const {
     DEBUG_MESSAGE,          //
@@ -25,32 +31,54 @@ const {
 export class TaskService {
     constructor(
         private readonly schedulerRegistry: SchedulerRegistry,
-        private readonly rabbitmqService: RabbitmqService
+        private readonly rabbitmqService: RabbitmqService,
+        private readonly scheduleExecutionLogService: ScheduleExecutionLogService
     ) { };
     private readonly logger = new Logger(TaskService.name);
 
-    async create(data: CreateTaskDto): Promise<void> {
-        const { scheduleName, scheduleType, cycle, regular } = data;
+    create(data: CreateTaskDto): void {
+        const { scheduleID, scheduleName, scheduleType, cycle, regular } = data;
         this.logger.debug(`${DEBUG_MESSAGE} ${CREATE_FUNCTION}`);
         try {
             if (scheduleType === SCHEDULE_TYPE_CYCLE) {
-                const period = this.splitPeriod(scheduleType, cycle);
-                const task = () => {
-                    this.logger.warn(`${TASK_MESSAGE_CYCLE} ${scheduleName}`);
-                    this.logger.warn({ data });
-                };
-                const interval = setInterval(task, +period);
-                this.schedulerRegistry.addInterval(scheduleName, interval);
-            } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
-                const period = this.splitPeriod(scheduleType, null, regular).toString();
-                const task = new CronJob(period, () => {
-                    this.logger.warn(`${TASK_MESSAGE_REGULAR} ${scheduleName}`);
-                    this.logger.warn({ data });
+                cycle.forEach((item, index, array) => {
+                    const executeTime = Number(this.splitExecuteTime(scheduleType, item));
+                    const task = () => {
+                        this.logger.warn(`${TASK_MESSAGE_CYCLE} ${scheduleName}`);
+                        this.logger.warn({ data });
+                        const createdLog: CreateScheduleExecutionLogDto = {
+                            ...data,
+                            scheduleID: scheduleID,
+                            schedule: item,
+                            processDatetime: new Date(),
+                            processStatus: 'ok'
+                        };
+                        this.scheduleExecutionLogService.create(createdLog);
+                    };
+                    const interval = setInterval(task, executeTime);
+                    this.schedulerRegistry.addInterval(`${scheduleName}_${item}`, interval);
                 });
-                this.schedulerRegistry.addCronJob(scheduleName, task);
+            } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
+                regular.forEach((item, index, array) => {
+                    const executeTime = this.splitExecuteTime(scheduleType, null, item).toString();
+                    const task = new CronJob(executeTime, () => {
+                        this.logger.warn(`${TASK_MESSAGE_REGULAR} ${scheduleName}`);
+                        this.logger.warn({ data });
+                        const createdLog: CreateScheduleExecutionLogDto = {
+                            ...data,
+                            scheduleID: scheduleID,
+                            schedule: item,
+                            processDatetime: new Date(),
+                            processStatus: 'ok'
+                        };
+                        this.scheduleExecutionLogService.create(createdLog);
+                    });
+                    this.schedulerRegistry.addCronJob(`${scheduleName}_${item}`, task);
+                    task.start();
+                });
             };
             this.rabbitmqService.sendMessage(CREATE_PATTERN, data);
-            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${CREATE_FUNCTION}`)
+            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${CREATE_FUNCTION}`);
         } catch (err) {
             this.logger.error(err);
         };
@@ -98,12 +126,18 @@ export class TaskService {
         };
     };
 
-    splitPeriod(schduleType: string, cycle?: string[], regular?: string[]): string | number {
+    splitExecuteTime(schduleType: string, cycle?: string, regular?: string): string | number {
         if (schduleType === SCHEDULE_TYPE_CYCLE) {
-            const cycleSplit = cycle[0].split('#')[1].split('/');
-            return Number(cycleSplit[0]) * 60000 * 60 + Number(cycleSplit[1]) * 60000;
+            const cycleSplit = cycle.split('#')[1].split('/');
+            const hour = Number(cycleSplit[0]) * 1000 * 60 * 60;
+            const minute = Number(cycleSplit[1]) * 1000 * 60;
+            return hour + minute;
         } else if (schduleType === SCHEDULE_TYPE_REGULAR) {
-            //TODO
+            const regularSplit = regular.split('#')[1].split('/');
+            const weekday = regularSplit[0];
+            const hour = regularSplit[1];
+            const minute = regularSplit[2];
+            return `0 ${minute} ${hour} * * ${weekday}`;
         };
     };
 };

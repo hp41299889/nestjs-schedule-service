@@ -1,13 +1,29 @@
+//import packages
 import { Controller, Get, Patch, Post, Body, BadRequestException, UseFilters, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import * as CONST from './setup.constants';
+//import constants
+import { CONTROLLER } from './setup.constants';
+//import dtos
 import { MongoConnectTestSetupDto, PostgreConnectTestSetupDto, SaveSetupDto } from './setup.dto';
-import { SetupService } from './setup.service';
+//import others
 import { Exception } from 'src/util/exception/exception';
+//import services
+import { SetupService } from './setup.service';
 
-@ApiTags(CONST.API_TAGS)
-@Controller(CONST.API_ROUTES)
+const {
+    API_TAG,                    //
+    API_ROUTES,                 //
+    READ_ROUTES,                //
+    POSTGRESCONNECTTEST_ROUTES, //
+    MONGOCONNECTTEST_ROUTES,    //
+    SAVE_ROUTES,                //
+    DEBUG_MESSAGE,              //
+    DEBUG_MESSAGE_SUCCESS,      //
+} = CONTROLLER;
+
+@ApiTags(API_TAG)
+@Controller(API_ROUTES)
 @UseFilters(Exception)
 export class SetupController {
     constructor(
@@ -15,17 +31,17 @@ export class SetupController {
     ) { };
 
     private readonly logger = new Logger(SetupController.name);
-    private readonly debugMessage = 'Calling setup.';
 
-    @Get(CONST.READ)
+    @Get(READ_ROUTES)
     read() {
+        this.logger.debug(`${DEBUG_MESSAGE} ${READ_ROUTES}`)
         return this.setupService.read();
     };
 
-    @Post(CONST.POSTGRECONNECTTEST)
+    @Post(POSTGRESCONNECTTEST_ROUTES)
     postgreConnectTest(@Body() data: PostgreConnectTestSetupDto) {
+        this.logger.debug(`${DEBUG_MESSAGE} ${POSTGRESCONNECTTEST_ROUTES}`);
         try {
-            this.logger.debug(`${this.debugMessage}postgreConnectTest()`);
             return this.setupService.postgreConnectTest(data);
         } catch (err) {
             this.logger.error(err);
@@ -33,10 +49,10 @@ export class SetupController {
         };
     };
 
-    @Post(CONST.MONGOCONNECTTEST)
+    @Post(MONGOCONNECTTEST_ROUTES)
     mongoConnectTest(@Body() data: MongoConnectTestSetupDto) {
+        this.logger.debug(`${DEBUG_MESSAGE} ${MONGOCONNECTTEST_ROUTES}`);
         try {
-            this.logger.debug(`${this.debugMessage}mongoConnectTest()`);
             return this.setupService.mongoConnectTest(data);
         } catch (err) {
             this.logger.error(err);
@@ -44,10 +60,10 @@ export class SetupController {
         };
     };
 
-    @Patch(CONST.SAVE)
+    @Patch(SAVE_ROUTES)
     save(@Body() data: SaveSetupDto) {
+        this.logger.debug(`${DEBUG_MESSAGE} ${SAVE_ROUTES}`);
         try {
-            this.logger.debug(`${this.debugMessage}save()`);
             return this.setupService.save(data);
         } catch (err) {
             this.logger.error(err);

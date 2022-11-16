@@ -1,7 +1,9 @@
+//import packages
 import { Injectable, Render } from "@nestjs/common";
 
 @Injectable()
-export class AppService {
+export class RoutesService {
+
     @Render('Schedule')
     schedule() {
         return;

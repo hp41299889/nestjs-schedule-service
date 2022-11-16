@@ -1,9 +1,23 @@
+//import packages
 import { Injectable, Logger } from '@nestjs/common';
 import pm2, { restart } from 'pm2';
 
+//import constants
+import { SERVICE } from './setup.constants';
+//import dtos
 import { PostgreConnectTestSetupDto, MongoConnectTestSetupDto, SaveSetupDto } from './setup.dto';
+//import services
 import { JsonService } from 'src/config/json/json.service';
 import { DatabaseService } from 'src/database/database.service';
+
+const {
+    DEBUG_MESSAGE,                  //
+    DEBUG_MESSAGE_SUCCESS,          //
+    READ_FUNCTION,                  //
+    POSTGRESCONNECTTEST_FUNCTION,   //
+    MONGOCONNECTTEST_FUNCTION,      //
+    SAVE_FUNCTION,                  //
+} = SERVICE;
 
 @Injectable()
 export class SetupService {
@@ -15,8 +29,8 @@ export class SetupService {
     private readonly logger = new Logger(SetupService.name);
 
     read() {
+        this.logger.debug(`${DEBUG_MESSAGE} ${READ_FUNCTION}`);
         try {
-            this.logger.debug('Calling jsonService.readAll()');
             return this.jsonService.readAll();
         } catch (err) {
             this.logger.error(err);
@@ -25,8 +39,8 @@ export class SetupService {
     };
 
     postgreConnectTest(data: PostgreConnectTestSetupDto) {
+        this.logger.debug(`${DEBUG_MESSAGE} ${POSTGRESCONNECTTEST_FUNCTION}`);
         try {
-            this.logger.debug('Calling databaseService.testPostgresConnection()');
             return this.databaseService.testPostgresConnection(data);
         } catch (err) {
             return err;
@@ -34,8 +48,8 @@ export class SetupService {
     };
 
     mongoConnectTest(data: MongoConnectTestSetupDto) {
+        this.logger.debug(`${DEBUG_MESSAGE} ${MONGOCONNECTTEST_FUNCTION}`);
         try {
-            this.logger.debug('Calling databaseService.testMongoConnection()');
             return this.databaseService.testMongoConnection(data);
         } catch (err) {
             return err;
@@ -43,8 +57,8 @@ export class SetupService {
     };
 
     async save(data: SaveSetupDto) {
+        this.logger.debug(`${DEBUG_MESSAGE} ${SAVE_FUNCTION}`);
         try {
-            this.logger.debug('Calling jsonService.save()');
             await this.jsonService.save(data);
             try {
                 await this.restart();

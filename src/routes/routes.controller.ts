@@ -1,10 +1,11 @@
+//import packages
 import { Get, Controller, Render, Req, Res, Session } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
 @ApiExcludeController()
 @Controller()
-export class AppController {
+export class RoutesController {
     @Get('/Schedule/view')
     @Render('Schedule')
     schedule(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
@@ -50,4 +51,4 @@ export class AppController {
     auth() {
         return;
     };
-}
+};

@@ -1,9 +1,14 @@
+//import packages
 import { Controller, Post, Get, Patch, Delete, Body, UseFilters, BadRequestException, Logger } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+//import constants
 import { CONTROLLER } from './schedule.constants';
+//import dtos
 import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
+//import others
 import { Exception } from 'src/util/exception/exception';
+//import service
 import { ScheduleService } from './schedule.service';
 
 const {
@@ -32,9 +37,9 @@ export class ScheduleController {
     async create(@Body() data: CreateScheduleDto) {
         this.logger.debug(`${DEBUG_MESSAGE} ${CREATE_ROUTE}`, data);
         try {
-            const res = await this.scheduleService.create(data);
+            await this.scheduleService.create(data);
             this.logger.debug(`${CREATE_ROUTE} ${DEBUG_MESSAGE_SUCCESS}`);
-            return
+            return { results: 'Success' };
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);

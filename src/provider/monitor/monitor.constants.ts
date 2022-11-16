@@ -1,4 +1,10 @@
-export const API_TAGS = 'Monitor';
-export const API_ROUTES = 'Monitor';
-export const READ = 'read';
-export const RESEND = 'resend';
+export const CONTROLLER = {
+    API_TAG: 'Monitor',
+    API_ROUTES: 'Monitor',
+    READ_ROUTES: 'read',
+    RESEND_ROUTES: 'resend',
+};
+
+export const SERVICE = {
+
+};

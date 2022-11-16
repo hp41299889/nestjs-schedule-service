@@ -1,5 +1,7 @@
+//import packages
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+//import dtos
 import { LoginAuthDto } from '../auth/auth.dto';
 import { QueueConfigDto } from 'src/config/json/json.dto';
 

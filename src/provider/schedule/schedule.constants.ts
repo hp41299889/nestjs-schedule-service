@@ -1,4 +1,3 @@
-export const BASEMETHOD = 'ScheduleService/ScheduleSetup';
 export const CONTROLLER = {
     SWAGGER_TAGS: 'Schedule',
     API_ROUTES: 'Schedule',

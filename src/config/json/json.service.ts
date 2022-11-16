@@ -1,15 +1,13 @@
+//import packages
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
 
+//import dtos
 import { SaveSetupDto } from 'src/provider/setup/setup.dto';
 
 @Injectable()
 export class JsonService {
-    constructor(
-
-    ) { };
-
     private readonly logger = new Logger(JsonService.name);
     private readonly configFile = join(__dirname, '..', '..', '..', 'setup', 'setup.json');
 

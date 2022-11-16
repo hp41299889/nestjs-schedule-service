@@ -1,11 +1,21 @@
+//import packages
 import { BadRequestException, Injectable, Logger, Render, Res } from '@nestjs/common';
-// import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
 
-// import { AdminConfig } from 'src/config/config.interface';
+//import constants
+import { SERVICE } from './auth.constants';
+//import dtos
 import { LoginAuthDto } from './auth.dto';
-import { JsonService } from 'src/config/json/json.service';
 import { AdminConfigDto } from 'src/config/json/json.dto';
+//import services
+import { JsonService } from 'src/config/json/json.service';
+
+const {
+    SETUP_ALIAS,            //
+    DEBUG_MESSAGE,          //
+    DEBUG_MESSAGE_SUCCESS,  //
+    LOGIN_FUNCTION,         //
+    LOGOUT_FUNCTION,        //
+} = SERVICE;
 
 @Injectable()
 export class AuthService {
@@ -13,16 +23,16 @@ export class AuthService {
         private readonly jsonSerivce: JsonService
     ) { };
 
-    private readonly adminConfig: AdminConfigDto = this.jsonSerivce.read('admin');
+    private readonly adminConfig: AdminConfigDto = this.jsonSerivce.read(SETUP_ALIAS);
     private readonly logger = new Logger(AuthService.name);
 
     async login(data: LoginAuthDto) {
         try {
-            this.logger.debug('Logining to ScheduleService');
+            this.logger.debug(`${DEBUG_MESSAGE} ${LOGIN_FUNCTION}`);
             const { account, password } = this.adminConfig;
             if (data.account === account) {
                 if (data.password === password) {
-                    this.logger.debug('Login Success');
+                    this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${LOGIN_FUNCTION}`);
                     return;
                 } else {
                     return { error: 'Lonin fail, password is incorrect' };
@@ -38,8 +48,8 @@ export class AuthService {
 
     async logout() {
         try {
-            this.logger.debug('Logouting to ScheduleService');
-            return;
+            this.logger.debug(`${DEBUG_MESSAGE} ${LOGOUT_FUNCTION}`);
+            return this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${LOGOUT_FUNCTION}`);
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);

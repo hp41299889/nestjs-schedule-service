@@ -1,12 +1,15 @@
+//import packages
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import { join } from 'path';
 
+//import modules
 import { AppModule } from './app.module';
-// import { AppConfig } from './config/config.interface';
+//import dtos
 import { AppConfigDto } from './config/json/json.dto';
+//import services
 import { SwaggerService } from './swagger/swagger.service';
 
 async function bootstrap() {
