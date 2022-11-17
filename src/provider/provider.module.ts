@@ -15,6 +15,6 @@ import { SetupModule } from './setup/setup.module';
         ScheduleModule,
         SetupModule,
         ExecutionLogModule,
-    ],
+    ]
 })
 export class ProviderModule { }

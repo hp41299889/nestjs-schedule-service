@@ -1,7 +1,5 @@
-export const CONTROLLER_LOGGER = {
-    DEBUG_MESSAGE: 'Trying go routes',
-};
-
-export const SERVICE_LOGGER = {
-    DEBUG_MESSAGE: 'Trying call method',
+export const SERVICE = {
+    CONTROLLER_DEBUG: 'Trying go routes',
+    SERVICE_DEBUG: 'Trying call method',
+    FACTORY_DEBUG: 'Trying connect to'
 };

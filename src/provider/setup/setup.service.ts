@@ -5,60 +5,64 @@ import pm2, { restart } from 'pm2';
 //import constants
 import { SERVICE } from './setup.constants';
 //import dtos
-import { PostgreConnectTestSetupDto, MongoConnectTestSetupDto, SaveSetupDto } from './setup.dto';
+import { DatabaseConnectionDto, SaveSetupDto } from './setup.dto';
 //import services
 import { JsonService } from 'src/config/json/json.service';
 import { DatabaseService } from 'src/database/database.service';
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     DEBUG_MESSAGE,                  //
     DEBUG_MESSAGE_SUCCESS,          //
-    READ_FUNCTION,                  //
-    POSTGRESCONNECTTEST_FUNCTION,   //
-    MONGOCONNECTTEST_FUNCTION,      //
-    SAVE_FUNCTION,                  //
+    READ_METHOD,                  //
+    POSTGRESCONNECTTEST_METHOD,   //
+    MONGOCONNECTTEST_METHOD,      //
+    SAVE_METHOD,                  //
 } = SERVICE;
 
 @Injectable()
 export class SetupService {
     constructor(
         private readonly jsonService: JsonService,
-        private readonly databaseService: DatabaseService
-    ) { };
-
-    private readonly logger = new Logger(SetupService.name);
+        private readonly databaseService: DatabaseService,
+        private readonly logger: LoggerService
+    ) {
+        this.logger.setContext(SetupService.name);
+    };
 
     read() {
-        this.logger.debug(`${DEBUG_MESSAGE} ${READ_FUNCTION}`);
         try {
+            this.logger.serviceDebug(READ_METHOD);
             return this.jsonService.readAll();
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             return err;
         };
     };
 
-    postgreConnectTest(data: PostgreConnectTestSetupDto) {
-        this.logger.debug(`${DEBUG_MESSAGE} ${POSTGRESCONNECTTEST_FUNCTION}`);
+    postgreConnectTest(data: DatabaseConnectionDto) {
         try {
+            this.logger.debug(POSTGRESCONNECTTEST_METHOD);
             return this.databaseService.testPostgresConnection(data);
         } catch (err) {
+            this.logger.errorMessage(err);
             return err;
         };
     };
 
-    mongoConnectTest(data: MongoConnectTestSetupDto) {
-        this.logger.debug(`${DEBUG_MESSAGE} ${MONGOCONNECTTEST_FUNCTION}`);
+    mongoConnectTest(data: DatabaseConnectionDto) {
         try {
+            this.logger.debug(MONGOCONNECTTEST_METHOD);
             return this.databaseService.testMongoConnection(data);
         } catch (err) {
+            this.logger.errorMessage(err);
             return err;
         };
     };
 
     async save(data: SaveSetupDto) {
-        this.logger.debug(`${DEBUG_MESSAGE} ${SAVE_FUNCTION}`);
         try {
+            this.logger.debug(SAVE_METHOD);
             await this.jsonService.save(data);
             try {
                 await this.restart();
@@ -66,7 +70,7 @@ export class SetupService {
                 return 'pm2 not working';
             };
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             return err;
         };
         // should call restart server

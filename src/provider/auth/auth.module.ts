@@ -2,15 +2,19 @@
 import { Module } from '@nestjs/common';
 
 //import modules
-import { ConfigModule } from 'src/config/config.module';
+import { LoggerModule } from 'src/common/logger/logger.module';
+import { JsonModule } from 'src/config/json/json.module';
 //import controllers
 import { AuthController } from './auth.controller';
 //import services
 import { AuthService } from './auth.service';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [
+    JsonModule,
+    LoggerModule
+  ],
   providers: [AuthService],
   controllers: [AuthController]
 })
-export class AuthModule { }
+export class AuthModule { };

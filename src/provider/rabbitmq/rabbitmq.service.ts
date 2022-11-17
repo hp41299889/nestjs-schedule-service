@@ -5,28 +5,31 @@ import { timeout } from 'rxjs';
 
 //import constants
 import { SERVICE } from './rabbitmq.constants';
+//import dtos
+import { BuildMessageDto, SendMessageDto } from './rabbitmq.dto';
+//import services
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    PROVIDE_NAME,           //
-    DEBUG_MESSAGE,          //
-    DEBUG_MESSAGE_SUCCESS,  //
-    BASEMETHOD,             //    
-    BUILDMESSAGE_FUNCTION,  //
-    SENDMESSAGE_FUNCTION,   //
+    CONNECTION_NAME,      //
+    BASEMETHOD,           //    
+    BUILDMESSAGE_METHOD,  //
+    SENDMESSAGE_METHOD,   //
 } = SERVICE;
 
 @Injectable()
 export class RabbitmqService {
     constructor(
-        @Inject(PROVIDE_NAME) private readonly client: ClientProxy,
+        @Inject(CONNECTION_NAME) private readonly client: ClientProxy,
+        private readonly logger: LoggerService
     ) { };
 
-    private readonly logger = new Logger(RabbitmqService.name);
     private messageID = 1;
 
-    buildMessage(method: string, data?: any) {
-        this.logger.debug(`${DEBUG_MESSAGE} ${BUILDMESSAGE_FUNCTION}`);
+    buildMessage(data: BuildMessageDto) {
         try {
+            this.logger.serviceDebug(BUILDMESSAGE_METHOD);;
+            const { method, message } = data;
             return {
                 jsonrpc: '2.0',
                 method: `${BASEMETHOD}${method}`,
@@ -34,20 +37,20 @@ export class RabbitmqService {
                 id: this.messageID++
             };
         } catch (err) {
-            this.logger.error(err)
+            this.logger.errorMessage(err);
             return err;
         };
     };
 
-    sendMessage(pattern: string, data?: any) {
-        this.logger.debug(`${DEBUG_MESSAGE} ${SENDMESSAGE_FUNCTION}`);
+    sendMessage(data: SendMessageDto) {
         try {
+            this.logger.serviceDebug(SENDMESSAGE_METHOD);
+            const { pattern, message } = data;
             this.client
-                .emit({ pattern }, this.buildMessage(pattern, data))
+                .emit({ pattern }, this.buildMessage({ method: pattern, ...message }))
                 .pipe(timeout(10000));
-            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${SENDMESSAGE_FUNCTION}`);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             return err;
         };
     };

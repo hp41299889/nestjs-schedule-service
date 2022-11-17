@@ -1,42 +1,29 @@
 //import packages
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-//import dtos
-import { LoginAuthDto } from '../auth/auth.dto';
-import { QueueConfigDto } from 'src/config/json/json.dto';
-
-export class PostgreConnectTestSetupDto {
+export class AdminDto {
     @ApiProperty()
-    IP: string;
-
+    readonly account: string;
     @ApiProperty()
-    port: string;
-
+    readonly password: string;
+};
+export class ConnectionDto extends AdminDto {
     @ApiProperty()
-    account: string;
-
+    readonly IP: string;
     @ApiProperty()
-    password: string;
-
-    @ApiProperty()
-    DBName: string;
+    readonly port: string;
 };
 
-export class MongoConnectTestSetupDto {
+export class DatabaseConnectionDto extends ConnectionDto {
     @ApiProperty()
-    IP: string;
+    readonly DBName: string;
+};
 
+export class QueueConnectionDto extends ConnectionDto {
     @ApiProperty()
-    port: string;
-
+    readonly inputQueueName: string;
     @ApiProperty()
-    account: string;
-
-    @ApiProperty()
-    password: string;
-
-    @ApiProperty()
-    DBName: string;
+    readonly outputQueueName: string;
 };
 
 export class SaveSetupDto {
@@ -44,14 +31,14 @@ export class SaveSetupDto {
     enableScheduleService: boolean;
 
     @ApiPropertyOptional()
-    queue: QueueConfigDto;
+    queue: QueueConnectionDto;
 
     @ApiPropertyOptional()
-    admin: LoginAuthDto;
+    admin: AdminDto;
 
     @ApiPropertyOptional()
-    postgreSQL: PostgreConnectTestSetupDto;
+    postgreSQL: DatabaseConnectionDto;
 
     @ApiPropertyOptional()
-    mongoDB: MongoConnectTestSetupDto;
+    mongoDB: DatabaseConnectionDto;
 };

@@ -8,10 +8,6 @@ export class CreateScheduleExecutionLogDto {
     readonly MQCLI: string;
 };
 
-export class FindWeekDto {
-    readonly scheduleID: number
-};
-
 export class FindPeriodDto {
     readonly start: Date;
     readonly end: Date;

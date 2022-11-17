@@ -1,21 +1,25 @@
 //import packages
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from 'src/common/logger/logger.module';
 
 //import constants
 import { MODULE } from './scheduleSetup.constants';
 //import models
 import { ScheduleSetup } from './scheduleSetup.entity';
 //import services
-import { ScheduleSetupModelService } from './scheduleSetup.service';
+import { ScheduleSetupModel } from './scheduleSetup.service';
 
 const {
     CONNECTION_NAME,    //
 } = MODULE;
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ScheduleSetup], CONNECTION_NAME)],
-    providers: [ScheduleSetupModelService],
-    exports: [ScheduleSetupModelService]
+    imports: [
+        LoggerModule,
+        TypeOrmModule.forFeature([ScheduleSetup], CONNECTION_NAME)
+    ],
+    providers: [ScheduleSetupModel],
+    exports: [ScheduleSetupModel]
 })
 export class ScheduleSetupModelModule { }

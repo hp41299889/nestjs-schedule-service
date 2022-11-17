@@ -11,7 +11,10 @@ import { ScheduleExecutionLogModule } from 'src/model/mongo/ScheduleExecutionLog
 import { ExecutionLogService } from './executionLog.service';
 
 @Module({
-    imports: [LoggerModule, ScheduleExecutionLogModule],
+    imports: [
+        LoggerModule,
+        ScheduleExecutionLogModule
+    ],
     controllers: [ExecutionLogController],
     providers: [ExecutionLogService],
     exports: [ExecutionLogService]

@@ -1,5 +1,6 @@
 //import packages
 import { Module } from '@nestjs/common';
+import { LoggerModule } from 'src/common/logger/logger.module';
 
 //import modules
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
@@ -10,7 +11,11 @@ import { ScheduleController } from './schedule.controller';
 import { ScheduleService } from './schedule.service';
 
 @Module({
-  imports: [ScheduleSetupModelModule, TaskModule],
+  imports: [
+    LoggerModule,
+    ScheduleSetupModelModule,
+    TaskModule
+  ],
   providers: [ScheduleService],
   controllers: [ScheduleController]
 })

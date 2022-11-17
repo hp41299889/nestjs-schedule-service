@@ -10,7 +10,7 @@ export class Exception implements ExceptionFilter {
         const error = exception.message;
 
         const responseObject = {
-            code: status,
+            // code: status,
             error: error
         };
         response.status(status).json(responseObject);

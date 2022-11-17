@@ -1,10 +1,9 @@
 //import packages
 import { ApiProperty } from "@nestjs/swagger";
 
-export class LoginAuthDto {
-    @ApiProperty()
-    account: string;
+//import dtos
+import { AdminDto } from "../setup/setup.dto";
 
-    @ApiProperty()
-    password: string;
+export class LoginDto extends AdminDto {
+
 };

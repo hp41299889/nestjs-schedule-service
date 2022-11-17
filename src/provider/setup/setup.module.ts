@@ -1,8 +1,9 @@
 //import packages
 import { Module } from '@nestjs/common';
+import { LoggerModule } from 'src/common/logger/logger.module';
 
 //import modules
-import { ConfigModule } from 'src/config/config.module';
+import { JsonModule } from 'src/config/json/json.module';
 import { DatabaseModule } from 'src/database/database.module';
 //import controllers
 import { SetupController } from './setup.controller';
@@ -10,7 +11,11 @@ import { SetupController } from './setup.controller';
 import { SetupService } from './setup.service';
 
 @Module({
-  imports: [ConfigModule, DatabaseModule],
+  imports: [
+    LoggerModule,
+    JsonModule,
+    DatabaseModule
+  ],
   providers: [SetupService],
   controllers: [SetupController]
 })

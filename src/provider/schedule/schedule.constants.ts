@@ -12,8 +12,8 @@ export const CONTROLLER = {
 export const SERVICE = {
     DEBUG_MESSAGE: 'Trying call service',
     DEBUG_MESSAGE_SUCCESS: 'Function works',
-    CREATE_FUNCTION: 'create()',
-    READALL_FUNCTION: 'readAll()',
-    UPDATE_FUNCTION: 'update()',
-    DELETE_FUNCTION: 'delete()',
+    CREATE_METHOD: 'create()',
+    READALL_METHOD: 'readAll()',
+    UPDATE_METHOD: 'update()',
+    DELETE_METHOD: 'delete()',
 };

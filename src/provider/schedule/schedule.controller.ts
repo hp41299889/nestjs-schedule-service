@@ -10,6 +10,7 @@ import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './sched
 import { Exception } from 'src/util/exception/exception';
 //import service
 import { ScheduleService } from './schedule.service';
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     SWAGGER_TAGS,           //
@@ -18,8 +19,6 @@ const {
     READALL_ROUTE,          //
     UPDATE_ROUTE,           //
     DELETE_ROUTE,           //
-    DEBUG_MESSAGE,          //
-    DEBUG_MESSAGE_SUCCESS,  //
 } = CONTROLLER;
 
 @ApiTags(SWAGGER_TAGS)
@@ -28,17 +27,17 @@ const {
 export class ScheduleController {
     constructor(
         private readonly scheduleService: ScheduleService,
-    ) { };
-
-    private readonly logger = new Logger(ScheduleController.name);
+        private readonly logger: LoggerService
+    ) {
+        this.logger.setContext(ScheduleController.name);
+    };
 
     @Post(CREATE_ROUTE)
     @ApiOperation({ summary: `Create a row of Schedule in postgres` })
     async create(@Body() data: CreateScheduleDto) {
-        this.logger.debug(`${DEBUG_MESSAGE} ${CREATE_ROUTE}`, data);
         try {
+            this.logger.controllerDebug(CREATE_ROUTE);
             await this.scheduleService.create(data);
-            this.logger.debug(`${CREATE_ROUTE} ${DEBUG_MESSAGE_SUCCESS}`);
             return { results: 'Success' };
         } catch (err) {
             this.logger.error(err);
@@ -49,8 +48,8 @@ export class ScheduleController {
     @Get(READALL_ROUTE)
     @ApiOperation({ summary: 'Read all rows of Schedule in postgres' })
     async readAll() {
-        this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${READALL_ROUTE}`);
         try {
+            this.logger.controllerDebug(READALL_ROUTE);
             return await this.scheduleService.readAll();
         } catch (err) {
             this.logger.error(err);
@@ -61,8 +60,8 @@ export class ScheduleController {
     @Patch(UPDATE_ROUTE)
     @ApiOperation({ summary: 'Update a row of Schedule in postgres by scheduleID' })
     async update(@Body() data: UpdateScheduleDto) {
-        this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${UPDATE_ROUTE}`);
         try {
+            this.logger.controllerDebug(UPDATE_ROUTE);
             return await this.scheduleService.update(data);
         } catch (err) {
             this.logger.error(err);
@@ -73,8 +72,8 @@ export class ScheduleController {
     @Delete(DELETE_ROUTE)
     @ApiOperation({ summary: 'Delete a row of Schedule in postgres by scheduleID' })
     async delete(@Body() data: DeleteScheduleDto) {
-        this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${DELETE_ROUTE}`);
         try {
+            this.logger.controllerDebug(DELETE_ROUTE);
             return await this.scheduleService.delete(data);
         } catch (err) {
             this.logger.error(err);

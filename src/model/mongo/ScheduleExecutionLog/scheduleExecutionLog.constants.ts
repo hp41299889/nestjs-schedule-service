@@ -3,5 +3,8 @@ export const MODULE = {
 };
 
 export const SERVICE = {
-    CONNECTION_NAME: 'mongoConnection'
+    CONNECTION_NAME: 'mongoConnection',
+    CREATE_METHOD: 'create()',
+    READPERIOD_METHOD: 'readPeriod()',
+    READALL_METHOD: 'readAll()'
 };

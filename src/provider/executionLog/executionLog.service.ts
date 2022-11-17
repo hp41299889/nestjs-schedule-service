@@ -5,11 +5,11 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { SERVICE } from './executionLog.constants';
 //import dtos
 import { QueryDto } from './executionLog.dto'
-//import
+//import models
+import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema';
 //impoer services
-import { ServiceLogger } from 'src/common/logger/serviceLogger.service';
-import { ScheduleExecutionLogService } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     QUERY_METHOD    //
@@ -18,18 +18,17 @@ const {
 @Injectable()
 export class ExecutionLogService {
     constructor(
-        private readonly logger: ServiceLogger,
-        private readonly scheduleExecutionLogModel: ScheduleExecutionLogService
+        private readonly logger: LoggerService,
+        private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel
     ) {
         this.logger.setContext(ExecutionLogService.name);
     };
 
     async query(data: QueryDto): Promise<ScheduleExecutionLog[]> {
         try {
-            this.logger.debugMessage(QUERY_METHOD);
+            this.logger.serviceDebug(QUERY_METHOD);
             const { startDate, dateInterval } = data;
             const nowDay = new Date(startDate);
-            console.log(data);
             let start: Date;
             let end: Date;
             let documents: ScheduleExecutionLog[]
@@ -42,7 +41,7 @@ export class ExecutionLogService {
                         start: start,
                         end: end
                     };
-                    documents = await this.scheduleExecutionLogModel.findPeriod(period);
+                    documents = await this.scheduleExecutionLogModel.readPeriod(period);
                     break;
                 };
                 case 'week': {
@@ -55,10 +54,9 @@ export class ExecutionLogService {
                     break;
                 };
             };
-            console.log(documents);
             return documents;
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             throw new BadRequestException(err);
         };
     };

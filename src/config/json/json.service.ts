@@ -1,43 +1,61 @@
 //import packages
-import { Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import * as fs from 'fs';
 
+//import constants
+import { SERVICE } from './json.constants';
 //import dtos
 import { SaveSetupDto } from 'src/provider/setup/setup.dto';
+import { LoggerService } from 'src/common/logger/logger.service';
+
+const {
+    READALL_METHOD, //
+    READ_METHOD,    //
+    SAVE_METHOD,    //
+} = SERVICE;
 
 @Injectable()
 export class JsonService {
-    private readonly logger = new Logger(JsonService.name);
+    constructor(
+        private readonly logger: LoggerService
+    ) {
+        this.logger.setContext(JsonService.name);
+    };
     private readonly configFile = join(__dirname, '..', '..', '..', 'setup', 'setup.json');
 
     readAll() {
         try {
+            this.logger.serviceDebug(READALL_METHOD);
             return fs.readFileSync(this.configFile, 'utf8');
         } catch (err) {
+            this.logger.errorMessage(err);
             return err;
         };
     };
 
     read(data: string) {
         try {
+            this.logger.serviceDebug(READ_METHOD);
             const config: SaveSetupDto = JSON.parse(this.readAll());
             return config[data];
         } catch (err) {
+            this.logger.errorMessage(err);
             return err;
         }
     };
 
     async save(data: SaveSetupDto) {
         try {
+            this.logger.serviceDebug(SAVE_METHOD);
             let config = JSON.parse(this.readAll());
             Object.keys(data).map(key => {
                 config[key] = data[key];
             });
             fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
-            this.logger.debug('new config', config);
             return { results: 'Success' };
         } catch (err) {
+            this.logger.errorMessage(err);
             return err;
         };
     };

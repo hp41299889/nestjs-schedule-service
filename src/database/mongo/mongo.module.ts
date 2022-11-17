@@ -3,13 +3,15 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 //import modules
-import { ConfigModule } from "src/config/config.module";
+import { JsonModule } from "src/config/json/json.module";
+import { LoggerModule } from "src/common/logger/logger.module";
 //import constants
 import { MODULE } from './mongo.constants';
 //import dtos
-import { MongoDBConfigDto } from "src/config/json/json.dto";
+import { DatabaseConnectionDto } from "src/provider/setup/setup.dto";
 //import services
 import { JsonService } from "src/config/json/json.service";
+import { LoggerService } from "src/common/logger/logger.service";
 
 const {
     CONNECTION_NAME,    //
@@ -20,10 +22,15 @@ const {
     imports: [
         MongooseModule.forRootAsync({
             connectionName: CONNECTION_NAME,
-            imports: [ConfigModule],
-            inject: [JsonService],
-            useFactory: async (jsonService: JsonService) => {
-                const mongoConfig: MongoDBConfigDto = jsonService.read(SETUP_TAG);
+            imports: [JsonModule, LoggerModule],
+            inject: [JsonService, LoggerService],
+            useFactory: async (jsonService: JsonService, logger: LoggerService) => {
+                const mongoConfig: DatabaseConnectionDto = jsonService.read(SETUP_TAG);
+                const material = {
+                    connectionName: CONNECTION_NAME,
+                    config: mongoConfig
+                };
+                logger.factoryDebug(material);
                 const { IP, port, account, password, DBName } = mongoConfig;
                 const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
                 return { uri };

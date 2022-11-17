@@ -8,18 +8,17 @@ import { SERVICE } from './task.constants';
 //import dtos
 import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto } from './task.dto';
 import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
+//import models
+import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 //import services
 import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
-import { ScheduleExecutionLogService } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 
 const {
-    DEBUG_MESSAGE,          //
-    DEBUG_MESSAGE_SUCCESS,  //
-    CREATE_FUNCTION,        //
+    CREATE_METHOD,        //
     CREATE_PATTERN,         //
-    UPDATE_FUNCTION,        //
+    UPDATE_METHOD,        //
     UPDATE_PATTERN,         //
-    DELETE_FUNCTION,        //
+    DELETE_METHOD,        //
     DELETE_PATTERN,         //
     SCHEDULE_TYPE_CYCLE,    //
     SCHEDULE_TYPE_REGULAR,  //
@@ -32,13 +31,13 @@ export class TaskService {
     constructor(
         private readonly schedulerRegistry: SchedulerRegistry,
         private readonly rabbitmqService: RabbitmqService,
-        private readonly scheduleExecutionLogService: ScheduleExecutionLogService
+        private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel
     ) { };
     private readonly logger = new Logger(TaskService.name);
 
     create(data: CreateTaskDto): void {
         const { scheduleID, scheduleName, scheduleType, cycle, regular } = data;
-        this.logger.debug(`${DEBUG_MESSAGE} ${CREATE_FUNCTION}`);
+        this.logger.debug(`${CREATE_METHOD}`);
         try {
             if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                 cycle.forEach((item, index, array) => {
@@ -53,7 +52,7 @@ export class TaskService {
                             processDatetime: new Date(),
                             processStatus: 'ok'
                         };
-                        this.scheduleExecutionLogService.create(createdLog);
+                        this.scheduleExecutionLogModel.create(createdLog);
                     };
                     const interval = setInterval(task, executeTime);
                     this.schedulerRegistry.addInterval(`${scheduleName}_${item}`, interval);
@@ -71,39 +70,45 @@ export class TaskService {
                             processDatetime: new Date(),
                             processStatus: 'ok'
                         };
-                        this.scheduleExecutionLogService.create(createdLog);
+                        this.scheduleExecutionLogModel.create(createdLog);
                     });
                     this.schedulerRegistry.addCronJob(`${scheduleName}_${item}`, task);
                     task.start();
                 });
             };
-            this.rabbitmqService.sendMessage(CREATE_PATTERN, data);
-            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${CREATE_FUNCTION}`);
+            const message = {
+                pattern: CREATE_PATTERN,
+                message: data
+            };
+            this.rabbitmqService.sendMessage(message);
         } catch (err) {
             this.logger.error(err);
         };
     };
 
     async update(data: UpdateTaskDto): Promise<void> {
-        this.logger.debug(`${DEBUG_MESSAGE} ${UPDATE_FUNCTION}`);
-        const { oldTask, newData } = data;
-        // const newTask: CreateTaskDto = { ...oldTask };
-        const newTask: CreateTaskDto = {
-            commandSource: oldTask.commandSource,
-            scheduleName: oldTask.scheduleName,
-            scheduleType: oldTask.scheduleType,
-            regular: oldTask.regular,
-            cycle: oldTask.cycle,
-            MQCLI: oldTask.MQCLI
-        };
-        Object.keys(newData).map(key => {
-            newTask[key] = newData[key];
-        });
         try {
+            this.logger.debug(`${UPDATE_METHOD}`);
+            const { oldTask, newData } = data;
+            // const newTask: CreateTaskDto = { ...oldTask };
+            const newTask: CreateTaskDto = {
+                commandSource: oldTask.commandSource,
+                scheduleName: oldTask.scheduleName,
+                scheduleType: oldTask.scheduleType,
+                regular: oldTask.regular,
+                cycle: oldTask.cycle,
+                MQCLI: oldTask.MQCLI
+            };
+            Object.keys(newData).map(key => {
+                newTask[key] = newData[key];
+            });
             await this.delete(oldTask);
             this.create(newTask);
-            this.rabbitmqService.sendMessage(UPDATE_PATTERN, data);
-            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${UPDATE_FUNCTION}`);
+            const message = {
+                pattern: UPDATE_PATTERN,
+                message: data
+            };
+            this.rabbitmqService.sendMessage(message);
         } catch (err) {
             this.logger.error(err);
             return err;
@@ -111,16 +116,19 @@ export class TaskService {
     };
 
     async delete(data: DeleteTaskDto): Promise<void> {
-        this.logger.debug(`${DEBUG_MESSAGE} ${DELETE_FUNCTION}`);
-        const { scheduleName, scheduleType } = data;
         try {
+            this.logger.debug(`${DELETE_METHOD}`);
+            const { scheduleName, scheduleType } = data;
             if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                 this.schedulerRegistry.deleteInterval(scheduleName);
             } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                 this.schedulerRegistry.deleteCronJob(scheduleName);
             };
-            this.rabbitmqService.sendMessage(DELETE_PATTERN, data);
-            this.logger.debug(`${DEBUG_MESSAGE_SUCCESS} ${DELETE_FUNCTION}`);
+            const message = {
+                pattern: DELETE_PATTERN,
+                message: data
+            }
+            this.rabbitmqService.sendMessage(message);
         } catch (err) {
             this.logger.error(err);
         };

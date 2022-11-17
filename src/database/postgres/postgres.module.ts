@@ -4,30 +4,37 @@ import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 //import modules
-import { ConfigModule } from 'src/config/config.module';
+import { JsonModule } from 'src/config/json/json.module';
+import { LoggerModule } from 'src/common/logger/logger.module';
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 //import constants
 import { MODULE } from './postgres.constants';
 //import dtos
-import { PostgreSQLConfigDto } from 'src/config/json/json.dto';
+import { DatabaseConnectionDto } from 'src/provider/setup/setup.dto';
 //import entities
 import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 //import services
 import { JsonService } from 'src/config/json/json.service';
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     CONNECTION_NAME,    //
-    SETUP_ALIAS,          //
+    SETUP_ALIAS,        //
 } = MODULE;
 
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
             name: CONNECTION_NAME,
-            imports: [ConfigModule],
-            inject: [JsonService],
-            useFactory: async (jsonService: JsonService) => {
-                const postgresConfig: PostgreSQLConfigDto = jsonService.read(SETUP_ALIAS);
+            imports: [JsonModule, LoggerModule],
+            inject: [JsonService, LoggerService],
+            useFactory: async (jsonService: JsonService, logger: LoggerService) => {
+                const postgresConfig: DatabaseConnectionDto = jsonService.read(SETUP_ALIAS);
+                const material = {
+                    connectionName: CONNECTION_NAME,
+                    config: postgresConfig
+                };
+                logger.factoryDebug(material);
                 const { IP, port, account, password, DBName } = postgresConfig;
                 return {
                     type: 'postgres',

@@ -9,9 +9,11 @@ import { ScheduleExecutionLogModule } from 'src/model/mongo/ScheduleExecutionLog
 import { MonitorController } from './monitor.controller';
 //import services
 import { MonitorService } from './monitor.service';
+import { LoggerModule } from 'src/common/logger/logger.module';
 
 @Module({
   imports: [
+    LoggerModule,
     ScheduleSetupModelModule,
     ScheduleExecutionLogModule,
     TaskModule
