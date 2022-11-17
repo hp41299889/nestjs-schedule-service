@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 //import dtos
-import { CreateScheduleExecutionLogDto, FindWeekDto } from './scheduleExecutionLog.dto';
+import { CreateScheduleExecutionLogDto, FindWeekDto, FindPeriodDto } from './scheduleExecutionLog.dto';
 //import constants
 import { SERVICE } from './scheduleExecutionLog.constants';
 //import models
@@ -38,6 +38,15 @@ export class ScheduleExecutionLogService {
             .where('processDatetime').gt(Number(start)).lt(Number(end))
             .exec();
         return await executionLogs;
+    };
+
+    async findPeriod(data: FindPeriodDto): Promise<ScheduleExecutionLog[]> {
+        const { start, end } = data;
+        const documents = this.scheduleExecutionLogModel
+            .find()
+            .where('processDatetime').gt(Number(start)).lt(Number(end))
+            .exec();
+        return await documents;
     };
 
     async findAll(): Promise<ScheduleExecutionLog[]> {
