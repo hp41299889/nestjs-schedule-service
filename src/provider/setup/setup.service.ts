@@ -30,16 +30,16 @@ export class SetupService {
         this.logger.setContext(SetupService.name);
     };
 
-    read() {
+    async read(): Promise<string> {
         try {
             this.logger.serviceDebug(READ_METHOD);
-            return this.jsonService.readAll();
+            return await this.jsonService.readAll();
         } catch (err) {
             throw err;
         };
     };
 
-    async postgreConnectTest(data: DatabaseConnectionDto) {
+    async postgreConnectTest(data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.debug(POSTGRESCONNECTTEST_METHOD);
             return await this.databaseService.testPostgresConnection(data);
@@ -48,7 +48,7 @@ export class SetupService {
         };
     };
 
-    mongoConnectTest(data: DatabaseConnectionDto) {
+    mongoConnectTest(data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.debug(MONGOCONNECTTEST_METHOD);
             return this.databaseService.testMongoConnection(data);

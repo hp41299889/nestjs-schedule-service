@@ -74,7 +74,6 @@ export class ScheduleSetupModel {
     };
 
     async update(data: UpdateScheduleDto): Promise<void> {
-
         try {
             this.logger.serviceDebug(UPDATE_METHOD);
             const { scheduleID, commandSource, scheduleName, scheduleType, regular, cycle, MQCLI } = data;

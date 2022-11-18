@@ -6,14 +6,14 @@ import { LoggerModule } from 'src/common/logger/logger.module';
 //import controllers
 import { ExecutionLogController } from './executionLog.controller';
 //import models
-import { ScheduleExecutionLogModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
+import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
 //import services
 import { ExecutionLogService } from './executionLog.service';
 
 @Module({
     imports: [
         LoggerModule,
-        ScheduleExecutionLogModule
+        ScheduleExecutionLogModelModule
     ],
     controllers: [ExecutionLogController],
     providers: [ExecutionLogService],

@@ -24,7 +24,7 @@ export class JsonService {
     };
     private readonly configFile = join(__dirname, '..', '..', '..', 'setup', 'setup.json');
 
-    readAll(): string {
+    async readAll(): Promise<string> {
         try {
             this.logger.serviceDebug(READALL_METHOD);
             return fs.readFileSync(this.configFile, 'utf8');
@@ -36,7 +36,7 @@ export class JsonService {
     async read<T>(data: string): Promise<T> {
         try {
             this.logger.serviceDebug(READ_METHOD);
-            const config: SaveSetupDto = JSON.parse(this.readAll());
+            const config: SaveSetupDto = JSON.parse(await this.readAll());
             return config[data];
         } catch (err) {
             throw err;
@@ -46,7 +46,7 @@ export class JsonService {
     async save(data: SaveSetupDto): Promise<void> {
         try {
             this.logger.serviceDebug(SAVE_METHOD);
-            let config = JSON.parse(this.readAll());
+            let config = JSON.parse(await this.readAll());
             Object.keys(data).map(key => {
                 config[key] = data[key];
             });

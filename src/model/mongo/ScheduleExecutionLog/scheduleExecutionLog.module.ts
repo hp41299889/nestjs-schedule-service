@@ -27,4 +27,4 @@ const {
     providers: [ScheduleExecutionLogModel],
     exports: [ScheduleExecutionLogModel]
 })
-export class ScheduleExecutionLogModule { };
+export class ScheduleExecutionLogModelModule { };

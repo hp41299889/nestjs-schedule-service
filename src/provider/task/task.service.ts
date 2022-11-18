@@ -7,9 +7,10 @@ import { CronJob } from 'cron';
 import { SERVICE } from './task.constants';
 //import dtos
 import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto } from './task.dto';
-import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 //import models
+import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
+import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 //import services
 import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -33,7 +34,8 @@ export class TaskService {
         private readonly logger: LoggerService,
         private readonly schedulerRegistry: SchedulerRegistry,
         private readonly rabbitmqService: RabbitmqService,
-        private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel
+        private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel,
+        private readonly scheduleSetupModel: ScheduleSetupModel
     ) {
         this.logger.setContext(TaskService.name);
     };
@@ -63,7 +65,8 @@ export class TaskService {
                         this.rabbitmqService.sendMessage(message);
                     };
                     const interval = setInterval(task, executeTime);
-                    this.schedulerRegistry.addInterval(`${scheduleName}_${item}`, interval);
+                    const taskName = `${scheduleName}_${item}`;
+                    this.schedulerRegistry.addInterval(taskName, interval);
                 });
             } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                 regular.forEach((item, index, array) => {
@@ -85,7 +88,8 @@ export class TaskService {
                         };
                         this.rabbitmqService.sendMessage(message);
                     });
-                    this.schedulerRegistry.addCronJob(`${scheduleName}_${item}`, task);
+                    const taskName = `${scheduleName}_${item}`;
+                    this.schedulerRegistry.addCronJob(taskName, task);
                     task.start();
                 });
             } else {
@@ -125,14 +129,31 @@ export class TaskService {
             if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                 const { cycle } = data;
                 cycle.forEach((item, index, array) => {
-                    this.schedulerRegistry.deleteInterval(`${scheduleName}_${item}`);
+                    const taskName = `${scheduleName}_${item}`;
+                    this.schedulerRegistry.deleteInterval(taskName);
                 });
             } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                 const { regular } = data;
                 regular.forEach((item, index, array) => {
-                    this.schedulerRegistry.deleteCronJob(`${scheduleName}_${item}`);
+                    const taskName = `${scheduleName}_${item}`;
+                    this.schedulerRegistry.deleteCronJob(taskName);
                 });
             };
+        } catch (err) {
+            throw err;
+        };
+    };
+
+    async rebornTasks() {
+        try {
+            const schedules = await this.scheduleSetupModel.readAll();
+            schedules.forEach((item, index, array) => {
+                this.create(item);
+            });
+            console.log(this.schedulerRegistry.getCronJobs());
+            console.log(this.schedulerRegistry.getIntervals());
+
+
         } catch (err) {
             throw err;
         };

@@ -22,7 +22,7 @@ export class DatabaseService {
         this.logger.setContext(DatabaseService.name);
     };
 
-    async testPostgresConnection(data: DatabaseConnectionDto) {
+    async testPostgresConnection(data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.serviceDebug(TESTPOSTGRESCONNECTION_METHOD);
             const { IP, port, account, password, DBName } = data;
@@ -35,7 +35,7 @@ export class DatabaseService {
                 database: DBName
             });
             if (!connection) {
-
+                throw 'connect fail';
             } else {
                 console.log(connection);
                 await connection.destroy();
@@ -46,18 +46,27 @@ export class DatabaseService {
         };
     };
 
-    async testMongoConnection(data: DatabaseConnectionDto) {
-        this.logger.serviceDebug(TESTMONGOCONNECTION_METHOD);
-        const { IP, port, account, password, DBName } = data;
-        return createConnection({
-            type: 'mongodb',
-            username: account,
-            password: password,
-            host: IP,
-            port: +port,
-            database: DBName
-        }).then(async connection => {
-            await connection.close();
-        });
+    async testMongoConnection(data: DatabaseConnectionDto): Promise<object> {
+        try {
+            this.logger.serviceDebug(TESTMONGOCONNECTION_METHOD);
+            const { IP, port, account, password, DBName } = data;
+            const connection = await createConnection({
+                type: 'mongodb',
+                username: account,
+                password: password,
+                host: IP,
+                port: +port,
+                database: DBName
+            });
+            if (!connection) {
+                throw 'connect fail';
+            } else {
+                console.log(connection);
+                await connection.destroy();
+                return { results: 'Success' };
+            };
+        } catch (err) {
+            throw err;
+        };
     };
 };

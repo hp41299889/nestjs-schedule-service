@@ -11,7 +11,7 @@ import { AppModule } from './app.module';
 // import { AppConfigDto } from './config/json/json.dto';
 //import services
 import { SwaggerService } from './swagger/swagger.service';
-import { LoggerService } from './common/logger/logger.service';
+import { TaskService } from './provider/task/task.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -19,8 +19,9 @@ async function bootstrap() {
     bufferLogs: true
   });
   const configService: ConfigService = app.get(ConfigService);
-  const appConfig: any = configService.get('app');
   const appSwagger: SwaggerService = app.get(SwaggerService);
+  const taskService = app.get(TaskService);
+  const appConfig: any = configService.get('app');
   const { name, env, prefix, port } = appConfig;
   const service = `${name} is running on ${port} for ${env}`;
 
@@ -36,10 +37,10 @@ async function bootstrap() {
       // cookie: { maxAge: 1000 * 60 * 10 }
     })
   );
-  // app.useLogger(app.get(LoggerService));
 
   app.setGlobalPrefix(prefix);
   appSwagger.setupSwagger(app);
+  await taskService.rebornTasks();
 
   await app.listen(port);
   console.log(service);

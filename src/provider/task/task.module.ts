@@ -4,7 +4,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 //import modules
 import { RabbitmqModule } from '../rabbitmq/rabbitmq.module';
-import { ScheduleExecutionLogModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
+//import models
+import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
+import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 //import services
 import { TaskService } from './task.service';
 import { LoggerModule } from 'src/common/logger/logger.module';
@@ -13,7 +15,8 @@ import { LoggerModule } from 'src/common/logger/logger.module';
     imports: [
         LoggerModule,
         ScheduleModule.forRoot(),
-        ScheduleExecutionLogModule,
+        ScheduleExecutionLogModelModule,
+        ScheduleSetupModelModule,
         RabbitmqModule
     ],
     providers: [TaskService],
