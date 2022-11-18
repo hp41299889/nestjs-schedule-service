@@ -1,6 +1,6 @@
 const scheduleTypeOptions = [
   {
-    value:'reqular',
+    value:'regular',
     label:'定期排程'
   },
   {
@@ -9,9 +9,9 @@ const scheduleTypeOptions = [
   }
 ]
 
-const reqularWeekOptions =[
+const regularWeekOptions =[
   {
-    value:'0',
+    value:'',
     label:'一-日'
   },
   {

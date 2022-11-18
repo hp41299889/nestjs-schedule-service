@@ -3,9 +3,11 @@ const scheduleData = [
     scheduleID: '1',
     scheduleName: 'text',
     commandSource: 'text',
-    scheduleType: 'text',
-    reqular: 'text',
-    cycle: 'text',
+    scheduleType: 'regular',
+    regular: [
+      'regular#星期/小時/分鐘',
+      'regular#星期/小時/分鐘'
+    ],
     createDatetime: '2022/11/04',
     lastEditDatetime: '2022/11/04',
     MQCLI: 'text',
@@ -14,9 +16,10 @@ const scheduleData = [
     scheduleID: '2',
     scheduleName: 'body',
     commandSource: 'text02',
-    scheduleType: 'text',
-    reqular: 'text02',
-    cycle: 'text02',
+    scheduleType: 'cycle',
+    cycle: [
+      'cycle#小時/分鐘',
+    ],
     createDatetime: '2022/11/04',
     lastEditDatetime: '2022/11/04',
     MQCLI: 'text02',
@@ -26,7 +29,10 @@ const scheduleData = [
     scheduleName: 'body',
     commandSource: 'text03',
     scheduleType: 'text',
-    reqular: 'text03',
+    regular: [
+      'regular#星期/小時/分鐘',
+      'regular#星期/小時/分鐘'
+    ],
     cycle: 'text03',
     createDatetime: '2022/11/07',
     lastEditDatetime: '2022/11/07',

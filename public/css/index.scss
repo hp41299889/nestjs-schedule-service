@@ -21,11 +21,11 @@
 
     #edit,
     #clone,
-    #delete{
+    #delete {
       display: none;
     }
 
-    .showBtn{
+    .showBtn {
       display: inline-block !important;
     }
 
@@ -44,18 +44,23 @@
   }
 }
 
-.modal{
-  .modal-dialog{
-    .modal-content{
-      .modal-body{
-        #cycle{
-          // display: none;
+.modal {
+  .modal-dialog {
+    .modal-content {
+      .modal-body {
+        .addLabel{
+          width: 100px;
+        }
+        .noAdd {
+          padding-top: calc(0.375rem + 1px);
+          padding-bottom: calc(0.375rem + 1px);
+          margin: unset;
         }
       }
     }
   }
 }
 
-.formDeleteBtn{
+.formDeleteBtn {
   align-self: flex-end;
 }

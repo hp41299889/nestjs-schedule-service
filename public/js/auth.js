@@ -1,4 +1,4 @@
-const apiUrl = '/ScheduleService/Auth';
+const authApiUrl = '/ScheduleService/Auth';
 
 $(document).ready(function () {
   showModal();
@@ -32,7 +32,7 @@ function login() {
     //     alert('Error: ' + xhr.status + ' ' + xhr.statusText);
     //   },
     // });
-    fetch(`${apiUrl}/login`, {
+    fetch(`${authApiUrl}/login`, {
       headers: {
         "Content-Type": "application/json"
       },
@@ -42,6 +42,13 @@ function login() {
         password: password
       }),
       redirect: "follow"
-    }).then(res => res.redirected && (location.href = res.url))
+    }).then(res => {
+      console.log('res =', res)
+      res.redirected && (location.href = res.url)
+      sessionStorage.setItem('account', account);
+    }).catch(err=>{
+      console.log('err =', err)
+    })
   });
 }
+
