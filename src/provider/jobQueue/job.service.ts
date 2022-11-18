@@ -4,9 +4,9 @@ import { ClientProxy } from '@nestjs/microservices';
 import { timeout } from 'rxjs';
 
 //import constants
-import { SERVICE } from './rabbitmq.constants';
+import { SERVICE } from './job.constants';
 //import dtos
-import { BuildMessageDto, SendMessageDto } from './rabbitmq.dto';
+import { BuildMessageDto, SendMessageDto } from './job.dto';
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
 
@@ -18,25 +18,25 @@ const {
 } = SERVICE;
 
 @Injectable()
-export class RabbitmqService {
+export class JobQueueService {
     constructor(
         @Inject(CONNECTION_NAME)
         private readonly client: ClientProxy,
         private readonly logger: LoggerService
     ) {
-        this.logger.setContext(RabbitmqService.name);
+        this.logger.setContext(JobQueueService.name);
     };
 
     private messageID = 1;
 
-    buildMessage(data: BuildMessageDto) {
+    async buildMessage(data: BuildMessageDto) {
         try {
             this.logger.serviceDebug(BUILDMESSAGE_METHOD);;
-            const { method, message } = data;
+            const { pattern, message } = data;
             return {
                 jsonrpc: '2.0',
-                method: `${BASEMETHOD}${method}`,
-                params: data,
+                method: `${BASEMETHOD}${pattern}`,
+                params: message,
                 id: this.messageID++
             };
         } catch (err) {
@@ -44,12 +44,12 @@ export class RabbitmqService {
         };
     };
 
-    sendMessage(data: SendMessageDto) {
+    async sendMessage(data: SendMessageDto) {
         try {
             this.logger.serviceDebug(SENDMESSAGE_METHOD);
-            const { pattern, message } = data;
+            const { pattern } = data;
             this.client
-                .emit(pattern, this.buildMessage({ method: pattern, message: message }))
+                .emit(pattern, await this.buildMessage(data))
                 .pipe(timeout(10000));
         } catch (err) {
             throw err;

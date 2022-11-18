@@ -6,11 +6,11 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { JsonModule } from 'src/config/json/json.module';
 import { LoggerModule } from 'src/common/logger/logger.module';
 //import constants
-import { MODULE } from './rabbitmq.constants';
+import { MODULE } from './job.constants';
 //import dtos
 import { QueueConnectionDto } from '../setup/setup.dto';
 //import services
-import { RabbitmqService } from './rabbitmq.service';
+import { JobQueueService } from './job.service';
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
@@ -28,7 +28,7 @@ const {
       useFactory: async (jsonService: JsonService, logger: LoggerService) => {
         try {
           const rabbitmqConfig: QueueConnectionDto = await jsonService.read(SETUP_ALIAS);
-          const { IP, port, account, password, inputQueueName, outputQueueName } = rabbitmqConfig;
+          const { IP, port, account, password, outputQueueName } = rabbitmqConfig;
           const material = {
             connectionName: CONNECTION_NAME,
             config: rabbitmqConfig
@@ -52,10 +52,10 @@ const {
         }
       },
     },
-    RabbitmqService,
+    JobQueueService,
   ],
   exports: [
-    RabbitmqService
+    JobQueueService
   ]
 })
-export class RabbitmqModule { }
+export class JobQueueModule { }

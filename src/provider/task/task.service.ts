@@ -12,7 +12,7 @@ import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecution
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 //import services
-import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
+import { JobQueueService } from '../jobQueue/job.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
@@ -33,7 +33,7 @@ export class TaskService {
     constructor(
         private readonly logger: LoggerService,
         private readonly schedulerRegistry: SchedulerRegistry,
-        private readonly rabbitmqService: RabbitmqService,
+        private readonly jobQueueService: JobQueueService,
         private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel,
         private readonly scheduleSetupModel: ScheduleSetupModel
     ) {
@@ -59,10 +59,10 @@ export class TaskService {
                         };
                         this.scheduleExecutionLogModel.create(createdLog);
                         const message = {
-                            pattern: data.active,
+                            pattern: data.pattern,
                             message: data
                         };
-                        this.rabbitmqService.sendMessage(message);
+                        this.jobQueueService.sendMessage(message);
                     };
                     const interval = setInterval(task, executeTime);
                     const taskName = `${scheduleName}_${item}`;
@@ -83,10 +83,10 @@ export class TaskService {
                         };
                         this.scheduleExecutionLogModel.create(createdLog);
                         const message = {
-                            pattern: data.active,
+                            pattern: data.pattern,
                             message: data
                         };
-                        this.rabbitmqService.sendMessage(message);
+                        this.jobQueueService.sendMessage(message);
                     });
                     const taskName = `${scheduleName}_${item}`;
                     this.schedulerRegistry.addCronJob(taskName, task);
@@ -144,16 +144,16 @@ export class TaskService {
         };
     };
 
-    async rebornTasks() {
+    async rebornTasks(): Promise<void> {
         try {
             const schedules = await this.scheduleSetupModel.readAll();
             schedules.forEach((item, index, array) => {
-                this.create(item);
+                const task = {
+                    pattern: 'create',
+                    ...item
+                }
+                this.create(task);
             });
-            console.log(this.schedulerRegistry.getCronJobs());
-            console.log(this.schedulerRegistry.getIntervals());
-
-
         } catch (err) {
             throw err;
         };

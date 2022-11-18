@@ -85,11 +85,14 @@ export class ScheduleSetupModel {
             target.commandSource = commandSource;
             target.scheduleName = scheduleName;
             target.scheduleType = scheduleType;
-            target.cycle = null;
-            target.regular = null;
-            target.regular = regular;
-            target.cycle = cycle;
             target.MQCLI = MQCLI;
+            if (target.scheduleType === 'cycle') {
+                target.cycle = cycle;
+                target.regular = null;
+            } else if (target.scheduleType === 'regular') {
+                target.regular = regular;
+                target.cycle = null;
+            };
             await this.datasource.manager.save(target);
         } catch (err) {
             throw err;

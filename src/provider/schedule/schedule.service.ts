@@ -37,7 +37,7 @@ export class ScheduleService {
             await this.scheduleSetupModel.create(data);
             const target = await this.scheduleSetupModel.read(data);
             const task = {
-                active: 'create',
+                pattern: 'create',
                 ...target
             };
             this.taskService.create(task);
@@ -67,7 +67,7 @@ export class ScheduleService {
             };
             await this.scheduleSetupModel.update(data);
             const task = {
-                active: 'update',
+                pattern: 'update',
                 ...payload
             };
             await this.taskService.update(task);
@@ -90,7 +90,7 @@ export class ScheduleService {
             };
             await this.scheduleSetupModel.delete(target);
             const task = {
-                active: 'delete',
+                pattern: 'delete',
                 ...targetTask
             };
             await this.taskService.delete(task);

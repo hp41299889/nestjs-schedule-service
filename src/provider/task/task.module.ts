@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 
 //import modules
-import { RabbitmqModule } from '../rabbitmq/rabbitmq.module';
+import { JobQueueModule } from '../jobQueue/job.module';
 //import models
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
@@ -17,7 +17,7 @@ import { LoggerModule } from 'src/common/logger/logger.module';
         ScheduleModule.forRoot(),
         ScheduleExecutionLogModelModule,
         ScheduleSetupModelModule,
-        RabbitmqModule
+        JobQueueModule
     ],
     providers: [TaskService],
     exports: [TaskService]

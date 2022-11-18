@@ -19,8 +19,6 @@ const {
     POSTGRESCONNECTTEST_ROUTES, //
     MONGOCONNECTTEST_ROUTES,    //
     SAVE_ROUTES,                //
-    DEBUG_MESSAGE,              //
-    DEBUG_MESSAGE_SUCCESS,      //
 } = CONTROLLER;
 
 @ApiTags(API_TAG)

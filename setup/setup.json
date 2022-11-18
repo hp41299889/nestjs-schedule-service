@@ -6,7 +6,7 @@
     "account": "dannylu",
     "password": "roxy1029",
     "inputQueueName": "schedule_queue",
-    "outputQueueName": "task_queue"
+    "outputQueueName": "job_queue"
   },
   "admin": {
     "account": "admin",
