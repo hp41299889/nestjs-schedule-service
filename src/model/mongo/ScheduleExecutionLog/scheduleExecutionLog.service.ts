@@ -37,8 +37,7 @@ export class ScheduleExecutionLogModel {
             const document = new this.scheduleExecutionLogModel(createCatDto);
             return await document.save();
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -63,8 +62,7 @@ export class ScheduleExecutionLogModel {
                 .exec();
             return await documents;
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -74,8 +72,7 @@ export class ScheduleExecutionLogModel {
             const documents = this.scheduleExecutionLogModel.find().exec();
             return await documents;
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 };

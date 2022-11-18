@@ -24,12 +24,11 @@ export class AuthService {
         this.logger.setContext(AuthService.name);
     };
 
-    private readonly adminConfig: LoginDto = this.jsonSerivce.read(SETUP_ALIAS);
-
     async login(data: LoginDto) {
         try {
             this.logger.serviceDebug(LOGIN_METHOD);
-            const { account, password } = this.adminConfig;
+            const adminConfig: LoginDto = await this.jsonSerivce.read(SETUP_ALIAS);
+            const { account, password } = adminConfig;
             if (data.account === account) {
                 if (data.password === password) {
                     return;
@@ -40,8 +39,7 @@ export class AuthService {
                 return { error: 'Login fail, account is incorrect' };
             };
         } catch (err) {
-            this.logger.errorMessage(err);
-            throw new BadRequestException(err);
+            throw err;
         };
     };
 
@@ -50,8 +48,7 @@ export class AuthService {
             this.logger.serviceDebug(LOGOUT_METHOD);
             return;
         } catch (err) {
-            this.logger.errorMessage(err);
-            throw new BadRequestException(err);
+            throw err;
         };
     };
 };

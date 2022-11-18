@@ -7,9 +7,11 @@ import { RabbitmqModule } from '../rabbitmq/rabbitmq.module';
 import { ScheduleExecutionLogModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
 //import services
 import { TaskService } from './task.service';
+import { LoggerModule } from 'src/common/logger/logger.module';
 
 @Module({
     imports: [
+        LoggerModule,
         ScheduleModule.forRoot(),
         ScheduleExecutionLogModule,
         RabbitmqModule

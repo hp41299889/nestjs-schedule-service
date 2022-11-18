@@ -25,14 +25,15 @@ const {
     {
       provide: CONNECTION_NAME,
       inject: [JsonService, LoggerService],
-      useFactory: (jsonService: JsonService, logger: LoggerService) => {
+      useFactory: async (jsonService: JsonService, logger: LoggerService) => {
         try {
-          const rabbitmqConfig: QueueConnectionDto = jsonService.read(SETUP_ALIAS);
+          const rabbitmqConfig: QueueConnectionDto = await jsonService.read(SETUP_ALIAS);
           const { IP, port, account, password, inputQueueName, outputQueueName } = rabbitmqConfig;
           const material = {
             connectionName: CONNECTION_NAME,
             config: rabbitmqConfig
           }
+          logger.setContext(CONNECTION_NAME);
           logger.factoryDebug(material);
           return ClientProxyFactory.create({
             transport: Transport.RMQ,

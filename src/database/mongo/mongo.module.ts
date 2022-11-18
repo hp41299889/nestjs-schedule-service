@@ -25,11 +25,12 @@ const {
             imports: [JsonModule, LoggerModule],
             inject: [JsonService, LoggerService],
             useFactory: async (jsonService: JsonService, logger: LoggerService) => {
-                const mongoConfig: DatabaseConnectionDto = jsonService.read(SETUP_TAG);
+                const mongoConfig: DatabaseConnectionDto = await jsonService.read(SETUP_TAG);
                 const material = {
                     connectionName: CONNECTION_NAME,
                     config: mongoConfig
                 };
+                logger.setContext(CONNECTION_NAME);
                 logger.factoryDebug(material);
                 const { IP, port, account, password, DBName } = mongoConfig;
                 const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;

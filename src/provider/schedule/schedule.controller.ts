@@ -13,15 +13,15 @@ import { ScheduleService } from './schedule.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    SWAGGER_TAGS,           //
-    API_ROUTES,             //
-    CREATE_ROUTE,           //
-    READALL_ROUTE,          //
-    UPDATE_ROUTE,           //
-    DELETE_ROUTE,           //
+    API_TAGS,       //Tags on swagger
+    API_ROUTES,     //controller routes
+    CREATE_ROUTE,   //method create routes
+    READALL_ROUTE,  //method readAll routes
+    UPDATE_ROUTE,   //method update routes
+    DELETE_ROUTE,   //method delete routes
 } = CONTROLLER;
 
-@ApiTags(SWAGGER_TAGS)
+@ApiTags(API_TAGS)
 @Controller(API_ROUTES)
 @UseFilters(Exception)
 export class ScheduleController {
@@ -37,10 +37,9 @@ export class ScheduleController {
     async create(@Body() data: CreateScheduleDto) {
         try {
             this.logger.controllerDebug(CREATE_ROUTE);
-            await this.scheduleService.create(data);
-            return { results: 'Success' };
+            return await this.scheduleService.create(data);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             throw new BadRequestException(err);
         };
     };
@@ -52,7 +51,7 @@ export class ScheduleController {
             this.logger.controllerDebug(READALL_ROUTE);
             return await this.scheduleService.readAll();
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             throw new BadRequestException(err);
         };
     };
@@ -64,7 +63,7 @@ export class ScheduleController {
             this.logger.controllerDebug(UPDATE_ROUTE);
             return await this.scheduleService.update(data);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             throw new BadRequestException(err);
         };
     };
@@ -76,7 +75,7 @@ export class ScheduleController {
             this.logger.controllerDebug(DELETE_ROUTE);
             return await this.scheduleService.delete(data);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.errorMessage(err);
             throw new BadRequestException(err);
         };
     };

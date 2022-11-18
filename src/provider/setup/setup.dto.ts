@@ -28,17 +28,17 @@ export class QueueConnectionDto extends ConnectionDto {
 
 export class SaveSetupDto {
     @ApiPropertyOptional()
-    enableScheduleService: boolean;
+    readonly enableScheduleService: boolean;
 
     @ApiPropertyOptional()
-    queue: QueueConnectionDto;
+    readonly queue: QueueConnectionDto;
 
     @ApiPropertyOptional()
-    admin: AdminDto;
+    readonly admin: AdminDto;
 
     @ApiPropertyOptional()
-    postgreSQL: DatabaseConnectionDto;
+    readonly postgreSQL: DatabaseConnectionDto;
 
     @ApiPropertyOptional()
-    mongoDB: DatabaseConnectionDto;
+    readonly mongoDB: DatabaseConnectionDto;
 };

@@ -20,9 +20,12 @@ const {
 @Injectable()
 export class RabbitmqService {
     constructor(
-        @Inject(CONNECTION_NAME) private readonly client: ClientProxy,
+        @Inject(CONNECTION_NAME)
+        private readonly client: ClientProxy,
         private readonly logger: LoggerService
-    ) { };
+    ) {
+        this.logger.setContext(RabbitmqService.name);
+    };
 
     private messageID = 1;
 
@@ -37,8 +40,7 @@ export class RabbitmqService {
                 id: this.messageID++
             };
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -47,11 +49,10 @@ export class RabbitmqService {
             this.logger.serviceDebug(SENDMESSAGE_METHOD);
             const { pattern, message } = data;
             this.client
-                .emit({ pattern }, this.buildMessage({ method: pattern, ...message }))
+                .emit(pattern, this.buildMessage({ method: pattern, message: message }))
                 .pipe(timeout(10000));
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 };

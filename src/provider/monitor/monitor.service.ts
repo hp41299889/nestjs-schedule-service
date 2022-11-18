@@ -45,8 +45,7 @@ export class MonitorService {
             }));
             return weekLogs;
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -65,8 +64,7 @@ export class MonitorService {
             }
             this.taskService.create(task);
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 };

@@ -8,7 +8,7 @@ export enum dateIntervalEnum {
 };
 
 export class QueryDto {
-    @ApiProperty({ default: '2022/11/17' })
+    @ApiProperty({ default: new Date().toLocaleDateString() })
     startDate: string;
 
     @ApiProperty({ enum: Object.keys(dateIntervalEnum) })

@@ -29,11 +29,12 @@ const {
             imports: [JsonModule, LoggerModule],
             inject: [JsonService, LoggerService],
             useFactory: async (jsonService: JsonService, logger: LoggerService) => {
-                const postgresConfig: DatabaseConnectionDto = jsonService.read(SETUP_ALIAS);
+                const postgresConfig: DatabaseConnectionDto = await jsonService.read(SETUP_ALIAS);
                 const material = {
                     connectionName: CONNECTION_NAME,
                     config: postgresConfig
                 };
+                logger.setContext(CONNECTION_NAME);
                 logger.factoryDebug(material);
                 const { IP, port, account, password, DBName } = postgresConfig;
                 return {

@@ -1,6 +1,3 @@
-//import packages
-import { ApiProperty } from "@nestjs/swagger";
-
 export class MessageMQCLIDto {
     jsonrpc: string;
     method: string;

@@ -24,28 +24,26 @@ export class JsonService {
     };
     private readonly configFile = join(__dirname, '..', '..', '..', 'setup', 'setup.json');
 
-    readAll() {
+    readAll(): string {
         try {
             this.logger.serviceDebug(READALL_METHOD);
             return fs.readFileSync(this.configFile, 'utf8');
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
-    read(data: string) {
+    async read<T>(data: string): Promise<T> {
         try {
             this.logger.serviceDebug(READ_METHOD);
             const config: SaveSetupDto = JSON.parse(this.readAll());
             return config[data];
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
-        }
+            throw err;
+        };
     };
 
-    async save(data: SaveSetupDto) {
+    async save(data: SaveSetupDto): Promise<void> {
         try {
             this.logger.serviceDebug(SAVE_METHOD);
             let config = JSON.parse(this.readAll());
@@ -53,10 +51,8 @@ export class JsonService {
                 config[key] = data[key];
             });
             fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
-            return { results: 'Success' };
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 };

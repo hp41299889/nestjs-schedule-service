@@ -29,35 +29,51 @@ export class ExecutionLogService {
             this.logger.serviceDebug(QUERY_METHOD);
             const { startDate, dateInterval } = data;
             const nowDay = new Date(startDate);
-            let start: Date;
-            let end: Date;
-            let documents: ScheduleExecutionLog[]
             switch (dateInterval) {
                 case 'day': {
-                    start = new Date(nowDay.setDate(nowDay.getDate() - 1));
+                    const start = new Date(nowDay.setDate(nowDay.getDate() - 1));
                     const endDate = new Date(start);
-                    end = new Date(endDate.setHours(23, 59, 59, 999));
+                    const end = new Date(endDate.setHours(23, 59, 59, 999));
                     const period = {
                         start: start,
                         end: end
                     };
-                    documents = await this.scheduleExecutionLogModel.readPeriod(period);
-                    break;
+                    return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
                 case 'week': {
-                    break;
+                    const start = new Date(nowDay.setDate(nowDay.getDate() - 7 - nowDay.getDay() + 1));
+                    const endDate = new Date(start);
+                    const end = new Date(new Date(endDate.setDate(start.getDate() + 6)).setHours(23, 59, 59, 999));
+                    const period = {
+                        start: start,
+                        end: end
+                    };
+                    return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
                 case 'month': {
-                    break;
+                    const start = new Date(new Date(nowDay.setMonth(nowDay.getMonth() - 1)).setDate(1));
+                    const endDate = new Date(start);
+                    const endDay = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+                    const end = new Date(endDay.setHours(23, 59, 59, 999));
+                    const period = {
+                        start: start,
+                        end: end
+                    };
+                    return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
                 case 'year': {
-                    break;
+                    const start = new Date(nowDay.getFullYear() - 1, 0, 1);
+                    const endDate = new Date(start);
+                    const end = new Date(endDate.getFullYear(), 11, 31, 23, 59, 59, 999);
+                    const period = {
+                        start: start,
+                        end: end
+                    };
+                    return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
             };
-            return documents;
         } catch (err) {
-            this.logger.errorMessage(err);
-            throw new BadRequestException(err);
+            throw err;
         };
     };
 };

@@ -1,6 +1,6 @@
 //import packages
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, SchedulerRegistry, Interval } from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
+import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 
 //import constants
@@ -12,6 +12,7 @@ import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecution
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 //import services
 import { RabbitmqService } from '../rabbitmq/rabbitmq.service';
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     CREATE_METHOD,        //
@@ -29,16 +30,18 @@ const {
 @Injectable()
 export class TaskService {
     constructor(
+        private readonly logger: LoggerService,
         private readonly schedulerRegistry: SchedulerRegistry,
         private readonly rabbitmqService: RabbitmqService,
         private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel
-    ) { };
-    private readonly logger = new Logger(TaskService.name);
+    ) {
+        this.logger.setContext(TaskService.name);
+    };
 
     create(data: CreateTaskDto): void {
-        const { scheduleID, scheduleName, scheduleType, cycle, regular } = data;
-        this.logger.debug(`${CREATE_METHOD}`);
         try {
+            this.logger.serviceDebug(`${CREATE_METHOD}`);
+            const { scheduleID, scheduleName, scheduleType, cycle, regular } = data;
             if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                 cycle.forEach((item, index, array) => {
                     const executeTime = Number(this.splitExecuteTime(scheduleType, item));
@@ -53,6 +56,11 @@ export class TaskService {
                             processStatus: 'ok'
                         };
                         this.scheduleExecutionLogModel.create(createdLog);
+                        const message = {
+                            pattern: data.active,
+                            message: data
+                        };
+                        this.rabbitmqService.sendMessage(message);
                     };
                     const interval = setInterval(task, executeTime);
                     this.schedulerRegistry.addInterval(`${scheduleName}_${item}`, interval);
@@ -71,26 +79,27 @@ export class TaskService {
                             processStatus: 'ok'
                         };
                         this.scheduleExecutionLogModel.create(createdLog);
+                        const message = {
+                            pattern: data.active,
+                            message: data
+                        };
+                        this.rabbitmqService.sendMessage(message);
                     });
                     this.schedulerRegistry.addCronJob(`${scheduleName}_${item}`, task);
                     task.start();
                 });
+            } else {
+                throw 'scheduleType error';
             };
-            const message = {
-                pattern: CREATE_PATTERN,
-                message: data
-            };
-            this.rabbitmqService.sendMessage(message);
         } catch (err) {
-            this.logger.error(err);
+            throw err;
         };
     };
 
     async update(data: UpdateTaskDto): Promise<void> {
         try {
-            this.logger.debug(`${UPDATE_METHOD}`);
+            this.logger.serviceDebug(`${UPDATE_METHOD}`);
             const { oldTask, newData } = data;
-            // const newTask: CreateTaskDto = { ...oldTask };
             const newTask: CreateTaskDto = {
                 commandSource: oldTask.commandSource,
                 scheduleName: oldTask.scheduleName,
@@ -104,48 +113,47 @@ export class TaskService {
             });
             await this.delete(oldTask);
             this.create(newTask);
-            const message = {
-                pattern: UPDATE_PATTERN,
-                message: data
-            };
-            this.rabbitmqService.sendMessage(message);
         } catch (err) {
-            this.logger.error(err);
-            return err;
+            throw err;
         };
     };
 
     async delete(data: DeleteTaskDto): Promise<void> {
         try {
-            this.logger.debug(`${DELETE_METHOD}`);
+            this.logger.serviceDebug(`${DELETE_METHOD}`);
             const { scheduleName, scheduleType } = data;
             if (scheduleType === SCHEDULE_TYPE_CYCLE) {
-                this.schedulerRegistry.deleteInterval(scheduleName);
+                const { cycle } = data;
+                cycle.forEach((item, index, array) => {
+                    this.schedulerRegistry.deleteInterval(`${scheduleName}_${item}`);
+                });
             } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
-                this.schedulerRegistry.deleteCronJob(scheduleName);
+                const { regular } = data;
+                regular.forEach((item, index, array) => {
+                    this.schedulerRegistry.deleteCronJob(`${scheduleName}_${item}`);
+                });
             };
-            const message = {
-                pattern: DELETE_PATTERN,
-                message: data
-            }
-            this.rabbitmqService.sendMessage(message);
         } catch (err) {
-            this.logger.error(err);
+            throw err;
         };
     };
 
     splitExecuteTime(schduleType: string, cycle?: string, regular?: string): string | number {
-        if (schduleType === SCHEDULE_TYPE_CYCLE) {
-            const cycleSplit = cycle.split('#')[1].split('/');
-            const hour = Number(cycleSplit[0]) * 1000 * 60 * 60;
-            const minute = Number(cycleSplit[1]) * 1000 * 60;
-            return hour + minute;
-        } else if (schduleType === SCHEDULE_TYPE_REGULAR) {
-            const regularSplit = regular.split('#')[1].split('/');
-            const weekday = regularSplit[0];
-            const hour = regularSplit[1];
-            const minute = regularSplit[2];
-            return `0 ${minute} ${hour} * * ${weekday}`;
+        try {
+            if (schduleType === SCHEDULE_TYPE_CYCLE) {
+                const cycleSplit = cycle.split('#')[1].split('/');
+                const hour = Number(cycleSplit[0]) * 1000 * 60 * 60;
+                const minute = Number(cycleSplit[1]) * 1000 * 60;
+                return hour + minute;
+            } else if (schduleType === SCHEDULE_TYPE_REGULAR) {
+                const regularSplit = regular.split('#')[1].split('/');
+                const weekday = regularSplit[0];
+                const hour = regularSplit[1];
+                const minute = regularSplit[2];
+                return `0 ${minute} ${hour} * * ${weekday}`;
+            };
+        } catch (err) {
+            throw err;
         };
     };
 };

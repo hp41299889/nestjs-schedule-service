@@ -21,7 +21,8 @@ export class LoggerService extends ConsoleLogger {
     };
 
     factoryDebug(data: any) {
-        this.debug(`${FACTORY_DEBUG} ${{ data }}`);
+        const { connectionName, config } = data;
+        this.debug(`${FACTORY_DEBUG} ${connectionName}`, { config });
     };
 
     errorMessage(data: any) {

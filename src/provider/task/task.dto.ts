@@ -3,6 +3,7 @@ import { CreateScheduleDto, UpdateScheduleDto } from "../schedule/schedule.dto";
 
 export class CreateTaskDto extends CreateScheduleDto {
     scheduleID?: number;
+    active?: string;
 };
 
 export class UpdateTaskDto {
@@ -13,4 +14,6 @@ export class UpdateTaskDto {
 export class DeleteTaskDto {
     scheduleName: string;
     scheduleType: string;
+    cycle?: string[];
+    regular?: string[];
 };

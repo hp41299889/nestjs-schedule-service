@@ -35,8 +35,7 @@ export class SetupService {
             this.logger.serviceDebug(READ_METHOD);
             return this.jsonService.readAll();
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -45,8 +44,7 @@ export class SetupService {
             this.logger.debug(POSTGRESCONNECTTEST_METHOD);
             return this.databaseService.testPostgresConnection(data);
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -55,8 +53,7 @@ export class SetupService {
             this.logger.debug(MONGOCONNECTTEST_METHOD);
             return this.databaseService.testMongoConnection(data);
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -70,8 +67,7 @@ export class SetupService {
                 return 'pm2 not working';
             };
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
         // should call restart server
         // this.restart();

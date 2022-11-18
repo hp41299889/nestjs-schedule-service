@@ -29,18 +29,21 @@ export class ScheduleService {
         private readonly taskService: TaskService
     ) {
         this.logger.setContext(ScheduleService.name);
-    }
+    };
 
     async create(data: CreateScheduleDto): Promise<object> {
         try {
             this.logger.serviceDebug(CREATE_METHOD);
             await this.scheduleSetupModel.create(data);
             const target = await this.scheduleSetupModel.read(data);
-            this.taskService.create(target);
+            const task = {
+                active: 'create',
+                ...target
+            };
+            this.taskService.create(task);
             return { results: 'Success' };
         } catch (err) {
-            this.logger.error(err);
-            return err;
+            throw err;
         };
     };
 
@@ -49,9 +52,8 @@ export class ScheduleService {
             this.logger.serviceDebug(READALL_METHOD);
             return await this.scheduleSetupModel.readAll();
         } catch (err) {
-            this.logger.error(err);
-            return err;
-        }
+            throw err;
+        };
     };
 
     async update(data: UpdateScheduleDto): Promise<object> {
@@ -63,12 +65,15 @@ export class ScheduleService {
                 oldTask: target,
                 newData: data
             };
-            await this.taskService.update(payload);
             await this.scheduleSetupModel.update(data);
+            const task = {
+                active: 'update',
+                ...payload
+            };
+            await this.taskService.update(task);
             return { results: 'Success' };
         } catch (err) {
-            this.logger.error(err);
-            return err;
+            throw err;
         };
     };
 
@@ -81,12 +86,15 @@ export class ScheduleService {
                 scheduleName: scheduleName,
                 scheduleType: scheduleType
             };
-            await this.taskService.delete(targetTask);
             await this.scheduleSetupModel.delete(target);
+            const task = {
+                active: 'delete',
+                ...targetTask
+            };
+            await this.taskService.delete(task);
             return { results: 'Success' };
         } catch (err) {
-            this.logger.error(err);
-            return err;
+            throw err;
         };
     };
 

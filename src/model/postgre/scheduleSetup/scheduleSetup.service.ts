@@ -46,8 +46,7 @@ export class ScheduleSetupModel {
             schedule.MQCLI = MQCLI;
             await this.datasource.manager.save(schedule);
         } catch (err) {
-            this.logger.error(err);
-            return err;
+            throw err;
         };
     };
 
@@ -57,8 +56,7 @@ export class ScheduleSetupModel {
             const rows = await this.datasource.manager.find(ScheduleSetup);
             return rows;
         } catch (err) {
-            this.logger.error(err);
-            return err;
+            throw err;
         };
     };
 
@@ -71,8 +69,7 @@ export class ScheduleSetupModel {
             const row = await this.datasource.manager.findOneBy(ScheduleSetup, data);
             return row;
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -94,8 +91,7 @@ export class ScheduleSetupModel {
             target.MQCLI = MQCLI;
             await this.datasource.manager.save(target);
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 
@@ -104,8 +100,7 @@ export class ScheduleSetupModel {
             this.logger.serviceDebug(DELETE_METHOD);
             await this.datasource.manager.remove(data);
         } catch (err) {
-            this.logger.errorMessage(err);
-            return err;
+            throw err;
         };
     };
 };
