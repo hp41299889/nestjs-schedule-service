@@ -46,10 +46,10 @@ export class SetupController {
     };
 
     @Post(POSTGRESCONNECTTEST_ROUTES)
-    postgreConnectTest(@Body() data: DatabaseConnectionDto) {
+    async postgreConnectTest(@Body() data: DatabaseConnectionDto) {
         try {
             this.logger.controllerDebug(POSTGRESCONNECTTEST_ROUTES);
-            return this.setupService.postgreConnectTest(data);
+            return await this.setupService.postgreConnectTest(data);
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);

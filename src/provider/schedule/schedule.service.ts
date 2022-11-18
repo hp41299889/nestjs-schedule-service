@@ -81,10 +81,12 @@ export class ScheduleService {
         try {
             this.logger.serviceDebug(DELETE_METHOD);
             const target = await this.scheduleSetupModel.read(data);
-            const { scheduleName, scheduleType } = target;
+            const { scheduleName, scheduleType, cycle, regular } = target;
             const targetTask = {
                 scheduleName: scheduleName,
-                scheduleType: scheduleType
+                scheduleType: scheduleType,
+                cycle: cycle,
+                regular: regular
             };
             await this.scheduleSetupModel.delete(target);
             const task = {

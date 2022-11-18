@@ -23,18 +23,27 @@ export class DatabaseService {
     };
 
     async testPostgresConnection(data: DatabaseConnectionDto) {
-        this.logger.serviceDebug(TESTPOSTGRESCONNECTION_METHOD);
-        const { IP, port, account, password, DBName } = data;
-        return createConnection({
-            type: 'postgres',
-            username: account,
-            password: password,
-            host: IP,
-            port: +port,
-            database: DBName
-        }).then(async connection => {
-            await connection.close();
-        });
+        try {
+            this.logger.serviceDebug(TESTPOSTGRESCONNECTION_METHOD);
+            const { IP, port, account, password, DBName } = data;
+            const connection = await createConnection({
+                type: 'postgres',
+                username: account,
+                password: password,
+                host: IP,
+                port: +port,
+                database: DBName
+            });
+            if (!connection) {
+
+            } else {
+                console.log(connection);
+                await connection.destroy();
+                return { results: 'Success' };
+            };
+        } catch (err) {
+            throw err;
+        };
     };
 
     async testMongoConnection(data: DatabaseConnectionDto) {

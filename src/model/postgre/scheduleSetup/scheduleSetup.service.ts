@@ -86,6 +86,8 @@ export class ScheduleSetupModel {
             target.commandSource = commandSource;
             target.scheduleName = scheduleName;
             target.scheduleType = scheduleType;
+            target.cycle = null;
+            target.regular = null;
             target.regular = regular;
             target.cycle = cycle;
             target.MQCLI = MQCLI;

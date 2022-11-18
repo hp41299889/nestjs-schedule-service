@@ -39,10 +39,10 @@ export class SetupService {
         };
     };
 
-    postgreConnectTest(data: DatabaseConnectionDto) {
+    async postgreConnectTest(data: DatabaseConnectionDto) {
         try {
             this.logger.debug(POSTGRESCONNECTTEST_METHOD);
-            return this.databaseService.testPostgresConnection(data);
+            return await this.databaseService.testPostgresConnection(data);
         } catch (err) {
             throw err;
         };

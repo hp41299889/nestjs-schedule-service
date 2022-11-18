@@ -31,11 +31,18 @@ export class MonitorService {
     async read() {
         try {
             this.logger.serviceDebug(READ_METHOD);
+            const nowDay = new Date();
+            const startDate = new Date(nowDay.setDate(nowDay.getDate() - nowDay.getDay() + 1));
+            const start = new Date(startDate.setHours(0, 0, 0, 0));
+            const temp = new Date(start);
+            const end = new Date(new Date(temp.setDate(temp.getDate() + 6)).setHours(23, 59, 59, 999));
+            const period = {
+                start: start,
+                end: end
+            };
             const schedules = await this.scheduleSetupModel.readAll();
             const weekLogs = await Promise.all(schedules.map(async schedule => {
-                //TODO
-                //schedule.scheduleID
-                const documents = await this.scheduleExecutionLogModel.readPeriod(null);
+                const documents = await this.scheduleExecutionLogModel.readPeriod(period);
                 return {
                     scheduleID: schedule.scheduleID,
                     scheduleType: schedule.scheduleType,
