@@ -15,6 +15,7 @@ import { LoggerService } from 'src/common/logger/logger.service';
 const {
     API_TAGS,       //tag for Swagger UI
     API_ROUTES,     //prefix routes for controller
+    QUERY_ROUTES,   //query
     QUERY_METHOD,   //query()
 } = CONTROLLER;
 
@@ -28,7 +29,7 @@ export class ExecutionLogController {
         this.logger.setContext(ExecutionLogController.name);
     };
 
-    @Post()
+    @Post(QUERY_ROUTES)
     query(@Body() data: QueryDto): Promise<ScheduleExecutionLog[]> {
         try {
             this.logger.controllerDebug(QUERY_METHOD);

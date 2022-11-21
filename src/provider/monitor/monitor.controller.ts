@@ -5,7 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 //import constants
 import { CONTROLLER } from './monitor.constants';
 //import dtos
-import { ResendMonitorDto } from './monitor.dto';
+import { ResendMonitorDto, WeekLogsDto } from './monitor.dto';
 //import services
 import { MonitorService } from './monitor.service';
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -27,7 +27,7 @@ export class MonitorController {
     };
 
     @Get(READ_ROUTES)
-    read() {
+    read(): Promise<WeekLogsDto[]> {
         try {
             this.logger.controllerDebug(READ_ROUTES);
             return this.monitorService.read();
@@ -38,10 +38,11 @@ export class MonitorController {
     };
 
     @Post(RESEND_ROUTES)
-    resend(@Body() data: ResendMonitorDto) {
+    resend(@Body() data: ResendMonitorDto): object {
         try {
             this.logger.controllerDebug(RESEND_ROUTES);
-            return this.monitorService.resend(data);
+            this.monitorService.resend(data);
+            return { results: 'Success' };
         } catch (err) {
             this.logger.errorMessage(err);
             return err;

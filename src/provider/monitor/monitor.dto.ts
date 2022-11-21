@@ -11,7 +11,7 @@ export class WeekLogsDto {
 
 export class ResendMonitorDto {
     @ApiProperty()
-    scheduleID: string;
+    scheduleID: number;
 
     @ApiProperty()
     scheduleName: string;

@@ -5,13 +5,15 @@ import { Injectable } from '@nestjs/common';
 import { SERVICE } from './monitor.constants';
 //import dtos
 import { CreateTaskDto } from '../task/task.dto';
+import { ResendMonitorDto, WeekLogsDto } from './monitor.dto';
 //import models
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 //import services
-import { TaskService } from '../task/task.service';
 import { LoggerService } from 'src/common/logger/logger.service';
-import { WeekLogsDto } from './monitor.dto';
+import { TimeHelperService } from 'src/util/time/timeHelper.service';
+import { JobQueueService } from '../jobQueue/job.service';
+import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 
 const {
     READ_METHOD,    //read()
@@ -24,7 +26,8 @@ export class MonitorService {
         private readonly logger: LoggerService,
         private readonly scheduleSetupModel: ScheduleSetupModel,
         private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel,
-        private readonly taskService: TaskService
+        private readonly timeHelperService: TimeHelperService,
+        private readonly jobQueueService: JobQueueService
     ) {
         this.logger.setContext(MonitorService.name);
     };
@@ -32,15 +35,7 @@ export class MonitorService {
     async read(): Promise<WeekLogsDto[]> {
         try {
             this.logger.serviceDebug(READ_METHOD);
-            const nowDay = new Date();
-            const startDate = new Date(nowDay.setDate(nowDay.getDate() - nowDay.getDay() + 1));
-            const start = new Date(startDate.setHours(0, 0, 0, 0));
-            const temp = new Date(start);
-            const end = new Date(new Date(temp.setDate(temp.getDate() + 6)).setHours(23, 59, 59, 999));
-            const period = {
-                start: start,
-                end: end
-            };
+            const period = this.timeHelperService.getWeekPeriod();
             const schedules = await this.scheduleSetupModel.readAll();
             const weekLogs: WeekLogsDto[] = await Promise.all(schedules.map(async schedule => {
                 const documents = await this.scheduleExecutionLogModel.readPeriod(period);
@@ -57,20 +52,20 @@ export class MonitorService {
         };
     };
 
-    resend(data: any) {
-        //TODO
+    resend(data: ResendMonitorDto): void {
         try {
             this.logger.serviceDebug(RESEND_METHOD);
-            const task: CreateTaskDto = {
-                scheduleID: data.scheduleID,
-                scheduleName: data.scheduleName,
-                scheduleType: data.scheduleType,
-                MQCLI: data.MQCLI,
-                commandSource: '',
-                cycle: [],
-                regular: []
-            }
-            this.taskService.create(task);
+            const document: CreateScheduleExecutionLogDto = {
+                ...data,
+                processDatetime: new Date(),
+                processStatus: 'ok'
+            };
+            this.scheduleExecutionLogModel.create(document);
+            const message = {
+                pattern: 'resend',
+                message: data
+            };
+            this.jobQueueService.sendMessage(message);
         } catch (err) {
             throw err;
         };

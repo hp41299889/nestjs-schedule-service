@@ -9,11 +9,13 @@ import { ExecutionLogController } from './executionLog.controller';
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
 //import services
 import { ExecutionLogService } from './executionLog.service';
+import { TimeHelperModule } from 'src/util/time/timeHelper.module';
 
 @Module({
     imports: [
         LoggerModule,
-        ScheduleExecutionLogModelModule
+        ScheduleExecutionLogModelModule,
+        TimeHelperModule
     ],
     controllers: [ExecutionLogController],
     providers: [ExecutionLogService],
