@@ -14,8 +14,8 @@ import { JsonService } from "src/config/json/json.service";
 import { LoggerService } from "src/common/logger/logger.service";
 
 const {
-    CONNECTION_NAME,    //
-    SETUP_TAG,          //
+    CONNECTION_NAME,    //connection name for MongooseModule
+    SETUP_ALIAS,        //alias for JsonService
 } = MODULE;
 
 @Module({
@@ -25,7 +25,7 @@ const {
             imports: [JsonModule, LoggerModule],
             inject: [JsonService, LoggerService],
             useFactory: async (jsonService: JsonService, logger: LoggerService) => {
-                const mongoConfig: DatabaseConnectionDto = await jsonService.read(SETUP_TAG);
+                const mongoConfig: DatabaseConnectionDto = await jsonService.read(SETUP_ALIAS);
                 const material = {
                     connectionName: CONNECTION_NAME,
                     config: mongoConfig

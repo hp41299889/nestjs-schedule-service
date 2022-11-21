@@ -11,10 +11,11 @@ import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetu
 //import services
 import { TaskService } from '../task/task.service';
 import { LoggerService } from 'src/common/logger/logger.service';
+import { WeekLogsDto } from './monitor.dto';
 
 const {
-    READ_METHOD,
-    RESEND_METHOD
+    READ_METHOD,    //read()
+    RESEND_METHOD,  //resend()
 } = SERVICE;
 
 @Injectable()
@@ -28,7 +29,7 @@ export class MonitorService {
         this.logger.setContext(MonitorService.name);
     };
 
-    async read() {
+    async read(): Promise<WeekLogsDto[]> {
         try {
             this.logger.serviceDebug(READ_METHOD);
             const nowDay = new Date();
@@ -41,13 +42,13 @@ export class MonitorService {
                 end: end
             };
             const schedules = await this.scheduleSetupModel.readAll();
-            const weekLogs = await Promise.all(schedules.map(async schedule => {
+            const weekLogs: WeekLogsDto[] = await Promise.all(schedules.map(async schedule => {
                 const documents = await this.scheduleExecutionLogModel.readPeriod(period);
                 return {
                     scheduleID: schedule.scheduleID,
                     scheduleType: schedule.scheduleType,
                     schedule: schedule.cycle || schedule.regular,
-                    weeklog: documents
+                    weekLog: documents
                 };
             }));
             return weekLogs;

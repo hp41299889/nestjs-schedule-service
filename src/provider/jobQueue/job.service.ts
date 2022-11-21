@@ -6,15 +6,15 @@ import { timeout } from 'rxjs';
 //import constants
 import { SERVICE } from './job.constants';
 //import dtos
-import { BuildMessageDto, SendMessageDto } from './job.dto';
+import { BuildMessageDto, JsonrpcMessageDto, SendMessageDto } from './job.dto';
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    CONNECTION_NAME,      //
-    BASEMETHOD,           //    
-    BUILDMESSAGE_METHOD,  //
-    SENDMESSAGE_METHOD,   //
+    CONNECTION_NAME,      //connection name for JobQueue
+    BASEMETHOD,           //baseMethod for JsonrpcMessageDto
+    BUILDMESSAGE_METHOD,  //buildMessage()
+    SENDMESSAGE_METHOD,   //sendMessage()
 } = SERVICE;
 
 @Injectable()
@@ -29,7 +29,7 @@ export class JobQueueService {
 
     private messageID = 1;
 
-    async buildMessage(data: BuildMessageDto) {
+    async buildMessage(data: BuildMessageDto): Promise<JsonrpcMessageDto> {
         try {
             this.logger.serviceDebug(BUILDMESSAGE_METHOD);;
             const { pattern, message } = data;
@@ -44,7 +44,7 @@ export class JobQueueService {
         };
     };
 
-    async sendMessage(data: SendMessageDto) {
+    async sendMessage(data: SendMessageDto): Promise<void> {
         try {
             this.logger.serviceDebug(SENDMESSAGE_METHOD);
             const { pattern } = data;

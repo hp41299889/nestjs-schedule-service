@@ -7,10 +7,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { SERVICE } from './swagger.constants';
 
 const {
-    TITLE,
-    DESCRIBE,
-    VERSION,
-    ROUTES
+    TITLE,      //title
+    DESCRIBE,   //describe
+    VERSION,    //version
+    ROUTES      //routes
 } = SERVICE;
 
 @Injectable()

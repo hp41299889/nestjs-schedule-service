@@ -13,7 +13,7 @@ import { ScheduleExecutionLog, ScheduleExecutionLogSchema } from './scheduleExec
 import { ScheduleExecutionLogModel } from './scheduleExecutionLog.service';
 
 const {
-    CONNECTION_NAME,    //
+    CONNECTION_NAME,    //connection name for MongooseModule
 } = MODULE;
 
 @Module({

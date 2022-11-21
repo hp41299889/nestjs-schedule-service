@@ -16,16 +16,13 @@ import { JobQueueService } from '../jobQueue/job.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    CREATE_METHOD,        //
-    CREATE_PATTERN,         //
-    UPDATE_METHOD,        //
-    UPDATE_PATTERN,         //
-    DELETE_METHOD,        //
-    DELETE_PATTERN,         //
-    SCHEDULE_TYPE_CYCLE,    //
-    SCHEDULE_TYPE_REGULAR,  //
-    TASK_MESSAGE_CYCLE,     //
-    TASK_MESSAGE_REGULAR,   //
+    CREATE_METHOD,          //create()
+    UPDATE_METHOD,          //update()
+    DELETE_METHOD,          //delete()
+    SCHEDULE_TYPE_CYCLE,    //cycle
+    SCHEDULE_TYPE_REGULAR,  //regular
+    TASK_MESSAGE_CYCLE,     //Message when cycle task execute
+    TASK_MESSAGE_REGULAR,   //Message when regular task execute
 } = SERVICE;
 
 @Injectable()

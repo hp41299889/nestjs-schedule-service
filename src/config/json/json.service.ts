@@ -10,9 +10,9 @@ import { SaveSetupDto } from 'src/provider/setup/setup.dto';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    READALL_METHOD, //
-    READ_METHOD,    //
-    SAVE_METHOD,    //
+    READALL_METHOD, //readAll()
+    READ_METHOD,    //read()
+    SAVE_METHOD,    //save()
 } = SERVICE;
 
 @Injectable()

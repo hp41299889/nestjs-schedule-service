@@ -1,5 +1,5 @@
 //import packages
-import { ApiProperty, ApiPropertyOptional, IntersectionType } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateScheduleDto {
     @ApiProperty({ default: 'Swagger' })

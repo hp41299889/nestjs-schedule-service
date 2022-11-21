@@ -6,14 +6,16 @@ import { ApiTags } from '@nestjs/swagger';
 import { CONTROLLER } from './executionLog.constants';
 //import dtos
 import { QueryDto, dateIntervalEnum } from './executionLog.dto';
+//import models
+import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema';
 //import services
 import { ExecutionLogService } from './executionLog.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    API_TAGS,
-    API_ROUTES,
-    QUERY_METHOD,   //
+    API_TAGS,       //tag for Swagger UI
+    API_ROUTES,     //prefix routes for controller
+    QUERY_METHOD,   //query()
 } = CONTROLLER;
 
 @ApiTags(API_TAGS)
@@ -27,7 +29,7 @@ export class ExecutionLogController {
     };
 
     @Post()
-    query(@Body() data: QueryDto) {
+    query(@Body() data: QueryDto): Promise<ScheduleExecutionLog[]> {
         try {
             this.logger.controllerDebug(QUERY_METHOD);
             data.dateInterval = dateIntervalEnum[data.dateInterval];

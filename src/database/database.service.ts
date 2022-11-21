@@ -10,8 +10,8 @@ import { DatabaseConnectionDto } from 'src/provider/setup/setup.dto';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    TESTMONGOCONNECTION_METHOD,     //
-    TESTPOSTGRESCONNECTION_METHOD,  //
+    TESTMONGOCONNECTION_METHOD,     //testMongoConnection()
+    TESTPOSTGRESCONNECTION_METHOD,  //testPostgresConnection()
 } = SERVICE;
 
 @Injectable()
@@ -37,7 +37,6 @@ export class DatabaseService {
             if (!connection) {
                 throw 'connect fail';
             } else {
-                console.log(connection);
                 await connection.destroy();
                 return { results: 'Success' };
             };
@@ -61,7 +60,6 @@ export class DatabaseService {
             if (!connection) {
                 throw 'connect fail';
             } else {
-                console.log(connection);
                 await connection.destroy();
                 return { results: 'Success' };
             };

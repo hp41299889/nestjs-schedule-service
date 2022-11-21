@@ -1,11 +1,10 @@
 import { CreateScheduleDto } from "../schedule/schedule.dto";
 
-export class MessageMQCLIDto {
+export class JsonrpcMessageDto {
     jsonrpc: string;
     method: string;
     params: object;
     id: number;
-    cmd: string;
 };
 
 export class SendMessageDto {

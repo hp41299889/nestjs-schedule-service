@@ -8,8 +8,6 @@ export const CONTROLLER = {
 };
 
 export const SERVICE = {
-    DEBUG_MESSAGE: 'Trying call service',
-    DEBUG_MESSAGE_SUCCESS: 'Function works',
     CREATE_METHOD: 'create()',
     READALL_METHOD: 'readAll()',
     UPDATE_METHOD: 'update()',

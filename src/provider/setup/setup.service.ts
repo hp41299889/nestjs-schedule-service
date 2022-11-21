@@ -12,12 +12,10 @@ import { DatabaseService } from 'src/database/database.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    DEBUG_MESSAGE,                  //
-    DEBUG_MESSAGE_SUCCESS,          //
-    READ_METHOD,                  //
-    POSTGRESCONNECTTEST_METHOD,   //
-    MONGOCONNECTTEST_METHOD,      //
-    SAVE_METHOD,                  //
+    READ_METHOD,                  //read()
+    POSTGRESCONNECTTEST_METHOD,   //postgreConnectTest()
+    MONGOCONNECTTEST_METHOD,      //mongoConnectTest()
+    SAVE_METHOD,                  //save()
 } = SERVICE;
 
 @Injectable()
@@ -48,7 +46,7 @@ export class SetupService {
         };
     };
 
-    mongoConnectTest(data: DatabaseConnectionDto): Promise<object> {
+    async mongoConnectTest(data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.debug(MONGOCONNECTTEST_METHOD);
             return this.databaseService.testMongoConnection(data);
@@ -57,7 +55,7 @@ export class SetupService {
         };
     };
 
-    async save(data: SaveSetupDto) {
+    async save(data: SaveSetupDto): Promise<string> {
         try {
             this.logger.debug(SAVE_METHOD);
             await this.jsonService.save(data);
@@ -70,7 +68,7 @@ export class SetupService {
             throw err;
         };
         // should call restart server
-        // this.restart();
+        this.restart();
     };
 
     async restart() {

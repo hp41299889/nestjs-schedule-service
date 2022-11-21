@@ -15,8 +15,8 @@ import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-  CONNECTION_NAME, //
-  SETUP_ALIAS,  //
+  CONNECTION_NAME,  //connection name for JobQueue
+  SETUP_ALIAS,      //alias for JsonService
 } = MODULE;
 
 @Module({
@@ -32,7 +32,7 @@ const {
           const material = {
             connectionName: CONNECTION_NAME,
             config: rabbitmqConfig
-          }
+          };
           logger.setContext(CONNECTION_NAME);
           logger.factoryDebug(material);
           return ClientProxyFactory.create({
@@ -45,7 +45,7 @@ const {
                 durable: true
               }
             }
-          })
+          });
         } catch (err) {
           logger.errorMessage(err);
           return err;

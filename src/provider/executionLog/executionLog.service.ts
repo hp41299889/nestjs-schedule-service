@@ -12,7 +12,7 @@ import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/sched
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    QUERY_METHOD    //
+    QUERY_METHOD    //query()
 } = SERVICE;
 
 @Injectable()
@@ -23,7 +23,7 @@ export class ExecutionLogService {
     ) {
         this.logger.setContext(ExecutionLogService.name);
     };
-
+    //TODO 前一周為當天往前推算7天 ...
     async query(data: QueryDto): Promise<ScheduleExecutionLog[]> {
         try {
             this.logger.serviceDebug(QUERY_METHOD);

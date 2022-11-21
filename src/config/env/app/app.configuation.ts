@@ -5,7 +5,7 @@ import { registerAs } from "@nestjs/config";
 import { CONFIG } from './app.constants';
 
 const {
-    CONFIG_ALIAS,   //
+    CONFIG_ALIAS,   //alias for ConfigModule
 } = CONFIG;
 
 export default registerAs(CONFIG_ALIAS, () => ({

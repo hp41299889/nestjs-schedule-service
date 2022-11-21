@@ -13,12 +13,12 @@ import { ScheduleSetup } from './scheduleSetup.entity';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    CONNECTION_NAME,
-    CREATE_METHOD,
-    READALL_METHOD,
-    READ_METHOD,
-    UPDATE_METHOD,
-    DELETE_METHOD,
+    CONNECTION_NAME,    //connection name for TypeOrmModule to postgres
+    CREATE_METHOD,      //create()
+    READALL_METHOD,     //readAll()
+    READ_METHOD,        //read()
+    UPDATE_METHOD,      //update()
+    DELETE_METHOD,      //delete()
 } = SERVICE;
 
 @Injectable()

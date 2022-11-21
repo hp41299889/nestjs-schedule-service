@@ -5,22 +5,24 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 //import modules
 import { JsonModule } from 'src/config/json/json.module';
 import { LoggerModule } from 'src/common/logger/logger.module';
+import { ScheduleModule } from '../schedule/schedule.module';
 //import constants
 import { MODULE } from './scheduleQueue.constants';
 //import dtos
 import { QueueConnectionDto } from '../setup/setup.dto';
+//import controllers
+import { ScheduleQueueController } from './scheduleQueue.controller';
 //import services
-// import { RabbitmqService } from './rabbitmq.service';
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    CONNECTION_NAME, //
-    SETUP_ALIAS,  //
+    CONNECTION_NAME,    //connection name for ScueduleQueue
+    SETUP_ALIAS,        //alias for JsonService
 } = MODULE;
 
 @Module({
-    imports: [JsonModule, LoggerModule],
+    imports: [JsonModule, LoggerModule, ScheduleModule],
     providers: [
         {
             provide: CONNECTION_NAME,
@@ -28,7 +30,7 @@ const {
             useFactory: async (jsonService: JsonService, logger: LoggerService) => {
                 try {
                     const rabbitmqConfig: QueueConnectionDto = await jsonService.read(SETUP_ALIAS);
-                    const { IP, port, account, password, inputQueueName, outputQueueName } = rabbitmqConfig;
+                    const { IP, port, account, password, inputQueueName } = rabbitmqConfig;
                     const material = {
                         connectionName: CONNECTION_NAME,
                         config: rabbitmqConfig
@@ -52,10 +54,8 @@ const {
                 }
             },
         },
-        // RabbitmqService,
     ],
-    exports: [
-        // RabbitmqService
-    ]
+    controllers: [ScheduleQueueController],
+    exports: []
 })
 export class ScheduleQueueModule { }

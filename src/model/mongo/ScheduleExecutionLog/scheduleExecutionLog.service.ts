@@ -14,10 +14,10 @@ import { TimeHelperService } from 'src/util/time/timeHelper.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    CONNECTION_NAME,    //
-    CREATE_METHOD,      //
-    READALL_METHOD,     //
-    READPERIOD_METHOD,  //
+    CONNECTION_NAME,    //connection name for MongooseModule
+    CREATE_METHOD,      //create()
+    READALL_METHOD,     //readAll()
+    READPERIOD_METHOD,  //readPeriod()
 } = SERVICE;
 
 @Injectable()
@@ -40,17 +40,6 @@ export class ScheduleExecutionLogModel {
             throw err;
         };
     };
-
-    // async findWeek(data: number) {
-    //     const now = new Date();
-    //     const scope = await this.timeHelperService.getWeekScope(now);
-    //     const { start, end } = scope;
-    //     const documents = this.scheduleExecutionLogModel
-    //         .find({ scheduleID: data })
-    //         .where('processDatetime').gt(Number(start)).lt(Number(end))
-    //         .exec();
-    //     return await documents;
-    // };
 
     async readPeriod(data: FindPeriodDto): Promise<ScheduleExecutionLog[]> {
         try {

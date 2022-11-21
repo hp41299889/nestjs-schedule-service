@@ -11,7 +11,7 @@ import { ScheduleSetup } from './scheduleSetup.entity';
 import { ScheduleSetupModel } from './scheduleSetup.service';
 
 const {
-    CONNECTION_NAME,    //
+    CONNECTION_NAME,    //connection name for TypeOrmModule to postgres
 } = MODULE;
 
 @Module({

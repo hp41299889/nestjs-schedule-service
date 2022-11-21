@@ -12,12 +12,12 @@ import { AuthService } from './auth.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    API_TAG,        //
-    API_ROUTES,     //
-    LOGIN_ROUTES,   //
-    LOGOUT_ROUTES,  //
-    LOGIN_METHOD,   //
-    LOGOUT_METHOD,  //
+    API_TAG,        //tag for Swagger UI
+    API_ROUTES,     //prefix routes for controller
+    LOGIN_ROUTES,   //login
+    LOGOUT_ROUTES,  //logout
+    LOGIN_METHOD,   //login()
+    LOGOUT_METHOD,  //logout()
 } = CONTROLLER;
 
 @ApiTags(API_TAG)
@@ -31,7 +31,7 @@ export class AuthController {
     };
 
     @Post(LOGIN_ROUTES)
-    async login(@Body() data: LoginDto, @Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+    async login(@Body() data: LoginDto, @Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): Promise<void> {
         try {
             this.logger.controllerDebug(LOGIN_METHOD);
             const res = await this.authService.login(data);
@@ -48,7 +48,7 @@ export class AuthController {
     };
 
     @Get(LOGOUT_ROUTES)
-    async logout(@Res() response: Response) {
+    async logout(@Res() response: Response): Promise<void> {
         try {
             this.logger.controllerDebug(LOGOUT_METHOD);
             response.redirect('../Auth/view');

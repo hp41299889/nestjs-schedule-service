@@ -13,12 +13,12 @@ import { SetupService } from './setup.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    API_TAG,                    //
-    API_ROUTES,                 //
-    READ_ROUTES,                //
-    POSTGRESCONNECTTEST_ROUTES, //
-    MONGOCONNECTTEST_ROUTES,    //
-    SAVE_ROUTES,                //
+    API_TAG,                    //tag for Swagger UI
+    API_ROUTES,                 //prefix routes for controller
+    READ_ROUTES,                //read
+    POSTGRESCONNECTTEST_ROUTES, //postgreConnectTest
+    MONGOCONNECTTEST_ROUTES,    //mongoConnectTest
+    SAVE_ROUTES,                //save
 } = CONTROLLER;
 
 @ApiTags(API_TAG)
@@ -33,7 +33,7 @@ export class SetupController {
     };
 
     @Get(READ_ROUTES)
-    read() {
+    read(): Promise<string> {
         try {
             this.logger.controllerDebug(READ_ROUTES);
             return this.setupService.read();
@@ -44,7 +44,7 @@ export class SetupController {
     };
 
     @Post(POSTGRESCONNECTTEST_ROUTES)
-    async postgreConnectTest(@Body() data: DatabaseConnectionDto) {
+    async postgreConnectTest(@Body() data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.controllerDebug(POSTGRESCONNECTTEST_ROUTES);
             return await this.setupService.postgreConnectTest(data);
@@ -55,7 +55,7 @@ export class SetupController {
     };
 
     @Post(MONGOCONNECTTEST_ROUTES)
-    mongoConnectTest(@Body() data: DatabaseConnectionDto) {
+    mongoConnectTest(@Body() data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.controllerDebug(MONGOCONNECTTEST_ROUTES);
             return this.setupService.mongoConnectTest(data);
@@ -66,7 +66,7 @@ export class SetupController {
     };
 
     @Patch(SAVE_ROUTES)
-    save(@Body() data: SaveSetupDto) {
+    save(@Body() data: SaveSetupDto): Promise<string> {
         try {
             this.logger.controllerDebug(SAVE_ROUTES);
             return this.setupService.save(data);

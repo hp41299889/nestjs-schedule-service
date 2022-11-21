@@ -7,8 +7,6 @@ import { join } from 'path';
 
 //import modules
 import { AppModule } from './app.module';
-//import dtos
-// import { AppConfigDto } from './config/json/json.dto';
 //import services
 import { SwaggerService } from './swagger/swagger.service';
 import { TaskService } from './provider/task/task.service';
@@ -34,7 +32,7 @@ async function bootstrap() {
       name: 'token',
       resave: false,
       saveUninitialized: false,
-      // cookie: { maxAge: 1000 * 60 * 10 }
+      cookie: { maxAge: 1000 * 60 * 10 }
     })
   );
 

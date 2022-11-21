@@ -10,9 +10,9 @@ import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    SETUP_ALIAS,    //
-    LOGIN_METHOD,   //
-    LOGOUT_METHOD,  //
+    SETUP_ALIAS,    //alias for JsonService
+    LOGIN_METHOD,   //login()
+    LOGOUT_METHOD,  //logout()
 } = SERVICE;
 
 @Injectable()
@@ -24,7 +24,7 @@ export class AuthService {
         this.logger.setContext(AuthService.name);
     };
 
-    async login(data: LoginDto) {
+    async login(data: LoginDto): Promise<any> {
         try {
             this.logger.serviceDebug(LOGIN_METHOD);
             const adminConfig: LoginDto = await this.jsonSerivce.read(SETUP_ALIAS);
@@ -33,17 +33,17 @@ export class AuthService {
                 if (data.password === password) {
                     return;
                 } else {
-                    return { error: 'Lonin fail, password is incorrect' };
+                    throw 'Lonin fail, password is incorrect';
                 };
             } else {
-                return { error: 'Login fail, account is incorrect' };
+                throw 'Login fail, account is incorrect';
             };
         } catch (err) {
             throw err;
         };
     };
 
-    async logout() {
+    async logout(): Promise<void> {
         try {
             this.logger.serviceDebug(LOGOUT_METHOD);
             return;

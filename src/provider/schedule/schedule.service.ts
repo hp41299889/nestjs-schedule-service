@@ -1,5 +1,5 @@
 //import packages
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 //import constants
 import { SERVICE } from './schedule.constants';
@@ -13,12 +13,10 @@ import { TaskService } from '../task/task.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    DEBUG_MESSAGE,          //
-    DEBUG_MESSAGE_SUCCESS,  //
-    CREATE_METHOD,
-    READALL_METHOD,
-    UPDATE_METHOD,
-    DELETE_METHOD,
+    CREATE_METHOD,  //create()
+    READALL_METHOD, //readAll()
+    UPDATE_METHOD,  //update()
+    DELETE_METHOD,  //delete()
 } = SERVICE;
 
 @Injectable()
@@ -99,8 +97,4 @@ export class ScheduleService {
             throw err;
         };
     };
-
-    // export() {
-
-    // };
 };

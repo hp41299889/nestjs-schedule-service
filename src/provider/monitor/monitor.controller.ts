@@ -10,10 +10,10 @@ import { ResendMonitorDto } from './monitor.dto';
 import { MonitorService } from './monitor.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 const {
-    API_TAG,        //
-    API_ROUTES,     //
-    READ_ROUTES,    //
-    RESEND_ROUTES   //
+    API_TAG,        //tag for Swagger UI
+    API_ROUTES,     //prefix routes for controller
+    READ_ROUTES,    //read
+    RESEND_ROUTES   //resend
 } = CONTROLLER;
 
 @ApiTags(API_TAG)
