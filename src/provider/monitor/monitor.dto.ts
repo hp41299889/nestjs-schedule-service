@@ -1,5 +1,7 @@
 //import packages
 import { ApiProperty } from "@nestjs/swagger";
+
+import { JsonrpcMessageDto } from "../jobQueue/jobQueue.dto";
 import { ScheduleExecutionLog } from "src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema";
 
 export class WeekLogsDto {
@@ -23,5 +25,5 @@ export class ResendMonitorDto {
     schedule: string;
 
     @ApiProperty()
-    MQCLI: string;
+    MQCLI: JsonrpcMessageDto;
 };

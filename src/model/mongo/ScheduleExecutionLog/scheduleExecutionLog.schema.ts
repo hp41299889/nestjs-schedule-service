@@ -2,6 +2,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+import { JsonrpcMessageDto } from 'src/provider/jobQueue/jobQueue.dto';
+
 export type ScheduleExecutionLogDocument = HydratedDocument<ScheduleExecutionLog>;
 
 @Schema()
@@ -25,7 +27,7 @@ export class ScheduleExecutionLog {
     schedule: string;
 
     @Prop()
-    MQCLI: string;
+    MQCLI: JsonrpcMessageDto;
 };
 
 export const ScheduleExecutionLogSchema = SchemaFactory.createForClass(ScheduleExecutionLog);

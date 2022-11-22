@@ -22,7 +22,7 @@ const {
 } = MODULE;
 
 @Module({
-    imports: [JsonModule, LoggerModule, ScheduleModule],
+    imports: [JsonModule, LoggerModule],
     providers: [
         {
             provide: CONNECTION_NAME,

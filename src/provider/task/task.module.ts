@@ -3,13 +3,14 @@ import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 
 //import modules
-import { JobQueueModule } from '../jobQueue/job.module';
+import { JobQueueModule } from '../jobQueue/jobQueue.module';
+import { LoggerModule } from 'src/common/logger/logger.module';
+import { JsonModule } from 'src/config/json/json.module';
 //import models
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 //import services
 import { TaskService } from './task.service';
-import { LoggerModule } from 'src/common/logger/logger.module';
 
 @Module({
     imports: [
@@ -17,7 +18,8 @@ import { LoggerModule } from 'src/common/logger/logger.module';
         ScheduleModule.forRoot(),
         ScheduleExecutionLogModelModule,
         ScheduleSetupModelModule,
-        JobQueueModule
+        JobQueueModule,
+        JsonModule
     ],
     providers: [TaskService],
     exports: [TaskService]

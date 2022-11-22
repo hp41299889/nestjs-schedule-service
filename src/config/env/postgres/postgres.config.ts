@@ -1,0 +1,16 @@
+//import packages
+import { registerAs } from "@nestjs/config";
+
+//import constants
+import { CONFIG } from './postgres.constants';
+
+const {
+    CONFIG_ALIAS,   //alias for ConfigModule
+} = CONFIG;
+
+export default registerAs(CONFIG_ALIAS, () => ({
+    name: process.env.APP_NAME,
+    env: process.env.APP_ENV,
+    prefix: process.env.APP_PREFIX,
+    port: process.env.APP_PORT
+}))

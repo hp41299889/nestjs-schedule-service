@@ -3,7 +3,7 @@ import { CreateScheduleDto, UpdateScheduleDto } from "../schedule/schedule.dto";
 
 export class CreateTaskDto extends CreateScheduleDto {
     scheduleID?: number;
-    pattern?: string;
+    action?: string;
 };
 
 export class UpdateTaskDto {

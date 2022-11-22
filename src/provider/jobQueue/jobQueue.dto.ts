@@ -6,12 +6,12 @@ export class JsonrpcMessageDto {
     jsonrpc: string;
     method: string;
     params: object;
-    id: number;
+    id?: number;
 };
 
-export class SendMessageDto {
-    pattern: string;
-    message: CreateScheduleDto | ResendMonitorDto;
+export class SendMessageDto extends JsonrpcMessageDto {
+    // pattern: string;
+    // message: JsonrpcMessageDto;
 };
 
 export class BuildMessageDto extends SendMessageDto {

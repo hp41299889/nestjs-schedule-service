@@ -8,7 +8,7 @@ import { SERVICE } from './setup.constants';
 import { DatabaseConnectionDto, SaveSetupDto } from './setup.dto';
 //import services
 import { JsonService } from 'src/config/json/json.service';
-import { DatabaseService } from 'src/database/database.service';
+import { ConnectionService } from 'src/database/connection/connection.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
@@ -22,7 +22,7 @@ const {
 export class SetupService {
     constructor(
         private readonly jsonService: JsonService,
-        private readonly databaseService: DatabaseService,
+        private readonly connectionService: ConnectionService,
         private readonly logger: LoggerService
     ) {
         this.logger.setContext(SetupService.name);
@@ -40,7 +40,7 @@ export class SetupService {
     async postgreConnectTest(data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.debug(POSTGRESCONNECTTEST_METHOD);
-            return await this.databaseService.testPostgresConnection(data);
+            return await this.connectionService.testPostgresConnection(data);
         } catch (err) {
             throw err;
         };
@@ -49,26 +49,24 @@ export class SetupService {
     async mongoConnectTest(data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.debug(MONGOCONNECTTEST_METHOD);
-            return this.databaseService.testMongoConnection(data);
+            return this.connectionService.testMongoConnection(data);
         } catch (err) {
             throw err;
         };
     };
 
-    async save(data: SaveSetupDto): Promise<string> {
+    async save(data: SaveSetupDto): Promise<void> {
         try {
             this.logger.debug(SAVE_METHOD);
             await this.jsonService.save(data);
             try {
                 await this.restart();
             } catch (err) {
-                return 'pm2 not working';
+                throw err;
             };
         } catch (err) {
             throw err;
         };
-        // should call restart server
-        this.restart();
     };
 
     async restart() {
@@ -79,7 +77,7 @@ export class SetupService {
             };
             pm2.start({
                 script: 'dist/main.js',
-                name: 'server',
+                name: 'ScheduleService',
             }, (err, apps) => {
                 if (err) {
                     console.error(err);
@@ -89,7 +87,7 @@ export class SetupService {
                 pm2.list((err, list) => {
                     console.log(err, list);
 
-                    pm2.restart('server', (err, proc) => {
+                    pm2.restart('ScheduleService', (err, proc) => {
                         pm2.disconnect();
                     });
                 });

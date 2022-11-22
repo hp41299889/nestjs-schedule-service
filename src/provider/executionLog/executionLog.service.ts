@@ -29,21 +29,22 @@ export class ExecutionLogService {
         try {
             this.logger.serviceDebug(QUERY_METHOD);
             const { startDate, dateInterval } = data;
+            const today = new Date(startDate);
             switch (dateInterval) {
                 case 'day': {
-                    const period = this.timeHelperServuice.getDayPeriod();
+                    const period = this.timeHelperServuice.getDayPeriod(today);
                     return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
                 case 'week': {
-                    const period = this.timeHelperServuice.getWeekPeriod();
+                    const period = this.timeHelperServuice.getWeekPeriod(today);
                     return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
                 case 'month': {
-                    const period = this.timeHelperServuice.getMonthPeriod();
+                    const period = this.timeHelperServuice.getMonthPeriod(today);
                     return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
                 case 'year': {
-                    const period = this.timeHelperServuice.getYearPeriod();
+                    const period = this.timeHelperServuice.getYearPeriod(today);
                     return await this.scheduleExecutionLogModel.readPeriod(period);
                 };
             };

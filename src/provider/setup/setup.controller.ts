@@ -55,10 +55,10 @@ export class SetupController {
     };
 
     @Post(MONGOCONNECTTEST_ROUTES)
-    mongoConnectTest(@Body() data: DatabaseConnectionDto): Promise<object> {
+    async mongoConnectTest(@Body() data: DatabaseConnectionDto): Promise<object> {
         try {
             this.logger.controllerDebug(MONGOCONNECTTEST_ROUTES);
-            return this.setupService.mongoConnectTest(data);
+            return await this.setupService.mongoConnectTest(data);
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);
@@ -66,10 +66,10 @@ export class SetupController {
     };
 
     @Patch(SAVE_ROUTES)
-    save(@Body() data: SaveSetupDto): Promise<string> {
+    save(@Body() data: SaveSetupDto): void {
         try {
             this.logger.controllerDebug(SAVE_ROUTES);
-            return this.setupService.save(data);
+            this.setupService.save(data);
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);

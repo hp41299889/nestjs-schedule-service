@@ -14,7 +14,6 @@ import { TaskService } from './provider/task/task.service';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
-    bufferLogs: true
   });
   const configService: ConfigService = app.get(ConfigService);
   const appSwagger: SwaggerService = app.get(SwaggerService);
@@ -38,9 +37,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix(prefix);
   appSwagger.setupSwagger(app);
-  await taskService.rebornTasks();
 
   await app.listen(port);
   console.log(service);
+  await taskService.rebornTasks();
 };
 bootstrap();

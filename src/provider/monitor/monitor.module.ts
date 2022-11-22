@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 //import modules
 import { LoggerModule } from 'src/common/logger/logger.module';
 import { TimeHelperModule } from 'src/util/time/timeHelper.module';
-import { JobQueueModule } from '../jobQueue/job.module';
+import { JobQueueModule } from '../jobQueue/jobQueue.module';
 //import models
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';

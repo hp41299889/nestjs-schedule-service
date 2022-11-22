@@ -1,6 +1,8 @@
 //import packages
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
+import { JsonrpcMessageDto } from "../jobQueue/jobQueue.dto";
+
 export class CreateScheduleDto {
     @ApiProperty({ default: 'Swagger' })
     commandSource: string;
@@ -17,8 +19,14 @@ export class CreateScheduleDto {
     @ApiPropertyOptional({ default: ['cycle#0/1'] })
     cycle: string[];
 
-    @ApiProperty({ default: '' })
-    MQCLI: string;
+    @ApiProperty({
+        default: {
+            jsonrpc: '2.0',
+            method: 'ScheduleServcie/ScheduleSetup/create',
+            params: {},
+        }
+    })
+    MQCLI: JsonrpcMessageDto;
 };
 
 export class ReadScheduleDto {
@@ -43,7 +51,7 @@ export class UpdateScheduleDto extends ReadScheduleDto {
     cycle: [string];
 
     @ApiPropertyOptional()
-    MQCLI: string;
+    MQCLI: JsonrpcMessageDto;
 };
 
 export class DeleteScheduleDto extends ReadScheduleDto {

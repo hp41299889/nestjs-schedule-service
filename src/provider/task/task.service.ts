@@ -12,8 +12,9 @@ import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecution
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 //import services
-import { JobQueueService } from '../jobQueue/job.service';
+import { JobQueueService } from '../jobQueue/jobQueue.service';
 import { LoggerService } from 'src/common/logger/logger.service';
+import { JsonService } from 'src/config/json/json.service';
 
 const {
     CREATE_METHOD,          //create()
@@ -32,128 +33,152 @@ export class TaskService {
         private readonly schedulerRegistry: SchedulerRegistry,
         private readonly jobQueueService: JobQueueService,
         private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel,
-        private readonly scheduleSetupModel: ScheduleSetupModel
+        private readonly scheduleSetupModel: ScheduleSetupModel,
+        private readonly jsonService: JsonService
     ) {
         this.logger.setContext(TaskService.name);
     };
 
+    private readonly isScheduleOn = this.jsonService.read('enableScheduleService');
+    private readonly taskCount = { interval: 0, cronJob: 0 };
+
+
     create(data: CreateTaskDto): void {
-        try {
-            this.logger.serviceDebug(`${CREATE_METHOD}`);
-            const { scheduleID, scheduleName, scheduleType, cycle, regular } = data;
-            if (scheduleType === SCHEDULE_TYPE_CYCLE) {
-                cycle.forEach((item, index, array) => {
-                    const executeTime = Number(this.splitExecuteTime(scheduleType, item));
-                    const task = () => {
-                        this.logger.warn(`${TASK_MESSAGE_CYCLE} ${scheduleName}`);
-                        this.logger.warn({ data });
-                        const createdLog: CreateScheduleExecutionLogDto = {
-                            ...data,
-                            scheduleID: scheduleID,
-                            schedule: item,
-                            processDatetime: new Date(),
-                            processStatus: 'ok'
+        if (!this.isScheduleOn) {
+            this.logger.serviceDebug('enableScheduleService is false');
+            throw 'enableScheduleService is false';
+        } else {
+            try {
+                this.logger.serviceDebug(`${CREATE_METHOD}`);
+                const { scheduleID, scheduleName, scheduleType, cycle, regular, MQCLI } = data;
+                console.log(scheduleType);
+
+                if (scheduleType === SCHEDULE_TYPE_CYCLE) {
+                    cycle.forEach((item, index, array) => {
+                        const executeTime = Number(this.splitExecuteTime(scheduleType, item));
+                        const task = () => {
+                            this.logger.warn(`${TASK_MESSAGE_CYCLE} ${scheduleName}`);
+                            this.logger.warn({ data });
+                            const createdLog: CreateScheduleExecutionLogDto = {
+                                ...data,
+                                scheduleID: scheduleID,
+                                schedule: item,
+                                processDatetime: new Date(),
+                                processStatus: 'ok'
+                            };
+                            this.scheduleExecutionLogModel.create(createdLog);
+                            this.jobQueueService.sendMessage(MQCLI);
                         };
-                        this.scheduleExecutionLogModel.create(createdLog);
-                        const message = {
-                            pattern: data.pattern,
-                            message: data
-                        };
-                        this.jobQueueService.sendMessage(message);
-                    };
-                    const interval = setInterval(task, executeTime);
-                    const taskName = `${scheduleName}_${item}`;
-                    this.schedulerRegistry.addInterval(taskName, interval);
-                });
-            } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
-                regular.forEach((item, index, array) => {
-                    const executeTime = this.splitExecuteTime(scheduleType, null, item).toString();
-                    const task = new CronJob(executeTime, () => {
-                        this.logger.warn(`${TASK_MESSAGE_REGULAR} ${scheduleName}`);
-                        this.logger.warn({ data });
-                        const createdLog: CreateScheduleExecutionLogDto = {
-                            ...data,
-                            scheduleID: scheduleID,
-                            schedule: item,
-                            processDatetime: new Date(),
-                            processStatus: 'ok'
-                        };
-                        this.scheduleExecutionLogModel.create(createdLog);
-                        const message = {
-                            pattern: data.pattern,
-                            message: data
-                        };
-                        this.jobQueueService.sendMessage(message);
+                        const interval = setInterval(task, executeTime);
+                        const taskName = `${scheduleName}_${item}`;
+                        this.schedulerRegistry.addInterval(taskName, interval);
+                        this.taskCount.interval++;
                     });
-                    const taskName = `${scheduleName}_${item}`;
-                    this.schedulerRegistry.addCronJob(taskName, task);
-                    task.start();
-                });
-            } else {
-                throw 'scheduleType error';
+                } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
+                    regular.forEach((item, index, array) => {
+                        const executeTime = this.splitExecuteTime(scheduleType, null, item).toString();
+                        const task = new CronJob(executeTime, () => {
+                            this.logger.warn(`${TASK_MESSAGE_REGULAR} ${scheduleName}`);
+                            this.logger.warn({ data });
+                            const createdLog: CreateScheduleExecutionLogDto = {
+                                ...data,
+                                scheduleID: scheduleID,
+                                schedule: item,
+                                processDatetime: new Date(),
+                                processStatus: 'ok'
+                            };
+                            this.scheduleExecutionLogModel.create(createdLog);
+                            this.jobQueueService.sendMessage(MQCLI);
+                        });
+                        const taskName = `${scheduleName}_${item}`;
+                        this.schedulerRegistry.addCronJob(taskName, task);
+                        this.taskCount.cronJob++;
+                        task.start();
+                    });
+                } else {
+                    throw 'scheduleType error';
+                };
+            } catch (err) {
+                throw err;
             };
-        } catch (err) {
-            throw err;
         };
     };
 
     async update(data: UpdateTaskDto): Promise<void> {
-        try {
-            this.logger.serviceDebug(`${UPDATE_METHOD}`);
-            const { oldTask, newData } = data;
-            const newTask: CreateTaskDto = {
-                commandSource: oldTask.commandSource,
-                scheduleName: oldTask.scheduleName,
-                scheduleType: oldTask.scheduleType,
-                regular: oldTask.regular,
-                cycle: oldTask.cycle,
-                MQCLI: oldTask.MQCLI
+        if (!this.isScheduleOn) {
+            this.logger.serviceDebug('enableScheduleService is false');
+            throw 'enableScheduleService is false';
+        } else {
+            try {
+                this.logger.serviceDebug(`${UPDATE_METHOD}`);
+                const { oldTask, newData } = data;
+                const newTask: CreateTaskDto = {
+                    commandSource: oldTask.commandSource,
+                    scheduleName: oldTask.scheduleName,
+                    scheduleType: oldTask.scheduleType,
+                    regular: oldTask.regular,
+                    cycle: oldTask.cycle,
+                    MQCLI: oldTask.MQCLI
+                };
+                Object.keys(newData).map(key => {
+                    newTask[key] = newData[key];
+                });
+                await this.delete(oldTask);
+                this.create(newTask);
+            } catch (err) {
+                throw err;
             };
-            Object.keys(newData).map(key => {
-                newTask[key] = newData[key];
-            });
-            await this.delete(oldTask);
-            this.create(newTask);
-        } catch (err) {
-            throw err;
         };
     };
 
     async delete(data: DeleteTaskDto): Promise<void> {
-        try {
-            this.logger.serviceDebug(`${DELETE_METHOD}`);
-            const { scheduleName, scheduleType } = data;
-            if (scheduleType === SCHEDULE_TYPE_CYCLE) {
-                const { cycle } = data;
-                cycle.forEach((item, index, array) => {
-                    const taskName = `${scheduleName}_${item}`;
-                    this.schedulerRegistry.deleteInterval(taskName);
-                });
-            } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
-                const { regular } = data;
-                regular.forEach((item, index, array) => {
-                    const taskName = `${scheduleName}_${item}`;
-                    this.schedulerRegistry.deleteCronJob(taskName);
-                });
+        if (!this.isScheduleOn) {
+            this.logger.serviceDebug('enableScheduleService is false');
+            throw 'enableScheduleService is false';
+        } else {
+            try {
+                this.logger.serviceDebug(`${DELETE_METHOD}`);
+                const { scheduleName, scheduleType } = data;
+                if (scheduleType === SCHEDULE_TYPE_CYCLE) {
+                    const { cycle } = data;
+                    cycle.forEach((item, index, array) => {
+                        const taskName = `${scheduleName}_${item}`;
+                        this.schedulerRegistry.deleteInterval(taskName);
+                        this.taskCount.interval--;
+                    });
+                } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
+                    const { regular } = data;
+                    regular.forEach((item, index, array) => {
+                        const taskName = `${scheduleName}_${item}`;
+                        this.schedulerRegistry.deleteCronJob(taskName);
+                        this.taskCount.cronJob--;
+                    });
+                };
+            } catch (err) {
+                throw err;
             };
-        } catch (err) {
-            throw err;
         };
     };
 
     async rebornTasks(): Promise<void> {
-        try {
-            const schedules = await this.scheduleSetupModel.readAll();
-            schedules.forEach((item, index, array) => {
-                const task = {
-                    pattern: 'create',
-                    ...item
-                }
-                this.create(task);
-            });
-        } catch (err) {
-            throw err;
-        };
+        if (!await this.isScheduleOn) {
+            this.logger.serviceDebug('enableScheduleService is false');
+        } else {
+            try {
+                const schedules = await this.scheduleSetupModel.readAll();
+                schedules.forEach((item, index, array) => {
+                    const task = {
+                        pattern: 'create',
+                        ...item
+                    };
+                    this.create(task);
+                });
+            } catch (err) {
+                throw err;
+            };
+            this.logger.serviceDebug('now taskCount is');
+            console.log(this.taskCount);
+        }
     };
 
     splitExecuteTime(schduleType: string, cycle?: string, regular?: string): string | number {

@@ -44,12 +44,20 @@ export class ScheduleExecutionLogModel {
     async readPeriod(data: FindPeriodDto): Promise<ScheduleExecutionLog[]> {
         try {
             this.logger.serviceDebug(READPERIOD_METHOD);
-            const { start, end } = data;
-            const documents = this.scheduleExecutionLogModel
-                .find()
-                .where('processDatetime').gt(Number(start)).lt(Number(end))
-                .exec();
-            return await documents;
+            const { start, end, scheduleID } = data;
+            if (scheduleID) {
+                const documents = this.scheduleExecutionLogModel
+                    .find({ scheduleID: scheduleID })
+                    .where('processDatetime').gt(Number(start)).lt(Number(end))
+                    .exec();
+                return await documents;
+            } else {
+                const documents = this.scheduleExecutionLogModel
+                    .find()
+                    .where('processDatetime').gt(Number(start)).lt(Number(end))
+                    .exec();
+                return await documents;
+            };
         } catch (err) {
             throw err;
         };

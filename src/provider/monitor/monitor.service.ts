@@ -12,7 +12,7 @@ import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetu
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
 import { TimeHelperService } from 'src/util/time/timeHelper.service';
-import { JobQueueService } from '../jobQueue/job.service';
+import { JobQueueService } from '../jobQueue/jobQueue.service';
 import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 
 const {
@@ -35,9 +35,16 @@ export class MonitorService {
     async read(): Promise<WeekLogsDto[]> {
         try {
             this.logger.serviceDebug(READ_METHOD);
-            const period = this.timeHelperService.getWeekPeriod();
+            const today = new Date();
+            const { start, end } = this.timeHelperService.getWeekPeriod(today);
             const schedules = await this.scheduleSetupModel.readAll();
             const weekLogs: WeekLogsDto[] = await Promise.all(schedules.map(async schedule => {
+                const { scheduleID } = schedule;
+                const period = {
+                    start: start,
+                    end: end,
+                    scheduleID: scheduleID
+                };
                 const documents = await this.scheduleExecutionLogModel.readPeriod(period);
                 return {
                     scheduleID: schedule.scheduleID,
@@ -55,17 +62,18 @@ export class MonitorService {
     resend(data: ResendMonitorDto): void {
         try {
             this.logger.serviceDebug(RESEND_METHOD);
+            const { MQCLI } = data;
             const document: CreateScheduleExecutionLogDto = {
                 ...data,
                 processDatetime: new Date(),
                 processStatus: 'ok'
             };
             this.scheduleExecutionLogModel.create(document);
-            const message = {
-                pattern: 'resend',
-                message: data
-            };
-            this.jobQueueService.sendMessage(message);
+            // const message = {
+            //     pattern: 'resend',
+            //     message: MQCLI
+            // };
+            this.jobQueueService.sendMessage(MQCLI);
         } catch (err) {
             throw err;
         };

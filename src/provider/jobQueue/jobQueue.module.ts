@@ -6,11 +6,11 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { JsonModule } from 'src/config/json/json.module';
 import { LoggerModule } from 'src/common/logger/logger.module';
 //import constants
-import { MODULE } from './job.constants';
+import { MODULE } from './jobQueue.constants';
 //import dtos
 import { QueueConnectionDto } from '../setup/setup.dto';
 //import services
-import { JobQueueService } from './job.service';
+import { JobQueueService } from './jobQueue.service';
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
@@ -42,7 +42,7 @@ const {
               queue: outputQueueName,
               noAck: false,
               queueOptions: {
-                durable: true
+                durable: true,
               }
             }
           });

@@ -1,6 +1,8 @@
 //import packages
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
+import { JsonrpcMessageDto } from "src/provider/jobQueue/jobQueue.dto";
+
 @Entity()
 export class ScheduleSetup {
     @PrimaryGeneratedColumn()
@@ -27,6 +29,6 @@ export class ScheduleSetup {
     @Column('text', { nullable: true, array: true })
     cycle: string[];
 
-    @Column()
-    MQCLI: string;
+    @Column({ type: 'jsonb' })
+    MQCLI: JsonrpcMessageDto;
 };

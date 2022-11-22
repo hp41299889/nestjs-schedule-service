@@ -1,24 +1,23 @@
+//import packages
 import { Injectable } from "@nestjs/common";
+
+//import dtos
+import { TimePeriodDto } from "./timeHelper.dto";
 
 @Injectable()
 export class TimeHelperService {
-    // async getWeekScope(data: Date) {
-    //     const first = data.getDate() - data.getDay() + 1;
-    //     const last = first + 6;
-    //     const monday = new Date(data.setDate(first));
-    //     const sunday = new Date(data.setDate(last));
-    //     const start = new Date(monday.setHours(0, 0, 0, 0));
-    //     const end = new Date(sunday.setHours(23, 59, 59, 999));
-    //     const scope = {
-    //         start: start,
-    //         end: end
-    //     };
-    //     return scope;
-    // };
 
-    getDayPeriod() {
+    getDayPeriod(data: Date): TimePeriodDto {
         const now = new Date();
-        const start = new Date(now.setDate(now.getDate() - 1));
+        const startDate = new Date(data.setDate(data.getDate() - 1));
+        const time = {
+            hours: now.getHours(),
+            min: now.getMinutes(),
+            sec: now.getSeconds(),
+            ms: now.getMilliseconds()
+        };
+        const { hours, min, sec, ms } = time;
+        const start = new Date(startDate.setHours(hours, min, sec, ms));
         const end = new Date();
         const period = {
             start: start,
@@ -27,9 +26,17 @@ export class TimeHelperService {
         return period;
     };
 
-    getWeekPeriod() {
+    getWeekPeriod(data: Date): TimePeriodDto {
         const now = new Date();
-        const start = new Date(now.setDate(now.getDate() - 6));
+        const startDate = new Date(data.setDate(data.getDate() - 6));
+        const time = {
+            hours: now.getHours(),
+            min: now.getMinutes(),
+            sec: now.getSeconds(),
+            ms: now.getMilliseconds()
+        };
+        const { hours, min, sec, ms } = time;
+        const start = new Date(startDate.setHours(hours, min, sec, ms));
         const end = new Date();
         const period = {
             start: start,
@@ -38,9 +45,17 @@ export class TimeHelperService {
         return period;
     };
 
-    getMonthPeriod() {
+    getMonthPeriod(data: Date): TimePeriodDto {
         const now = new Date();
-        const start = new Date(now.setDate(now.getDate() - 30));
+        const startDate = new Date(data.setDate(data.getDate() - 30));
+        const time = {
+            hours: now.getHours(),
+            min: now.getMinutes(),
+            sec: now.getSeconds(),
+            ms: now.getMilliseconds()
+        };
+        const { hours, min, sec, ms } = time;
+        const start = new Date(startDate.setHours(hours, min, sec, ms));
         const end = new Date();
         const period = {
             start: start,
@@ -49,9 +64,17 @@ export class TimeHelperService {
         return period;
     };
 
-    getYearPeriod() {
+    getYearPeriod(data: Date): TimePeriodDto {
         const now = new Date();
-        const start = new Date(now.setDate(now.getDate() - 365));
+        const startDate = new Date(data.setDate(data.getDate() - 365));
+        const time = {
+            hours: now.getHours(),
+            min: now.getMinutes(),
+            sec: now.getSeconds(),
+            ms: now.getMilliseconds()
+        };
+        const { hours, min, sec, ms } = time;
+        const start = new Date(startDate.setHours(hours, min, sec, ms));
         const end = new Date();
         const period = {
             start: start,

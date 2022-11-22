@@ -8,5 +8,5 @@ export const SERVICE = {
 };
 
 export const CONTROLLER = {
-
+    PATTERN: 'SCHEDULE_QUEUE',
 };
