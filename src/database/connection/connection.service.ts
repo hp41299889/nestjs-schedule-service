@@ -1,6 +1,7 @@
 //import packages
 import { Injectable } from '@nestjs/common';
-import { createConnection } from 'typeorm';
+import { } from '@nestjs/typeorm'
+import { createConnection, DataSource } from 'typeorm';
 
 //import constants
 import { SERVICE } from './connection.constants';
@@ -22,35 +23,31 @@ export class ConnectionService {
         this.logger.setContext(ConnectionService.name);
     };
 
-    async testPostgresConnection(data: DatabaseConnectionDto): Promise<{ results: string }> {
+    async testPostgresConnection(data: DatabaseConnectionDto) {
         try {
             this.logger.serviceDebug(TESTPOSTGRESCONNECTION_METHOD);
             const { IP, port, account, password, DBName } = data;
-            const connection = await createConnection({
+            const dataSource = new DataSource({
                 type: 'postgres',
                 username: account,
                 password: password,
                 host: IP,
                 port: +port,
-                database: DBName
+                database: DBName,
             });
-            if (!connection) {
-                await connection.destroy();
-                return { results: 'bad' };
-            } else {
-                await connection.destroy();
-                return { results: 'Success' };
-            };
+            const connection = await dataSource.initialize();
+            await connection.destroy();
+            return { results: 'Success' };
         } catch (err) {
-            return err
+            throw 'postgres connection fail'
         };
     };
 
-    async testMongoConnection(data: DatabaseConnectionDto): Promise<{ results: string }> {
+    async testMongoConnection(data: DatabaseConnectionDto) {
         try {
             this.logger.serviceDebug(TESTMONGOCONNECTION_METHOD);
             const { IP, port, account, password, DBName } = data;
-            const connection = await createConnection({
+            const dataSource = new DataSource({
                 type: 'mongodb',
                 username: account,
                 password: password,
@@ -58,15 +55,11 @@ export class ConnectionService {
                 port: +port,
                 database: DBName
             });
-            if (!connection) {
-                await connection.destroy();
-                return { results: 'bad' };
-            } else {
-                await connection.destroy();
-                return { results: 'Success' };
-            };
+            const connection = await dataSource.initialize();
+            await connection.destroy();
+            return { results: 'Success' };
         } catch (err) {
-            return err;
+            throw 'mongo connection fail';
         };
     };
 };

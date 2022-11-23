@@ -23,6 +23,8 @@ export class TimeHelperService {
             start: start,
             end: end
         };
+        console.log(period);
+
         return period;
     };
 
@@ -42,6 +44,8 @@ export class TimeHelperService {
             start: start,
             end: end
         };
+        console.log(period);
+
         return period;
     };
 
@@ -61,6 +65,8 @@ export class TimeHelperService {
             start: start,
             end: end
         };
+        console.log(period);
+
         return period;
     };
 
@@ -80,6 +86,8 @@ export class TimeHelperService {
             start: start,
             end: end
         };
+        console.log(period);
+
         return period;
     };
 };

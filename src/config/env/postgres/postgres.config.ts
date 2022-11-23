@@ -9,8 +9,9 @@ const {
 } = CONFIG;
 
 export default registerAs(CONFIG_ALIAS, () => ({
-    name: process.env.APP_NAME,
-    env: process.env.APP_ENV,
-    prefix: process.env.APP_PREFIX,
-    port: process.env.APP_PORT
-}))
+    IP: process.env.POSTGRES_IP,
+    port: process.env.POSTGRES_PORT,
+    account: process.env.POSTGRES_ACCOUNT,
+    password: process.env.POSTGRES_PASSWORD,
+    DBName: process.env.POSTGRES_DBNAME
+}));

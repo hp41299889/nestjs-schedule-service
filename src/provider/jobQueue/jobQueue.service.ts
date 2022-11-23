@@ -12,7 +12,6 @@ import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     CONNECTION_NAME,      //connection name for JobQueue
-    BASEMETHOD,           //baseMethod for JsonrpcMessageDto
     BUILDMESSAGE_METHOD,  //buildMessage()
     SENDMESSAGE_METHOD,   //sendMessage()
 } = SERVICE;
@@ -45,7 +44,7 @@ export class JobQueueService {
         try {
             this.logger.serviceDebug(SENDMESSAGE_METHOD);
             this.client
-                .emit(CONNECTION_NAME, this.buildMessage(data))
+                .emit(CONNECTION_NAME, await this.buildMessage(data))
                 .pipe(timeout(10000));
         } catch (err) {
             throw err;

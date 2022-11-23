@@ -51,8 +51,6 @@ export class TaskService {
             try {
                 this.logger.serviceDebug(`${CREATE_METHOD}`);
                 const { scheduleID, scheduleName, scheduleType, cycle, regular, MQCLI } = data;
-                console.log(scheduleType);
-
                 if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                     cycle.forEach((item, index, array) => {
                         const executeTime = Number(this.splitExecuteTime(scheduleType, item));
@@ -106,7 +104,7 @@ export class TaskService {
 
     async update(data: UpdateTaskDto): Promise<void> {
         if (!this.isScheduleOn) {
-            this.logger.serviceDebug('enableScheduleService is false');
+            this.logger.warn('enableScheduleService is false');
             throw 'enableScheduleService is false';
         } else {
             try {

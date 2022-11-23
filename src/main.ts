@@ -38,7 +38,7 @@ async function bootstrap() {
   app.setGlobalPrefix(prefix);
   appSwagger.setupSwagger(app);
 
-  await app.listen(port);
+  await app.listen(port | 3000);
   console.log(service);
   await taskService.rebornTasks();
 };

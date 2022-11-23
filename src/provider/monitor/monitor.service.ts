@@ -69,10 +69,6 @@ export class MonitorService {
                 processStatus: 'ok'
             };
             this.scheduleExecutionLogModel.create(document);
-            // const message = {
-            //     pattern: 'resend',
-            //     message: MQCLI
-            // };
             this.jobQueueService.sendMessage(MQCLI);
         } catch (err) {
             throw err;

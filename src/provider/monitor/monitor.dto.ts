@@ -12,18 +12,24 @@ export class WeekLogsDto {
 };
 
 export class ResendMonitorDto {
-    @ApiProperty()
+    @ApiProperty({ default: 1 })
     scheduleID: number;
 
-    @ApiProperty()
+    @ApiProperty({ default: 'schedule_1' })
     scheduleName: string;
 
-    @ApiProperty()
+    @ApiProperty({ default: 'cycle' })
     scheduleType: string;
 
-    @ApiProperty()
+    @ApiProperty({ default: 'cycle#0/1' })
     schedule: string;
 
-    @ApiProperty()
+    @ApiProperty({
+        default: {
+            jsonrpc: '2.0',
+            method: 'ScheduleServcie/ScheduleSetup/create',
+            params: {},
+        }
+    })
     MQCLI: JsonrpcMessageDto;
 };

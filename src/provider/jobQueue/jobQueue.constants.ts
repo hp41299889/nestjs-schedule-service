@@ -5,7 +5,6 @@ export const MODULE = {
 
 export const SERVICE = {
     CONNECTION_NAME: 'JOB_QUEUE',
-    BASEMETHOD: 'ScheduleService/ScheduleSetup/',
     BUILDMESSAGE_METHOD: 'buildMessage()',
     SENDMESSAGE_METHOD: 'sendMessage()',
 };

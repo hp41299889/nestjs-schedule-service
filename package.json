@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod:pm2": "npm run pm2:D & pm2 start dist/main.js --name ScheduleService --watch",
     "pm2:D": "pm2 delete all",
-    "pm2:dev": "npm run pm2:D & pm2 start dist/main.js --name ScheduleService -l --watch",
+    "pm2:dev": "npm run pm2:D & pm2 start dist/main.js --name ScheduleService -l --watch & pm2 logs",
     "docker:build": "docker build . -t test_mvc",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

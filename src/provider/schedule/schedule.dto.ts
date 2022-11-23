@@ -35,22 +35,28 @@ export class ReadScheduleDto {
 };
 
 export class UpdateScheduleDto extends ReadScheduleDto {
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ default: 'Swagger' })
     commandSource: string;
 
     @ApiPropertyOptional()
     scheduleName: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ default: 'cycle' })
     scheduleType: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ default: ['regular#1/0/0'] })
     regular: [string];
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ default: ['cycle#0/1'] })
     cycle: [string];
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        default: {
+            jsonrpc: '2.0',
+            method: 'ScheduleServcie/ScheduleSetup/create',
+            params: {},
+        }
+    })
     MQCLI: JsonrpcMessageDto;
 };
 

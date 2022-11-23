@@ -1,6 +1,7 @@
 //import packages
 import { Module } from "@nestjs/common";
 import { MongooseModule, MongooseModuleOptions } from "@nestjs/mongoose";
+import { ConfigService } from "@nestjs/config";
 
 //import modules
 import { JsonModule } from "src/config/json/json.module";
@@ -14,6 +15,7 @@ import { DatabaseConnectionDto } from "src/provider/setup/setup.dto";
 import { JsonService } from "src/config/json/json.service";
 import { LoggerService } from "src/common/logger/logger.service";
 import { ConnectionService } from "../connection/connection.service";
+import { EnvModule } from "src/config/env/env.module";
 
 const {
     CONNECTION_NAME,    //connection name for MongooseModule
@@ -24,32 +26,35 @@ const {
     imports: [
         MongooseModule.forRootAsync({
             connectionName: CONNECTION_NAME,
-            imports: [JsonModule, LoggerModule, ConnectionModule],
-            inject: [JsonService, LoggerService, ConnectionService],
-
-            useFactory: async (jsonService: JsonService, logger: LoggerService, connectionService: ConnectionService) => {
-                const mongoConfig: DatabaseConnectionDto = await jsonService.read(SETUP_ALIAS);
-                const material = {
-                    connectionName: CONNECTION_NAME,
-                    config: mongoConfig
-                };
-                logger.setContext(CONNECTION_NAME);
-                logger.factoryDebug(material);
-                const { IP, port, account, password, DBName } = mongoConfig;
-                const connectionTest: { results: string } = await connectionService.testMongoConnection(mongoConfig);
-                const { results } = connectionTest;
-                if (results === 'Success') {
+            imports: [JsonModule, LoggerModule, ConnectionModule, EnvModule],
+            inject: [JsonService, LoggerService, ConnectionService, ConfigService],
+            useFactory: async (jsonService: JsonService, logger: LoggerService, connectionService: ConnectionService, configService: ConfigService) => {
+                try {
+                    const mongoConfig: DatabaseConnectionDto = await jsonService.read(SETUP_ALIAS);
+                    const material = {
+                        connectionName: CONNECTION_NAME,
+                        config: mongoConfig
+                    };
+                    logger.setContext(CONNECTION_NAME);
+                    logger.factoryDebug(material);
+                    const { IP, port, account, password, DBName } = mongoConfig;
+                    await connectionService.testMongoConnection(mongoConfig);
                     const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
                     const options: MongooseModuleOptions = {
                         uri: uri,
                         retryAttempts: 3
                     };
                     return options;
-                } else {
-                    //TODO use ConfigModule
+                } catch (err) {
                     logger.error('Warning!mongo connect by setup.json fail,useing default env');
-                    const { MONGO_IP, MONGO_PORT, MONGO_ACCOUNT, MONGO_PASSWORD, MONGO_DBNAME } = process.env;
-                    const uri = `mongodb://${MONGO_ACCOUNT}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/${MONGO_DBNAME}`;
+                    const mongoEnv: DatabaseConnectionDto = configService.get('mongo');
+                    const material = {
+                        connectionName: CONNECTION_NAME,
+                        config: mongoEnv
+                    };
+                    logger.factoryDebug(material);
+                    const { IP, port, account, password, DBName } = mongoEnv;
+                    const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
                     const options: MongooseModuleOptions = {
                         uri: uri,
                         retryAttempts: 3
