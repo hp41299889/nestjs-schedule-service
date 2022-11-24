@@ -9,15 +9,19 @@
       href='../../kit_module/bootstrap-5.2.2-dist/css/bootstrap.css'
     />
     <link rel='stylesheet' href='../../kit_module/dataTables/datatables.css' />
+    <link rel='stylesheet' href='../../kit_module/dataTables/Buttons-2.3.3/css/buttons.dataTables.min.css' />
     <link
       rel='stylesheet'
-      href='../../kit_module/dataTables/DataTables-1.12.1/css/dataTables.bootstrap5.min.css'
+      href='../../kit_module/dataTables/DataTables-1.13.1/css/dataTables.bootstrap5.min.css'
     />
     <script
       src='../../kit_module/bootstrap-5.2.2-dist/js/bootstrap.js'
     ></script>
     <script src='../../kit_module/jquery-3.6.1.min.js'></script>
     <script src='../../kit_module/dataTables/datatables.js'></script>
+    <script src='../../kit_module/dataTables/JSZip-2.5.0/jszip.min.js'></script>
+    <script src='../../kit_module/dataTables/Buttons-2.3.3/js/dataTables.buttons.min.js'></script>
+    <script src='../../kit_module/dataTables/Buttons-2.3.3/js/buttons.html5.min.js'></script>
     <title>ScheduleService</title>
   </head>
   <body>
@@ -63,8 +67,9 @@
             >刪除</button>
             <button
               type='button'
-              id='export'
+              id='exportBtn'
               class='btn btn-outline-primary'
+              onclick="exportExcel()"
             >匯出</button>
           </div>
           <div class='searchBox w-100'>
@@ -364,7 +369,6 @@
       </div>
     </div>
   </body>
-  <script src='../../js/fakeData.js'></script>
   <script src='../../js/column.js'></script>
   <script src='../../js/option.js'></script>
   <script src='../../js/schedule.js'></script>

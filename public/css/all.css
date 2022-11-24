@@ -47,4 +47,23 @@
 
 .modal .modal-dialog .modal-content .modal-footer {
   border-top: 0;
+}
+
+#searchCard {
+  width: 50%;
+}
+
+.rabbitMqUser,
+.postgreUser,
+.mongoUser {
+  margin-left: 12px !important;
+}
+
+#calendar .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell {
+  position: absolute;
+  height: 121px;
+  overflow-y: auto;
+}
+#calendar .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell::-webkit-scrollbar {
+  display: none;
 }/*# sourceMappingURL=all.css.map */

@@ -83,7 +83,39 @@ const scheduleColumns = [
     data: 'MQCLI',
     title: 'MQCLI命令',
   },
-  // {
-  //   data: 'dataObj'
-  // }
 ];
+
+const executionLogColumns = [
+  {
+    data: 'scheduleLogID',
+    title: '紀錄ID',
+  },
+  {
+    data: 'scheduleID',
+    title: '排程ID',
+  },
+  {
+    data: 'scheduleName',
+    title: '排程名稱',
+  },
+  {
+    data: 'scheduleType',
+    title: '排程類型',
+  },
+  {
+    data: 'processDatetime',
+    title: '執行日期時間',
+  },
+  {
+    data: 'processStatus',
+    title: '執行狀態',
+  },
+  {
+    data: 'schedule',
+    title: '排程命令',
+  },
+  {
+    data: 'MQCLI',
+    title: 'MQCLI命令',
+  },
+]

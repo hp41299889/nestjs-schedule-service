@@ -8,19 +8,14 @@ $(document).ready(function () {
 
   table = $('#schedule').DataTable({
     // "lengthChange": false,
-    // searching: false,
+    // searching: true,
     pageLength: 10,
-    dom: 'rft<"bottom"lp>',
-    // data: scheduleData,
+    dom: 'Brft<"bottom"lp>',
+    buttons: ['excel'],
     columns: scheduleColumns,
-    // columnDefs: [
-    //   {
-    //     target: 10,
-    //     visible: false,
-    //     searchable: false,
-    //   }
-    // ]
   });
+
+  $('.dt-buttons').addClass('d-none')
 
   //搜尋框自訂義
   $('#schedule_filter').hide();
@@ -536,7 +531,7 @@ function save() {
   } else {
     return false;
   }
-  console.log('datas =', datas);
+  // console.log('datas =', datas);
 
   if (state == 'new' || state == 'clone') {
     // $.ajax({
@@ -574,7 +569,7 @@ function save() {
       dataType: 'json',
       success: function (response) {
         console.log(response);
-        // location.href(response);
+        location.reload();
       },
       error: function (xhr) {
         console.log('xhr =', xhr);
@@ -628,7 +623,7 @@ function init() {
 //刪除Modal開啟時自動帶入資料
 function fillInDelModal() {
   const deleteModal = document.getElementById('deleteModal');
-  console.log('deleteModal =', deleteModal);
+  // console.log('deleteModal =', deleteModal);
 
   deleteModal.addEventListener('show.bs.modal', (event) => {
     console.log('delete');
@@ -646,7 +641,7 @@ function del() {
     dataType: 'json',
     success: function (response) {
       console.log(response);
-      // location.href(response);
+      location.reload();
     },
     error: function (xhr) {
       console.log('xhr =', xhr);
@@ -662,4 +657,9 @@ function initDel() {
   $('input#scheduleIdDel').val('');
   $('input#scheduleNameDel').val('');
   bootstrap.Modal.getInstance($('#deleteModal')).hide();
+}
+
+//匯出
+function exportExcel(){
+  $('button.buttons-excel').trigger('click');
 }
