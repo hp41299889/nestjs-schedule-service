@@ -1,6 +1,7 @@
 //import packages
-import { Controller, Get, Patch, Post, Body, BadRequestException, UseFilters, Logger } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Body, BadRequestException, UseFilters, Res, Session } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 
 //import constants
 import { CONTROLLER } from './setup.constants';
@@ -11,6 +12,7 @@ import { Exception } from 'src/util/exception/exception';
 //import services
 import { SetupService } from './setup.service';
 import { LoggerService } from 'src/common/logger/logger.service';
+import { HttpService } from 'src/common/http/http.service';
 
 const {
     API_TAG,                    //tag for Swagger UI
@@ -19,6 +21,7 @@ const {
     POSTGRESCONNECTTEST_ROUTES, //postgreConnectTest
     MONGOCONNECTTEST_ROUTES,    //mongoConnectTest
     SAVE_ROUTES,                //save
+    REDIRECT_ROUTES,
 } = CONTROLLER;
 
 @ApiTags(API_TAG)
@@ -27,16 +30,22 @@ const {
 export class SetupController {
     constructor(
         private readonly setupService: SetupService,
-        private readonly logger: LoggerService
+        private readonly logger: LoggerService,
+        private readonly http: HttpService
     ) {
         this.logger.setContext(SetupController.name);
     };
 
     @Get(READ_ROUTES)
-    read(): Promise<string> {
+    async read(@Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(READ_ROUTES);
-            return this.setupService.read();
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
+            } else {
+                const setup = await this.setupService.read();
+                return response.json(setup);
+            };
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);
@@ -44,10 +53,15 @@ export class SetupController {
     };
 
     @Post(POSTGRESCONNECTTEST_ROUTES)
-    async postgreConnectTest(@Body() data: DatabaseConnectionDto): Promise<object> {
+    async postgreConnectTest(@Body() data: DatabaseConnectionDto, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(POSTGRESCONNECTTEST_ROUTES);
-            return await this.setupService.postgreConnectTest(data);
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
+            } else {
+                await this.setupService.postgreConnectTest(data);
+                return response.json(this.http.successResponse());
+            };
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);
@@ -55,10 +69,15 @@ export class SetupController {
     };
 
     @Post(MONGOCONNECTTEST_ROUTES)
-    async mongoConnectTest(@Body() data: DatabaseConnectionDto): Promise<object> {
+    async mongoConnectTest(@Body() data: DatabaseConnectionDto, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(MONGOCONNECTTEST_ROUTES);
-            return await this.setupService.mongoConnectTest(data);
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
+            } else {
+                await this.setupService.mongoConnectTest(data);
+                return response.json(this.http.successResponse());
+            };
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);
@@ -66,10 +85,17 @@ export class SetupController {
     };
 
     @Patch(SAVE_ROUTES)
-    save(@Body() data: SaveSetupDto): void {
+    save(@Body() data: SaveSetupDto, @Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(SAVE_ROUTES);
-            this.setupService.save(data);
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
+            } else {
+                //TODO
+                this.setupService.save(data);
+                // const setup = await this.setupService.read();
+                // return response.json(setup);
+            };
         } catch (err) {
             this.logger.error(err);
             throw new BadRequestException(err);

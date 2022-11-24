@@ -17,7 +17,7 @@ export class ScheduleSetup {
     @Column()
     commandSource: string;
 
-    @Column()
+    @Column({ unique: true })
     scheduleName: string;
 
     @Column()

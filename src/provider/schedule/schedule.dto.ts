@@ -21,9 +21,9 @@ export class CreateScheduleDto {
 
     @ApiProperty({
         default: {
-            jsonrpc: '2.0',
-            method: 'ScheduleServcie/ScheduleSetup/create',
-            params: {},
+            "jsonrpc": "2.0",
+            "method": "ScheduleServcie/ScheduleSetup/create",
+            "params": {}
         }
     })
     MQCLI: JsonrpcMessageDto;

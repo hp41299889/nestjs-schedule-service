@@ -49,7 +49,8 @@ const {
                         port: +port,
                         database: DBName,
                         autoLoadEntities: true,
-                        retryAttempts: 3
+                        retryAttempts: 3,
+                        // synchronize: true,
                     };
                 } catch (err) {
                     logger.error('Warning!postgres connect by setup.json fail,useing default env');

@@ -5,6 +5,7 @@ export const CONTROLLER = {
     READ_ROUTES: 'read',
     RESEND_METHOD: 'resend()',
     RESEND_ROUTES: 'resend',
+    REDIRECT_ROUTES: '../Auth/view'
 };
 
 export const SERVICE = {

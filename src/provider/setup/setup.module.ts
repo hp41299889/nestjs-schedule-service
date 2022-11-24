@@ -1,6 +1,6 @@
 //import packages
 import { Module } from '@nestjs/common';
-import { LoggerModule } from 'src/common/logger/logger.module';
+import { CommonModule } from 'src/common/common.module';
 
 //import modules
 import { JsonModule } from 'src/config/json/json.module';
@@ -12,7 +12,7 @@ import { SetupService } from './setup.service';
 
 @Module({
   imports: [
-    LoggerModule,
+    CommonModule,
     JsonModule,
     ConnectionModule
   ],

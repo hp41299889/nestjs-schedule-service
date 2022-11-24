@@ -539,20 +539,30 @@ function save() {
   console.log('datas =', datas);
 
   if (state == 'new' || state == 'clone') {
-    $.ajax({
-      url: `${apiUrl}/create/`,
-      type: 'POST',
-      data: datas,
-      dataType: 'json',
-      success: function (response) {
-        console.log(response);
-        // location.href(response);
+    // $.ajax({
+    //   url: `${apiUrl}/create/`,
+    //   type: 'POST',
+    //   data: datas,
+    //   dataType: 'json',
+    //   success: function (response) {
+    //     console.log(response);
+    //     // location.href(response);
+    //   },
+    //   error: function (xhr) {
+    //     console.log('xhr =', xhr);
+    //     alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+    //   },
+    // });
+    fetch(`${apiUrl}/create`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
       },
-      error: function (xhr) {
-        console.log('xhr =', xhr);
-        alert('Error: ' + xhr.status + ' ' + xhr.statusText);
-      },
-    });
+      body: JSON.stringify(datas),
+      redirect: "follow"
+    }).then(res => {
+      res.redirected && (location.href = res.url)
+    })
   } else {
     const scheduleID = sessionStorage.getItem('scheduleID');
     datas['scheduleID'] = scheduleID;

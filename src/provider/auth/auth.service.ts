@@ -31,7 +31,7 @@ export class AuthService {
             const { account, password } = adminConfig;
             if (data.account === account) {
                 if (data.password === password) {
-                    return;
+                    return 301;
                 } else {
                     throw 'Lonin fail, password is incorrect';
                 };

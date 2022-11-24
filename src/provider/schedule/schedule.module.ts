@@ -1,9 +1,9 @@
 //import packages
 import { Module } from '@nestjs/common';
-import { LoggerModule } from 'src/common/logger/logger.module';
 
 //import modules
 import { TaskModule } from '../task/task.module';
+import { CommonModule } from 'src/common/common.module';
 //import models
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 //import controllers
@@ -13,7 +13,7 @@ import { ScheduleService } from './schedule.service';
 
 @Module({
   imports: [
-    LoggerModule,
+    CommonModule,
     ScheduleSetupModelModule,
     TaskModule
   ],

@@ -7,7 +7,7 @@ import { LoggerModule } from 'src/common/logger/logger.module';
 import { ConnectionService } from './connection.service';
 
 @Module({
-    imports: [LoggerModule,],
+    imports: [LoggerModule],
     providers: [ConnectionService],
     exports: [ConnectionService]
 })

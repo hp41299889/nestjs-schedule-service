@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 
 //import modules
-import { LoggerModule } from 'src/common/logger/logger.module';
+import { CommonModule } from 'src/common/common.module';
 import { TimeHelperModule } from 'src/util/time/timeHelper.module';
 import { JobQueueModule } from '../jobQueue/jobQueue.module';
 //import models
@@ -15,7 +15,7 @@ import { MonitorService } from './monitor.service';
 
 @Module({
   imports: [
-    LoggerModule,
+    CommonModule,
     ScheduleSetupModelModule,
     ScheduleExecutionLogModelModule,
     TimeHelperModule,

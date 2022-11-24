@@ -7,6 +7,7 @@ export const CONTROLLER = {
     SAVE_ROUTES: 'save',
     DEBUG_MESSAGE: 'Trying go routes',
     DEBUG_MESSAGE_SUCCESS: 'Routes success',
+    REDIRECT_ROUTES: '../Auth/view'
 };
 
 export const SERVICE = {

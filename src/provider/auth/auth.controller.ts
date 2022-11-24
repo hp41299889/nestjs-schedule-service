@@ -1,5 +1,5 @@
 //import packages
-import { Controller, Post, Get, Body, Logger, BadRequestException, Req, Res, Session } from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, Res, Session } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
@@ -31,15 +31,15 @@ export class AuthController {
     };
 
     @Post(LOGIN_ROUTES)
-    async login(@Body() data: LoginDto, @Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): Promise<void> {
+    async login(@Body() data: LoginDto, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(LOGIN_METHOD);
             const res = await this.authService.login(data);
-            if (res) {
-                response.send(res);
-            } else {
+            if (res === 301) {
                 session.visits = session.visits ? session.visits + 1 : 1;
-                response.redirect('../Schedule/view');
+                return response.status(301).redirect('../Schedule/view');
+            } else {
+                return response.send('bad');
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -48,9 +48,10 @@ export class AuthController {
     };
 
     @Get(LOGOUT_ROUTES)
-    async logout(@Res() response: Response): Promise<void> {
+    async logout(@Res() response: Response, @Session() session: Record<string, any>): Promise<void> {
         try {
             this.logger.controllerDebug(LOGOUT_METHOD);
+            //TODO
             response.redirect('../Auth/view');
         } catch (err) {
             this.logger.errorMessage(err);

@@ -5,6 +5,7 @@ export const CONTROLLER = {
     READALL_ROUTE: 'readAll',
     UPDATE_ROUTE: 'update',
     DELETE_ROUTE: 'delete',
+    REDIRECT_ROUTES: '../Auth/view'
 };
 
 export const SERVICE = {

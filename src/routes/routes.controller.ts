@@ -30,14 +30,14 @@ export class RoutesController {
     };
 
     @Get(SCHEDULE_VIEW_ROUTES)
-    @Render(SCHEDULE_VIEW_FILE)
-    schedule(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
+    // @Render(SCHEDULE_VIEW_FILE)
+    schedule(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(SCHEDULE_VIEW_ROUTES);
-            if (session.visits) {
-                return;
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                response.redirect(REDIRECT_ROUTES);
+                return response.render('Schedule.hbs');
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -51,7 +51,6 @@ export class RoutesController {
         try {
             this.logger.controllerDebug(MONITOR_VIEW_ROUTES);
             if (session.visits) {
-                return;
             } else {
                 response.redirect(REDIRECT_ROUTES);
             };
@@ -67,7 +66,6 @@ export class RoutesController {
         try {
             this.logger.controllerDebug(EXECUTIONLOG_VIEW_ROUTES);
             if (session.visits) {
-                return;
             } else {
                 response.redirect(REDIRECT_ROUTES);
             };
@@ -83,7 +81,6 @@ export class RoutesController {
         try {
             this.logger.controllerDebug(SETUP_VIEW_ROUTES);
             if (session.visits) {
-                return;
             } else {
                 response.redirect(REDIRECT_ROUTES);
             };
@@ -94,11 +91,11 @@ export class RoutesController {
     };
 
     @Get(AUTH_VIEW_ROUTES)
-    @Render(AUTH_VIEW_FILE)
-    auth(): void {
+    auth(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
+            console.log('in login page');
+            return response.render('Auth.hbs');
             this.logger.controllerDebug(AUTH_VIEW_ROUTES);
-            return;
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);

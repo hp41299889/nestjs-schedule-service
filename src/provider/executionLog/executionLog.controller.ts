@@ -1,6 +1,7 @@
 //import packages
-import { Controller, Body, Post, BadRequestException } from '@nestjs/common';
+import { Controller, Body, Post, BadRequestException, Res, Session } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 
 //import constants
 import { CONTROLLER } from './executionLog.constants';
@@ -17,6 +18,7 @@ const {
     API_ROUTES,     //prefix routes for controller
     QUERY_ROUTES,   //query
     QUERY_METHOD,   //query()
+    REDIRECT_ROUTES,//
 } = CONTROLLER;
 
 @ApiTags(API_TAGS)
@@ -30,11 +32,17 @@ export class ExecutionLogController {
     };
 
     @Post(QUERY_ROUTES)
-    query(@Body() data: QueryDto): Promise<ScheduleExecutionLog[]> {
+    async query(@Body() data: QueryDto, @Res() response: Response, @Session() session: Record<string, any>): Promise<void | Response<any, Record<string, any>>> {
         try {
             this.logger.controllerDebug(QUERY_METHOD);
-            data.dateInterval = dateIntervalEnum[data.dateInterval];
-            return this.executionLogService.query(data);
+            // if(session.visits)
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
+            } else {
+                data.dateInterval = dateIntervalEnum[data.dateInterval];
+                const executionLogs = await this.executionLogService.query(data);
+                return response.json(executionLogs);
+            };
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);

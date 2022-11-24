@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 import { SERVICE } from './schedule.constants';
 //import dtos
 import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto } from './schedule.dto';
-import { CreateTaskDto } from '../task/task.dto';
 //import models
 import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
@@ -30,17 +29,13 @@ export class ScheduleService {
         this.logger.setContext(ScheduleService.name);
     };
 
-    async create(data: CreateScheduleDto): Promise<object> {
+    async create(data: CreateScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(CREATE_METHOD);
+            data.MQCLI = JSON.parse(String(data.MQCLI));
             const schedule = await this.scheduleSetupModel.create(data);
             const target = await this.scheduleSetupModel.read(schedule);
-            const task: CreateTaskDto = {
-                action: 'create',
-                ...target
-            };
-            this.taskService.create(task);
-            return { results: 'Success' };
+            this.taskService.create(target);
         } catch (err) {
             throw err;
         };
@@ -57,6 +52,7 @@ export class ScheduleService {
 
     async read(data: ReadScheduleDto): Promise<ScheduleSetup> {
         try {
+            //TODO
             this.logger.serviceDebug('');
             return await this.scheduleSetupModel.read(data);
         } catch (err) {
@@ -64,7 +60,7 @@ export class ScheduleService {
         };
     };
 
-    async update(data: UpdateScheduleDto): Promise<object> {
+    async update(data: UpdateScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(UPDATE_METHOD);
             const { scheduleID } = data;
@@ -73,19 +69,15 @@ export class ScheduleService {
                 oldTask: target,
                 newData: data
             };
+            data.MQCLI = JSON.parse(String(data.MQCLI));
             await this.scheduleSetupModel.update(data);
-            const task = {
-                pattern: 'update',
-                ...payload
-            };
-            await this.taskService.update(task);
-            return { results: 'Success' };
+            await this.taskService.update(payload);
         } catch (err) {
             throw err;
         };
     };
 
-    async delete(data: DeleteScheduleDto): Promise<object> {
+    async delete(data: DeleteScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(DELETE_METHOD);
             const target = await this.scheduleSetupModel.read(data);
@@ -97,12 +89,7 @@ export class ScheduleService {
                 regular: regular
             };
             await this.scheduleSetupModel.delete(target);
-            const task = {
-                pattern: 'delete',
-                ...targetTask
-            };
-            await this.taskService.delete(task);
-            return { results: 'Success' };
+            await this.taskService.delete(targetTask);
         } catch (err) {
             throw err;
         };

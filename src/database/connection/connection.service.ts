@@ -18,12 +18,12 @@ const {
 @Injectable()
 export class ConnectionService {
     constructor(
-        private readonly logger: LoggerService
+        private readonly logger: LoggerService,
     ) {
         this.logger.setContext(ConnectionService.name);
     };
 
-    async testPostgresConnection(data: DatabaseConnectionDto) {
+    async testPostgresConnection(data: DatabaseConnectionDto): Promise<void> {
         try {
             this.logger.serviceDebug(TESTPOSTGRESCONNECTION_METHOD);
             const { IP, port, account, password, DBName } = data;
@@ -37,13 +37,12 @@ export class ConnectionService {
             });
             const connection = await dataSource.initialize();
             await connection.destroy();
-            return { results: 'Success' };
         } catch (err) {
             throw 'postgres connection fail'
         };
     };
 
-    async testMongoConnection(data: DatabaseConnectionDto) {
+    async testMongoConnection(data: DatabaseConnectionDto): Promise<void> {
         try {
             this.logger.serviceDebug(TESTMONGOCONNECTION_METHOD);
             const { IP, port, account, password, DBName } = data;
@@ -57,7 +56,6 @@ export class ConnectionService {
             });
             const connection = await dataSource.initialize();
             await connection.destroy();
-            return { results: 'Success' };
         } catch (err) {
             throw 'mongo connection fail';
         };

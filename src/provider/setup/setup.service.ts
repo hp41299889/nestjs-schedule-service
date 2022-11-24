@@ -37,19 +37,19 @@ export class SetupService {
         };
     };
 
-    async postgreConnectTest(data: DatabaseConnectionDto): Promise<object> {
+    async postgreConnectTest(data: DatabaseConnectionDto): Promise<void> {
         try {
             this.logger.debug(POSTGRESCONNECTTEST_METHOD);
-            return await this.connectionService.testPostgresConnection(data);
+            await this.connectionService.testPostgresConnection(data);
         } catch (err) {
             throw err;
         };
     };
 
-    async mongoConnectTest(data: DatabaseConnectionDto): Promise<object> {
+    async mongoConnectTest(data: DatabaseConnectionDto): Promise<void> {
         try {
             this.logger.debug(MONGOCONNECTTEST_METHOD);
-            return this.connectionService.testMongoConnection(data);
+            await this.connectionService.testMongoConnection(data);
         } catch (err) {
             throw err;
         };
