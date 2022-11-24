@@ -4,9 +4,9 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 
 //import constants
-import { SERVICE } from './task.constants';
+import { SERVICE, CRONWEEKDAY } from './task.constants';
 //import dtos
-import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto } from './task.dto';
+import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto, TaskExecuteDto } from './task.dto';
 //import models
 import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
@@ -53,7 +53,11 @@ export class TaskService {
                 const { scheduleID, scheduleName, scheduleType, cycle, regular, MQCLI } = data;
                 if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                     cycle.forEach((item, index, array) => {
-                        const executeTime = Number(this.splitExecuteTime(scheduleType, item));
+                        const taskExecute: TaskExecuteDto = {
+                            scheduleType: scheduleType,
+                            cycle: item
+                        };
+                        const executeTime = Number(this.splitExecuteTime(taskExecute));
                         const task = () => {
                             this.logger.warn(`${TASK_MESSAGE_CYCLE} ${scheduleName}`);
                             this.logger.warn({ data });
@@ -74,7 +78,11 @@ export class TaskService {
                     });
                 } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                     regular.forEach((item, index, array) => {
-                        const executeTime = this.splitExecuteTime(scheduleType, null, item).toString();
+                        const taskExecute: TaskExecuteDto = {
+                            scheduleType: scheduleType,
+                            regular: item
+                        }
+                        const executeTime = this.splitExecuteTime(taskExecute).toString();
                         const task = new CronJob(executeTime, () => {
                             this.logger.warn(`${TASK_MESSAGE_REGULAR} ${scheduleName}`);
                             this.logger.warn({ data });
@@ -176,19 +184,20 @@ export class TaskService {
             };
             this.logger.serviceDebug('now taskCount is');
             console.log(this.taskCount);
-        }
+        };
     };
 
-    splitExecuteTime(schduleType: string, cycle?: string, regular?: string): string | number {
+    splitExecuteTime(data: TaskExecuteDto): string | number {
         try {
-            if (schduleType === SCHEDULE_TYPE_CYCLE) {
+            const { scheduleType, cycle, regular } = data;
+            if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                 const cycleSplit = cycle.split('#')[1].split('/');
                 const hour = Number(cycleSplit[0]) * 1000 * 60 * 60;
                 const minute = Number(cycleSplit[1]) * 1000 * 60;
                 return hour + minute;
-            } else if (schduleType === SCHEDULE_TYPE_REGULAR) {
+            } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                 const regularSplit = regular.split('#')[1].split('/');
-                const weekday = regularSplit[0];
+                const weekday = CRONWEEKDAY[regularSplit[0]];
                 const hour = regularSplit[1];
                 const minute = regularSplit[2];
                 return `0 ${minute} ${hour} * * ${weekday}`;

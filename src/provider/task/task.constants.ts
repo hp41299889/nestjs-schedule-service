@@ -10,3 +10,14 @@ export const SERVICE = {
     TASK_MESSAGE_CYCLE: 'Do cycle task',
     TASK_MESSAGE_REGULAR: 'Do regular task',
 };
+
+export const CRONWEEKDAY = {
+    '0': '0',
+    '1': '1',
+    '2': '2',
+    '3': '3',
+    '4': '4',
+    '5': '5',
+    '6': '6',
+    '7': '0'
+};

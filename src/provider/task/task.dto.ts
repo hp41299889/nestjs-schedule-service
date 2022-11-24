@@ -17,3 +17,9 @@ export class DeleteTaskDto {
     cycle?: string[];
     regular?: string[];
 };
+
+export class TaskExecuteDto {
+    scheduleType: string;
+    cycle?: string;
+    regular?: string;
+};
