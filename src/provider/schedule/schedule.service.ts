@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 //import constants
 import { SERVICE } from './schedule.constants';
 //import dtos
-import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
+import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto } from './schedule.dto';
 import { CreateTaskDto } from '../task/task.dto';
 //import models
 import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
@@ -33,8 +33,8 @@ export class ScheduleService {
     async create(data: CreateScheduleDto): Promise<object> {
         try {
             this.logger.serviceDebug(CREATE_METHOD);
-            await this.scheduleSetupModel.create(data);
-            const target = await this.scheduleSetupModel.read(data);
+            const schedule = await this.scheduleSetupModel.create(data);
+            const target = await this.scheduleSetupModel.read(schedule);
             const task: CreateTaskDto = {
                 action: 'create',
                 ...target
@@ -50,6 +50,15 @@ export class ScheduleService {
         try {
             this.logger.serviceDebug(READALL_METHOD);
             return await this.scheduleSetupModel.readAll();
+        } catch (err) {
+            throw err;
+        };
+    };
+
+    async read(data: ReadScheduleDto): Promise<ScheduleSetup> {
+        try {
+            this.logger.serviceDebug('');
+            return await this.scheduleSetupModel.read(data);
         } catch (err) {
             throw err;
         };

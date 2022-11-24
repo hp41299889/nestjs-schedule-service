@@ -1,5 +1,5 @@
 //import packages
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { ClientRMQ } from '@nestjs/microservices';
 import { timeout } from 'rxjs';
 

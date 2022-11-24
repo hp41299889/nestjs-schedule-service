@@ -10,6 +10,7 @@ import { AppModule } from './app.module';
 //import services
 import { SwaggerService } from './swagger/swagger.service';
 import { TaskService } from './provider/task/task.service';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -34,10 +35,21 @@ async function bootstrap() {
       cookie: { maxAge: 1000 * 60 * 10 }
     })
   );
-
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://dannylu:roxy1029@192.168.36.51:5672'],
+      queue: 'schedule_queue',
+      noAck: false,
+      queueOptions: {
+        durable: true
+      }
+    }
+  });
   app.setGlobalPrefix(prefix);
   appSwagger.setupSwagger(app);
 
+  await app.startAllMicroservices();
   await app.listen(port | 3000);
   console.log(service);
   await taskService.rebornTasks();

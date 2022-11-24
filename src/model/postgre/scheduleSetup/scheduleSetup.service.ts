@@ -31,7 +31,7 @@ export class ScheduleSetupModel {
         this.logger.setContext(ScheduleSetupModel.name);
     };
 
-    async create(data: CreateScheduleDto): Promise<void> {
+    async create(data: CreateScheduleDto): Promise<ScheduleSetup> {
         try {
             this.logger.serviceDebug(CREATE_METHOD);
             const { commandSource, scheduleName, scheduleType, regular, cycle, MQCLI } = data;
@@ -44,7 +44,7 @@ export class ScheduleSetupModel {
             schedule.regular = regular;
             schedule.cycle = cycle;
             schedule.MQCLI = MQCLI;
-            await this.datasource.manager.save(schedule);
+            return await this.datasource.manager.save(schedule);
         } catch (err) {
             throw err;
         };
@@ -60,7 +60,7 @@ export class ScheduleSetupModel {
         };
     };
 
-    async read(data: any): Promise<ScheduleSetup> {
+    async read(data: ReadScheduleDto): Promise<ScheduleSetup> {
         try {
             this.logger.serviceDebug(READ_METHOD);
             const { scheduleID } = data;

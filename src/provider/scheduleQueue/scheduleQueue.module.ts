@@ -15,6 +15,7 @@ import { ScheduleQueueController } from './scheduleQueue.controller';
 //import services
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
+import { ScheduleQueueService } from './scheduleQueue.service';
 
 const {
     CONNECTION_NAME,    //connection name for ScueduleQueue
@@ -22,7 +23,7 @@ const {
 } = MODULE;
 
 @Module({
-    imports: [JsonModule, LoggerModule],
+    imports: [JsonModule, LoggerModule, ScheduleModule],
     providers: [
         {
             provide: CONNECTION_NAME,
@@ -34,7 +35,7 @@ const {
                     const material = {
                         connectionName: CONNECTION_NAME,
                         config: rabbitmqConfig
-                    }
+                    };
                     logger.setContext(CONNECTION_NAME);
                     logger.factoryDebug(material);
                     return ClientProxyFactory.create({
@@ -42,20 +43,20 @@ const {
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
                             queue: inputQueueName,
-                            noAck: false,
                             queueOptions: {
                                 durable: true
                             }
                         }
-                    })
+                    });
                 } catch (err) {
                     logger.errorMessage(err);
                     return err;
                 }
             },
         },
+        ScheduleQueueService
     ],
     controllers: [ScheduleQueueController],
-    exports: []
+    exports: [ScheduleQueueService]
 })
 export class ScheduleQueueModule { }

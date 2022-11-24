@@ -4,9 +4,11 @@ export const MODULE = {
 };
 
 export const SERVICE = {
+    CONNECTION_NAME: 'SCHEDULE_QUEUE',
 
 };
 
 export const CONTROLLER = {
+    CONNECTION_NAME: 'SCHEDULE_QUEUE',
     PATTERN: 'SCHEDULE_QUEUE',
 };
