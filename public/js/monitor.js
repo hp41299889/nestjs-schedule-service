@@ -1,8 +1,9 @@
 const apiUrl = '/ScheduleService/Monitor';
+let monitorDatas = [];
 
-$(document).ready(function () {
-  readAll()
-  // console.log("$('#calendar')[0] =", $('#calendar')[0])
+document.addEventListener('DOMContentLoaded', async function () {
+  await readAll();
+  console.log('ready-monitorDatas =', monitorDatas);
   const calendarEl = document.getElementById('calendar');
   // console.log("calendarEl =", calendarEl)
 
@@ -25,33 +26,83 @@ $(document).ready(function () {
     aspectRatio: 2,
     contentHeight: 3000,
     dayMaxEvents: true, // when too many events in a day, show the popover
-    events: monitorData,
+    events: monitorDatas,
   });
 
   calendar.render();
 
-  ItemDisplay()
+  ItemDisplay();
 });
 
 //讀取全部資料(API-006)
-function readAll() {
-  $.ajax({
-    url: `${apiUrl}/read/`,
-    type: 'GET',
-    dataType: 'json',
-    success: function (response) {
-      console.log(response);
-
+async function readAll() {
+  const url = `${apiUrl}/read/`;
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-    error: function (xhr) {
-      console.log('xhr =', xhr);
-      alert('Error: ' + xhr.status + ' ' + xhr.statusText);
-    },
+    method: 'GET',
   });
+  const res = await response.json();
+  // ajax 結果新增到 event
+  res.map((element) => {
+    console.log(element);
+    element.weekLog.forEach((item) => {
+      const itemColor =
+        item.processStatus == 'ok'
+          ? '#D4EDDA'
+          : item.processStatus == 'fail'
+          ? '#F8D7DA'
+          : '#E7E8EA';
+      const time = moment(item.processDatetime).format('YYYY-MM-DD HH');
+      console.log('time =', time);
+      const timeStr = `${time}:00:00`;
+      monitorDatas.push({
+        id: item._id,
+        title: `${item.scheduleID}.${item.scheduleName}`,
+        start: timeStr,
+        // start: '2022-11-24 10:00:00',
+        backgroundColor: itemColor,
+      });
+    });
+  });
+  // $.ajax({
+  //   url: `${apiUrl}/read/`,
+  //   type: 'GET',
+  //   dataType: 'json',
+  //   success: function (response) {
+  //     console.log(response);
+  //     response.forEach((element) => {
+  //       console.log('element =', element);
+  //       element.weekLog.forEach((item) => {
+  //         const itemColor =
+  //           item.processStatus == 'ok'
+  //             ? '#D4EDDA'
+  //             : item.processStatus == 'fail'
+  //             ? '#F8D7DA'
+  //             : '#E7E8EA';
+  //         const monitorData = {
+  //           id: item._id,
+  //           title: `${item.scheduleID}.${item.scheduleName}`,
+  //           // start: item.processDatetime,
+  //           start: '2022-11-24 10:00:00',
+  //           backgroundColor: itemColor,
+  //         };
+  //         monitorDatas.push(monitorData);
+  //       });
+  //     });
+  //     console.log('monitorDatas =', monitorDatas);
+  //   },
+  //   error: function (xhr) {
+  //     console.log('xhr =', xhr);
+  //     alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+  //   },
+  // });
 }
 
 //任務改橫向顯示 & 單元格增加srollbar
-function ItemDisplay(){
+function ItemDisplay() {
   // define static values
   const defaultItemHeight = 45;
   const defaultEventItemHeight = 40;
@@ -78,7 +129,7 @@ function ItemDisplay(){
       rowIndex++;
       // console.log('inWhile-rowIndex =', rowIndex)
     }
-    // console.log('afterWhile-rowIndex =', rowIndex)
+    console.log('afterWhile-rowIndex =', rowIndex);
     const selectedIndex = rowIndex - 1;
     // console.log('selectedIndex =', selectedIndex)
     return selectedIndex >= 0 ? rows[selectedIndex] : null;
@@ -89,12 +140,13 @@ function ItemDisplay(){
     'td.fc-timegrid-col > div.fc-timegrid-col-frame > div.fc-timegrid-col-events',
   ).each(function () {
     console.log('getTasks');
+
     rowIndex = 0;
     // for-each week column
     let accumulator = 0;
     let previousRowElement = null;
     let newHtmlStr = '<div class="fc-timegrid-col-events">';
-    
+
     $(this)
       .find('> div.fc-timegrid-event-harness.fc-timegrid-event-harness-inset')
       .each(function () {
@@ -113,23 +165,28 @@ function ItemDisplay(){
         $(this).css('inset', recombineStr);
         console.log('each-1');
       })
-      .find(
-        '> a.fc-timegrid-event.fc-v-event.fc-event.fc-event-start.fc-event-end',
-      )
+      .find('> a.fc-timegrid-event.fc-v-event.fc-event')
       .each(function () {
         // for-each event on week column
         // select the current event time and its row
         // console.log('$(this) =', $(this))
         // console.log("$(this).find('> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time') =", $(this).find('> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time'))
-        const currentEventTime = moment(
-          $(this)
-            .find(
-              '> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time',
-            )
-            .text(),
-          ['HH:mm'],
-        );
-        // console.log('currentEventTime =', currentEventTime)
+        const time = $(this)
+          .find(
+            '> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time',
+          )
+          .text();
+        let timeChange = '';
+        if (time.indexOf('下午') != -1) {
+          timeChange = time.replace('下午', '') + ' pm';
+        } else if (time.indexOf('上午') != -1) {
+          timeChange = time.replace('上午', '') + ' am';
+        } else {
+          console.log('else-timeChange');
+        }
+        const currentEventTime = moment(timeChange, 'HH:mm A').format('HH:mm');
+        console.log('currentEventTime =', currentEventTime);
+        // console.log('currentEventTime.format() =', currentEventTime.format('HH:mm'));
         //拿掉task的時間
         $(this)
           .find(
@@ -138,7 +195,7 @@ function ItemDisplay(){
           .addClass('d-none');
 
         const currentEventRowElement = getRowElement(currentEventTime);
-        // console.log('currentEventRowElement =', currentEventRowElement)
+        console.log('currentEventRowElement =', currentEventRowElement);
         // console.log('previousRowElement =', previousRowElement)
         // the current row has to more than one item
         if (currentEventRowElement === previousRowElement) {
@@ -181,41 +238,51 @@ function ItemDisplay(){
         // console.log('$(this) =', $(this));
         // console.log('$(this).parent() =', $(this).parent())
       })
-      .parent().parent()
+      .parent()
+      .parent()
       .each(function () {
         let itemCount = 0;
-        let defaultInset = ''
-        let firstItem = true
+        let defaultInset = '';
+        let firstItem = true;
 
         // console.log('after-a-$(this) =',$(this))
-        $(this).children().each(function(){
-          const zIndex = $(this).css('z-index');
-          // console.log('zIndex =', zIndex);
-          if (zIndex > itemCount) {
-            // console.log('c>a-$(this) =', $(this));
-            defaultInset = $(this).css('inset')
-            // console.log('c>a-e =', defaultInset);
-            $(this).css('inset', '2px 0 0 0')
-            // console.log('c>a-$(this).prop("outerHTML") =', $(this).prop("outerHTML"));
-            if(firstItem == true){
-              newHtmlStr += `<div class="selfCell" style="inset:${defaultInset}">${$(this).prop("outerHTML")}`;
-              firstItem = false
-            }else{
-              newHtmlStr += $(this).prop("outerHTML");
+        $(this)
+          .children()
+          .each(function () {
+            const zIndex = $(this).css('z-index');
+            console.log('zIndex =', zIndex);
+            if (zIndex >= itemCount) {
+              // console.log('c>a-$(this) =', $(this));
+              defaultInset = $(this).css('inset');
+              // console.log('c>a-e =', defaultInset);
+              $(this).css('inset', '2px 0 0 0');
+              // console.log('c>a-$(this).prop("outerHTML") =', $(this).prop("outerHTML"));
+              if (firstItem == true) {
+                newHtmlStr += `<div class="selfCell" style="inset:${defaultInset}">${$(
+                  this,
+                ).prop('outerHTML')}`;
+                firstItem = false;
+              } else {
+                newHtmlStr += $(this).prop('outerHTML');
+              }
+              itemCount = zIndex;
+            } else if (zIndex < itemCount) {
+              // console.log('c < a');
+              defaultInset = $(this).css('inset');
+              $(this).css('inset', '2px 0 0 0');
+              newHtmlStr += `</div><div class="selfCell" style="inset:${defaultInset}">${$(
+                this,
+              ).prop('outerHTML')}`;
+              itemCount = zIndex;
+              firstItem = false;
+            } else {
+              console.log('else');
+              alert('else-273');
             }
-            itemCount = zIndex;
-          } else if (zIndex < itemCount) {
-            // console.log('c < a');
-            defaultInset = $(this).css('inset')
-            $(this).css('inset', '2px 0 0 0')
-            newHtmlStr += `</div><div class="selfCell" style="inset:${defaultInset}">${$(this).prop("outerHTML")}`;
-            itemCount = zIndex;
-            firstItem = false
-          }
-        })
+          });
         newHtmlStr += '</div></div>';
         // console.log('newHtmlStr =', newHtmlStr);
       })
-      .prop("outerHTML", newHtmlStr);
+      .prop('outerHTML', newHtmlStr);
   });
 }
