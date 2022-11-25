@@ -1,5 +1,5 @@
 {
-  "enableScheduleService": "true",
+  "enableScheduleService": false,
   "queue": {
     "IP": "192.168.36.51",
     "port": "5672",

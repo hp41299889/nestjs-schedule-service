@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as session from 'express-session';
 import { join } from 'path';
+import * as hbs from 'hbs';
 
 //import modules
 import { AppModule } from './app.module';
@@ -24,8 +25,9 @@ async function bootstrap() {
   const service = `${name} is running on ${port} for ${env}`;
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'public/html'));
+  app.setBaseViewsDir(join(__dirname, '..', 'public', 'html'));
   app.setViewEngine('hbs');
+  hbs.registerPartials(join(__dirname, '..', 'public', 'html', 'partials'));
   app.use(
     session({
       secret: 'abc',

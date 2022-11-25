@@ -37,7 +37,7 @@ export class RoutesController {
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                return response.render('Schedule.hbs');
+                return response.render('Schedule', { layout: 'pages/index' });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -46,13 +46,14 @@ export class RoutesController {
     };
 
     @Get(MONITOR_VIEW_ROUTES)
-    @Render(MONITOR_VIEW_FILE)
+    // @Render(MONITOR_VIEW_FILE)
     monitor(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(MONITOR_VIEW_ROUTES);
-            if (session.visits) {
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                response.redirect(REDIRECT_ROUTES);
+                return response.render('Monitor', { layout: 'pages/index' });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -61,13 +62,14 @@ export class RoutesController {
     };
 
     @Get(EXECUTIONLOG_VIEW_ROUTES)
-    @Render(EXECUTIONLOG_VIEW_FILE)
+    // @Render(EXECUTIONLOG_VIEW_FILE)
     executionLog(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(EXECUTIONLOG_VIEW_ROUTES);
-            if (session.visits) {
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                response.redirect(REDIRECT_ROUTES);
+                return response.render('ExecutionLog', { layout: 'pages/index' });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -76,13 +78,14 @@ export class RoutesController {
     };
 
     @Get(SETUP_VIEW_ROUTES)
-    @Render(SETUP_VIEW_FILE)
+    // @Render(SETUP_VIEW_FILE)
     setup(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(SETUP_VIEW_ROUTES);
-            if (session.visits) {
+            if (!session.visits) {
+                return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                response.redirect(REDIRECT_ROUTES);
+                return response.render('Setup', { layout: 'pages/index' });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -94,8 +97,7 @@ export class RoutesController {
     auth(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             console.log('in login page');
-            return response.render('Auth.hbs');
-            this.logger.controllerDebug(AUTH_VIEW_ROUTES);
+            return response.render('Auth', { layout: 'pages/login' });
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);
