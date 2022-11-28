@@ -1,6 +1,6 @@
 {
   "name": "nest-server",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "ba220904 ScheduleService",
   "author": "LNT_Danny Lu",
   "private": true,
@@ -64,6 +64,7 @@
     "@types/cron": "^2.0.0",
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.5",
+    "@types/hbs": "^4.0.1",
     "@types/jest": "28.1.8",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",

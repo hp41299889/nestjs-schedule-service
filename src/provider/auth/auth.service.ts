@@ -1,5 +1,6 @@
 //import packages
-import { BadRequestException, Injectable, Logger, Render, Res } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, Render, Res, Req, Session } from '@nestjs/common';
+import { Request } from 'express';
 
 //import constants
 import { SERVICE } from './auth.constants';
@@ -43,10 +44,9 @@ export class AuthService {
         };
     };
 
-    async logout(): Promise<void> {
+    async logout(@Req() request: Request, @Session() session: Record<string, any>) {
         try {
             this.logger.serviceDebug(LOGOUT_METHOD);
-            return;
         } catch (err) {
             throw err;
         };

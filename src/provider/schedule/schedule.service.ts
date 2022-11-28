@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 //import constants
 import { SERVICE } from './schedule.constants';
 //import dtos
-import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto } from './schedule.dto';
+import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto, SchedulesDto } from './schedule.dto';
 //import models
 import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
@@ -41,10 +41,18 @@ export class ScheduleService {
         };
     };
 
-    async readAll(): Promise<ScheduleSetup[]> {
+    async readAll(): Promise<any[]> {
         try {
+            //TODO
             this.logger.serviceDebug(READALL_METHOD);
-            return await this.scheduleSetupModel.readAll();
+            const rows = await this.scheduleSetupModel.readAll();
+            const schedules = rows.map(row => {
+                return {
+                    ...row,
+                    MQCLI: JSON.stringify(row.MQCLI)
+                };
+            });
+            return schedules;
         } catch (err) {
             throw err;
         };

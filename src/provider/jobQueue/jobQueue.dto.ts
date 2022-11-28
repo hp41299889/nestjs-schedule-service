@@ -10,8 +10,6 @@ export class JsonrpcMessageDto {
 };
 
 export class SendMessageDto extends JsonrpcMessageDto {
-    // pattern: string;
-    // message: JsonrpcMessageDto;
 };
 
 export class BuildMessageDto extends SendMessageDto {

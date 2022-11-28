@@ -1,5 +1,5 @@
 //import packages
-import { Controller, Post, Get, Body, BadRequestException, Res, Session } from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, Res, Session, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
@@ -48,11 +48,13 @@ export class AuthController {
     };
 
     @Get(LOGOUT_ROUTES)
-    async logout(@Res() response: Response, @Session() session: Record<string, any>): Promise<void> {
+    async logout(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): Promise<void> {
         try {
             this.logger.controllerDebug(LOGOUT_METHOD);
             //TODO
-            response.redirect('../Auth/view');
+            request.session.destroy(() => {
+                response.redirect('../Auth/view');
+            });
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);
