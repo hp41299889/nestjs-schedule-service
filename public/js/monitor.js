@@ -1,5 +1,6 @@
 const apiUrl = '/ScheduleService/Monitor';
 let monitorDatas = [];
+let calendar;
 
 document.addEventListener('DOMContentLoaded', async function () {
   await readAll();
@@ -7,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   const calendarEl = document.getElementById('calendar');
   // console.log("calendarEl =", calendarEl)
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
+  calendar = new FullCalendar.Calendar(calendarEl, {
     timeZone: 'UTC',
     headerToolbar: false,
     initialView: 'timeGridWeek',
@@ -31,7 +32,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   calendar.render();
 
-  ItemDisplay();
+  itemDisplay();
+  itemBtn()
+  monitor()
 });
 
 //讀取全部資料(API-006)
@@ -56,14 +59,20 @@ async function readAll() {
           ? '#F8D7DA'
           : '#E7E8EA';
       const time = moment(item.processDatetime).format('YYYY-MM-DD HH');
-      console.log('time =', time);
+      console.log('item =', item);
       const timeStr = `${time}:00:00`;
+      const mqcli = JSON.stringify(item.MQCLI)
       monitorDatas.push({
         id: item._id,
         title: `${item.scheduleID}.${item.scheduleName}`,
         start: timeStr,
-        // start: '2022-11-24 10:00:00',
         backgroundColor: itemColor,
+        MQCLI: mqcli,
+        processDatetime: moment(item.processDatetime).format('YYYY-MM-DD HH:mm:ss'),
+        schedule:item.schedule,
+        scheduleID:item.scheduleID,
+        scheduleName:item.scheduleName,
+        scheduleType:item.scheduleType,
       });
     });
   });
@@ -102,7 +111,7 @@ async function readAll() {
 }
 
 //任務改橫向顯示 & 單元格增加srollbar
-function ItemDisplay() {
+function itemDisplay() {
   // define static values
   const defaultItemHeight = 45;
   const defaultEventItemHeight = 40;
@@ -129,7 +138,7 @@ function ItemDisplay() {
       rowIndex++;
       // console.log('inWhile-rowIndex =', rowIndex)
     }
-    console.log('afterWhile-rowIndex =', rowIndex);
+    // console.log('afterWhile-rowIndex =', rowIndex);
     const selectedIndex = rowIndex - 1;
     // console.log('selectedIndex =', selectedIndex)
     return selectedIndex >= 0 ? rows[selectedIndex] : null;
@@ -184,9 +193,8 @@ function ItemDisplay() {
         } else {
           console.log('else-timeChange');
         }
-        const currentEventTime = moment(timeChange, 'HH:mm A').format('HH:mm');
-        console.log('currentEventTime =', currentEventTime);
-        // console.log('currentEventTime.format() =', currentEventTime.format('HH:mm'));
+        const currentEventTime = moment(timeChange, 'HH:mm A');
+        // console.log('currentEventTime =', currentEventTime);
         //拿掉task的時間
         $(this)
           .find(
@@ -195,7 +203,7 @@ function ItemDisplay() {
           .addClass('d-none');
 
         const currentEventRowElement = getRowElement(currentEventTime);
-        console.log('currentEventRowElement =', currentEventRowElement);
+        // console.log('currentEventRowElement =', currentEventRowElement);
         // console.log('previousRowElement =', previousRowElement)
         // the current row has to more than one item
         if (currentEventRowElement === previousRowElement) {
@@ -243,30 +251,29 @@ function ItemDisplay() {
       .each(function () {
         let itemCount = 0;
         let defaultInset = '';
-        let firstItem = true;
 
         // console.log('after-a-$(this) =',$(this))
         $(this)
           .children()
           .each(function () {
             const zIndex = $(this).css('z-index');
-            console.log('zIndex =', zIndex);
-            if (zIndex >= itemCount) {
-              // console.log('c>a-$(this) =', $(this));
+            // console.log('zIndex =', zIndex);
+            // console.log('itemCount =', itemCount);
+            if (zIndex > itemCount) {
               defaultInset = $(this).css('inset');
               // console.log('c>a-e =', defaultInset);
               $(this).css('inset', '2px 0 0 0');
               // console.log('c>a-$(this).prop("outerHTML") =', $(this).prop("outerHTML"));
-              if (firstItem == true) {
+              if (itemCount == 0) {
                 newHtmlStr += `<div class="selfCell" style="inset:${defaultInset}">${$(
                   this,
                 ).prop('outerHTML')}`;
-                firstItem = false;
+                
               } else {
                 newHtmlStr += $(this).prop('outerHTML');
               }
               itemCount = zIndex;
-            } else if (zIndex < itemCount) {
+            } else if (zIndex <= itemCount) {
               // console.log('c < a');
               defaultInset = $(this).css('inset');
               $(this).css('inset', '2px 0 0 0');
@@ -274,7 +281,7 @@ function ItemDisplay() {
                 this,
               ).prop('outerHTML')}`;
               itemCount = zIndex;
-              firstItem = false;
+              
             } else {
               console.log('else');
               alert('else-273');
@@ -285,4 +292,39 @@ function ItemDisplay() {
       })
       .prop('outerHTML', newHtmlStr);
   });
+}
+
+//依狀態添加按鈕
+function itemBtn(){
+  $('div.selfCell > .fc-timegrid-event-harness > a.fc-timegrid-event').each(function(){
+    // console.log($(this))
+    const backgroundColor = $(this).css("background-color")
+    // console.log('backgroundColor =', backgroundColor)
+    $(this).find('> .fc-event-main > .fc-event-main-frame').each(function(){
+      // console.log('fc-event-main-this =', $(this))
+      $(this).after(`<button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon" data-logId=""></i></button>`)
+    })
+
+    if(backgroundColor == 'rgb(248, 215, 218)'){
+      console.log('backgroundColor-if')
+      $(this).find('> .fc-event-main > .fc-event-main-frame').each(function(){
+        // console.log('fc-event-main-this =', $(this))
+        $(this).after('<button type="button" class="btn btn-outline-dark monitorBtn" id="reloadBtn" data-bs-toggle="modal" data-bs-target="#reloadModal"><i class="bi bi-arrow-clockwise monitorIcon"></i></button>')
+      })
+    }else{
+      console.log('backgroundColor-else')
+    }
+  })
+}
+
+function monitor(){
+  $('#listBtn > i.monitorIcon').click(function (e) { 
+    e.preventDefault();
+    console.log('e =', e)
+    const listData = e.target.dataset.x
+    console.log('listData =', listData)
+    console.log('monitor-this =', $(this))
+  });
+  const a = calendar.getEvents()
+  console.log('a =', a)
 }

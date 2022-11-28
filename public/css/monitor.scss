@@ -1,15 +1,80 @@
-#calendar{
-  .fc-timegrid-cols{
-    .fc-timegrid-col{
-      .fc-timegrid-col-frame{
-        .fc-timegrid-col-events{
-          .selfCell{
-            position: absolute;
-            height: 121px;
-            overflow-y: auto;
+#calendar {
+  margin-left: 35px;
 
-            &::-webkit-scrollbar {
-              display: none;
+  .fc-timegrid {
+    .fc-scrollgrid {
+      border: unset;
+
+      thead {
+        tr {
+          th {
+            .fc-col-header {
+              .fc-timegrid-axis {
+                border: unset;
+              }
+              .fc-col-header-cell {
+                border-left: unset;
+                border-right: unset;
+                text-align: unset;
+
+                a.fc-col-header-cell-cushion {
+                  color: #000000;
+                  text-decoration: unset;
+                  font-size: 1.5rem;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      tbody {
+        .fc-scroller-harness {
+          .fc-timegrid-body {
+            .fc-timegrid-slots {
+              .fc-timegrid-slot-label {
+                border: unset;
+              }
+            }
+            .fc-timegrid-cols {
+              .fc-timegrid-col {
+                .fc-timegrid-col-frame {
+                  .fc-timegrid-col-events {
+                    .selfCell {
+                      position: absolute;
+                      height: 121px;
+                      overflow-y: auto;
+
+                      &::-webkit-scrollbar {
+                        display: none;
+                      }
+
+                      .fc-timegrid-event-harness {
+                        a.fc-timegrid-event {
+                          .fc-event-main {
+                            display: flex;
+                            justify-content: space-between;
+
+                            .fc-event-title {
+                              top: 13px;
+                              padding-left: 5px;
+                            }
+
+                            .monitorBtn {
+                              border: unset;
+                              padding: 5px;
+
+                              .monitorIcon {
+                                font-size: 1.5rem;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
