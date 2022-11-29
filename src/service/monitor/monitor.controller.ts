@@ -1,12 +1,14 @@
 //import packages
-import { Controller, Post, Get, Body, Res, Session } from '@nestjs/common';
+import { Controller, Post, Get, Body, Res, Session, UseFilters } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
 //import constants
 import { CONTROLLER } from './monitor.constants';
 //import dtos
-import { ResendMonitorDto, WeekLogsDto } from './monitor.dto';
+import { ResendMonitorDto } from './monitor.dto';
+//import utils
+import { Exception } from 'src/util/exception/exception';
 //import services
 import { MonitorService } from './monitor.service';
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -21,6 +23,7 @@ const {
 
 @ApiTags(API_TAG)
 @Controller(API_ROUTES)
+@UseFilters(Exception)
 export class MonitorController {
     constructor(
         private readonly logger: LoggerService,

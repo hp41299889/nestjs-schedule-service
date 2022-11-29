@@ -1,5 +1,5 @@
 //import packages
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 
 //import constants
 import { SERVICE } from './executionLog.constants';

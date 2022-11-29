@@ -1,5 +1,5 @@
 //import dtos
-import { CreateScheduleDto, UpdateScheduleDto } from "../schedule/schedule.dto";
+import { CreateScheduleDto, UpdateScheduleDto } from "../../service/schedule/schedule.dto";
 
 export class CreateTaskDto extends CreateScheduleDto {
     scheduleID?: number;

@@ -1,5 +1,7 @@
+//import packages
 import { ApiProperty } from '@nestjs/swagger';
-import { JsonrpcMessageDto } from '../jobQueue/jobQueue.dto';
+
+//import models
 import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema';
 
 export enum dateIntervalEnum {

@@ -5,11 +5,11 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 //import modules
 import { JsonModule } from 'src/config/json/json.module';
 import { LoggerModule } from 'src/common/logger/logger.module';
-import { ScheduleModule } from '../schedule/schedule.module';
+import { ScheduleModule } from '../../service/schedule/schedule.module';
 //import constants
 import { MODULE } from './scheduleQueue.constants';
 //import dtos
-import { QueueConnectionDto } from '../setup/setup.dto';
+import { QueueConnectionDto } from '../../service/setup/setup.dto';
 //import controllers
 import { ScheduleQueueController } from './scheduleQueue.controller';
 //import services

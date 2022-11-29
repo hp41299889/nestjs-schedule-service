@@ -1,5 +1,5 @@
 //import packages
-import { BadRequestException, Injectable, Logger, Render, Res, Req, Session } from '@nestjs/common';
+import { Injectable, Req, Session } from '@nestjs/common';
 import { Request } from 'express';
 
 //import constants
@@ -11,9 +11,11 @@ import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
-    SETUP_ALIAS,    //alias for JsonService
-    LOGIN_METHOD,   //login()
-    LOGOUT_METHOD,  //logout()
+    SETUP_ALIAS,        //alias for JsonService
+    LOGIN_METHOD,       //login()
+    LOGOUT_METHOD,      //logout()
+    LOGIN_FAIL_ACCOUNT, //account error message
+    LOGIN_FAIL_PASSWORD,//password error message
 } = SERVICE;
 
 @Injectable()
@@ -25,7 +27,7 @@ export class AuthService {
         this.logger.setContext(AuthService.name);
     };
 
-    async login(data: LoginDto): Promise<any> {
+    async login(data: LoginDto): Promise<number> {
         try {
             this.logger.serviceDebug(LOGIN_METHOD);
             const adminConfig: LoginDto = await this.jsonSerivce.read(SETUP_ALIAS);
@@ -34,17 +36,17 @@ export class AuthService {
                 if (data.password === password) {
                     return 301;
                 } else {
-                    throw 'Lonin fail, password is incorrect';
+                    throw LOGIN_FAIL_PASSWORD;
                 };
             } else {
-                throw 'Login fail, account is incorrect';
+                throw LOGIN_FAIL_ACCOUNT;
             };
         } catch (err) {
             throw err;
         };
     };
 
-    async logout(@Req() request: Request, @Session() session: Record<string, any>) {
+    async logout(): Promise<void> {
         try {
             this.logger.serviceDebug(LOGOUT_METHOD);
         } catch (err) {

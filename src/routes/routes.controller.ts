@@ -1,7 +1,7 @@
 //import packages
-import { Get, Controller, Req, Res, Session, BadRequestException } from '@nestjs/common';
+import { Get, Controller, Res, Session, BadRequestException } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 
 //import constants
 import { CONTROLLER } from './routes.constants';
@@ -20,8 +20,8 @@ const {
     AUTH_VIEW_ROUTES,           //./Auth/view
     AUTH_VIEW_FILE,             //Auth
     REDIRECT_ROUTES,            //../Auth/view
-    INDEX_LAYOUT_FILE,          //
-    LOGIN_LAYOUT_FILE,          //
+    INDEX_LAYOUT_FILE,          //pages/index
+    LOGIN_LAYOUT_FILE,          //pages/login
 } = CONTROLLER;
 
 @ApiExcludeController()
@@ -34,8 +34,7 @@ export class RoutesController {
     };
 
     @Get(SCHEDULE_VIEW_ROUTES)
-    // @Render(SCHEDULE_VIEW_FILE)
-    schedule(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+    schedule(@Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(SCHEDULE_VIEW_ROUTES);
             if (!session.visits) {
@@ -50,8 +49,7 @@ export class RoutesController {
     };
 
     @Get(MONITOR_VIEW_ROUTES)
-    // @Render(MONITOR_VIEW_FILE)
-    monitor(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
+    monitor(@Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(MONITOR_VIEW_ROUTES);
             if (!session.visits) {
@@ -66,8 +64,7 @@ export class RoutesController {
     };
 
     @Get(EXECUTIONLOG_VIEW_ROUTES)
-    // @Render(EXECUTIONLOG_VIEW_FILE)
-    executionLog(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
+    executionLog(@Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(EXECUTIONLOG_VIEW_ROUTES);
             if (!session.visits) {
@@ -82,8 +79,7 @@ export class RoutesController {
     };
 
     @Get(SETUP_VIEW_ROUTES)
-    // @Render(SETUP_VIEW_FILE)
-    setup(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): void {
+    setup(@Res() response: Response, @Session() session: Record<string, any>): void {
         try {
             this.logger.controllerDebug(SETUP_VIEW_ROUTES);
             if (!session.visits) {
@@ -98,7 +94,7 @@ export class RoutesController {
     };
 
     @Get(AUTH_VIEW_ROUTES)
-    auth(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
+    auth(@Res() response: Response): void {
         try {
             return response.render(AUTH_VIEW_FILE, { layout: LOGIN_LAYOUT_FILE });
         } catch (err) {

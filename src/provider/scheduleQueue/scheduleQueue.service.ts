@@ -1,12 +1,16 @@
 //import packages
 import { Injectable, Inject } from '@nestjs/common';
-import { ScheduleQueueMessageDto } from './scheduleQueue.dto';
-import { SERVICE } from './scheduleQueue.constants';
 import { ClientRMQ } from '@nestjs/microservices';
-import { LoggerService } from 'src/common/logger/logger.service';
 import { timeout } from 'rxjs';
-import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto } from '../schedule/schedule.dto';
-import { ScheduleService } from '../schedule/schedule.service';
+
+//import constants
+import { SERVICE } from './scheduleQueue.constants';
+//import dtos
+import { ScheduleQueueMessageDto } from './scheduleQueue.dto';
+import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto } from '../../service/schedule/schedule.dto';
+//import services
+import { LoggerService } from 'src/common/logger/logger.service';
+import { ScheduleService } from '../../service/schedule/schedule.service';
 
 const {
     CONNECTION_NAME

@@ -10,7 +10,6 @@ import { SERVICE } from './scheduleExecutionLog.constants';
 //import models
 import { ScheduleExecutionLog, ScheduleExecutionLogDocument } from './scheduleExecutionLog.schema';
 //import services
-import { TimeHelperService } from 'src/util/time/timeHelper.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
@@ -25,7 +24,6 @@ export class ScheduleExecutionLogModel {
     constructor(
         @InjectModel(ScheduleExecutionLog.name, CONNECTION_NAME)
         private scheduleExecutionLogModel: Model<ScheduleExecutionLogDocument>,
-        private readonly timeHelperService: TimeHelperService,
         private readonly logger: LoggerService
     ) {
         this.logger.setContext(ScheduleExecutionLogModel.name);

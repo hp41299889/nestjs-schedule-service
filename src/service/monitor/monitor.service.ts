@@ -4,9 +4,7 @@ import { Injectable } from '@nestjs/common';
 //import constants
 import { SERVICE } from './monitor.constants';
 //import dtos
-import { CreateTaskDto } from '../task/task.dto';
-import { BuildWeekTasksDto, ResendMonitorDto, WeekLogsDto } from './monitor.dto';
-import { TimePeriodDto } from 'src/util/time/timeHelper.dto';
+import { ResendMonitorDto, WeekLogsDto } from './monitor.dto';
 //import models
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
@@ -14,9 +12,9 @@ import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecution
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
 import { TimeHelperService } from 'src/util/time/timeHelper.service';
-import { JobQueueService } from '../jobQueue/jobQueue.service';
+import { JobQueueService } from '../../provider/jobQueue/jobQueue.service';
 import { ExecutionLogService } from '../executionLog/executionLog.service';
-import { TaskService } from '../task/task.service';
+import { TaskService } from '../../provider/task/task.service';
 
 const {
     READ_METHOD,    //read()

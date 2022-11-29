@@ -2,6 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+//import dtos
 import { JsonrpcMessageDto } from 'src/provider/jobQueue/jobQueue.dto';
 
 export type ScheduleExecutionLogDocument = HydratedDocument<ScheduleExecutionLog>;

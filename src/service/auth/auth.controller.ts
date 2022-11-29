@@ -1,5 +1,5 @@
 //import packages
-import { Controller, Post, Get, Body, BadRequestException, Res, Session, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, BadRequestException, Res, Session, Req, UseFilters } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
@@ -7,6 +7,8 @@ import { Request, Response } from 'express';
 import { CONTROLLER } from './auth.constants';
 //import dtos
 import { LoginDto } from './auth.dto';
+//import utils
+import { Exception } from 'src/util/exception/exception';
 //import services
 import { AuthService } from './auth.service';
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -22,6 +24,7 @@ const {
 
 @ApiTags(API_TAG)
 @Controller(API_ROUTES)
+@UseFilters(Exception)
 export class AuthController {
     constructor(
         private readonly authService: AuthService,

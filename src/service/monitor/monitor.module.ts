@@ -4,9 +4,9 @@ import { Module } from '@nestjs/common';
 //import modules
 import { CommonModule } from 'src/common/common.module';
 import { TimeHelperModule } from 'src/util/time/timeHelper.module';
-import { JobQueueModule } from '../jobQueue/jobQueue.module';
+import { JobQueueModule } from '../../provider/jobQueue/jobQueue.module';
 import { ExecutionLogModule } from '../executionLog/executionLog.module';
-import { TaskModule } from '../task/task.module';
+import { TaskModule } from '../../provider/task/task.module';
 //import models
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';

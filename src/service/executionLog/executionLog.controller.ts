@@ -1,5 +1,5 @@
 //import packages
-import { Controller, Body, Post, BadRequestException, Res, Session } from '@nestjs/common';
+import { Controller, Body, Post, BadRequestException, Res, Session, UseFilters } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
@@ -7,8 +7,8 @@ import { Response } from 'express';
 import { CONTROLLER } from './executionLog.constants';
 //import dtos
 import { QueryDto, dateIntervalEnum } from './executionLog.dto';
-//import models
-import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema';
+//import utils
+import { Exception } from 'src/util/exception/exception';
 //import services
 import { ExecutionLogService } from './executionLog.service';
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -23,6 +23,7 @@ const {
 
 @ApiTags(API_TAGS)
 @Controller(API_ROUTES)
+@UseFilters(Exception)
 export class ExecutionLogController {
     constructor(
         private readonly executionLogService: ExecutionLogService,
@@ -35,7 +36,6 @@ export class ExecutionLogController {
     async query(@Body() data: QueryDto, @Res() response: Response, @Session() session: Record<string, any>): Promise<void | Response<any, Record<string, any>>> {
         try {
             this.logger.controllerDebug(QUERY_METHOD);
-            // if(session.visits)
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {

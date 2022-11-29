@@ -10,7 +10,7 @@ import { ConnectionModule } from "../connection/connection.module";
 //import constants
 import { MODULE } from './mongo.constants';
 //import dtos
-import { DatabaseConnectionDto } from "src/provider/setup/setup.dto";
+import { DatabaseConnectionDto } from "src/service/setup/setup.dto";
 //import services
 import { JsonService } from "src/config/json/json.service";
 import { LoggerService } from "src/common/logger/logger.service";
@@ -20,6 +20,9 @@ import { EnvModule } from "src/config/env/env.module";
 const {
     CONNECTION_NAME,    //connection name for MongooseModule
     SETUP_ALIAS,        //alias for JsonService
+    ENV_ALIAS,          //alias for ConfigService
+    RETRY_ATTEMPTS,     //retry attempts for connection
+    FAIL_USEING_ENV,    //connect by setup.json fail and useing default .env
 } = MODULE;
 
 @Module({
@@ -42,12 +45,12 @@ const {
                     const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
                     const options: MongooseModuleOptions = {
                         uri: uri,
-                        retryAttempts: 3
+                        retryAttempts: RETRY_ATTEMPTS
                     };
                     return options;
                 } catch (err) {
-                    logger.error('Warning!mongo connect by setup.json fail,useing default env');
-                    const mongoEnv: DatabaseConnectionDto = configService.get('mongo');
+                    logger.error(FAIL_USEING_ENV);
+                    const mongoEnv: DatabaseConnectionDto = configService.get(ENV_ALIAS);
                     const material = {
                         connectionName: CONNECTION_NAME,
                         config: mongoEnv
@@ -57,7 +60,7 @@ const {
                     const uri = `mongodb://${account}:${password}@${IP}:${port}/${DBName}`;
                     const options: MongooseModuleOptions = {
                         uri: uri,
-                        retryAttempts: 3
+                        retryAttempts: RETRY_ATTEMPTS
                     };
                     return options;
                 };

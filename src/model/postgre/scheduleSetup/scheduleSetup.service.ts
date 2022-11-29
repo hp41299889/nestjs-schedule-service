@@ -6,7 +6,7 @@ import { DataSource } from 'typeorm';
 //import constants
 import { SERVICE } from './scheduleSetup.constants';
 //import dtos
-import { CreateScheduleDto, ReadScheduleDto, UpdateScheduleDto } from 'src/provider/schedule/schedule.dto';
+import { CreateScheduleDto, ReadScheduleDto, UpdateScheduleDto } from 'src/service/schedule/schedule.dto';
 //import models
 import { ScheduleSetup } from './scheduleSetup.entity';
 //import services

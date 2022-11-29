@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 
 //import modules
-import { TaskModule } from '../task/task.module';
+import { TaskModule } from '../../provider/task/task.module';
 import { CommonModule } from 'src/common/common.module';
 //import models
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';

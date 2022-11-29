@@ -1,10 +1,9 @@
 //import packages
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LoggerModule } from 'src/common/logger/logger.module';
 
 //import modules
-import { TimeHelperModule } from 'src/util/time/timeHelper.module';
+import { LoggerModule } from 'src/common/logger/logger.module';
 //import constants
 import { MODULE } from './scheduleExecutionLog.constants';
 //import schemas
@@ -22,7 +21,6 @@ const {
         MongooseModule.forFeature([{
             name: ScheduleExecutionLog.name, schema: ScheduleExecutionLogSchema
         }], CONNECTION_NAME),
-        TimeHelperModule
     ],
     providers: [ScheduleExecutionLogModel],
     exports: [ScheduleExecutionLogModel]
