@@ -10,7 +10,7 @@ $(document).ready(function () {
     pageLength: 10,
     dom: 'Brft<"bottom"lp>',
     buttons: ['excel'],
-    data: executionLogData,
+    // data: executionLogData,
     columns: executionLogColumns,
   });
 
@@ -112,7 +112,10 @@ function query() {
         dataType: 'json',
         success: function (response) {
           console.log(response);
-          location.reload();
+          // location.reload();
+
+          //將資料新增到table上
+          table.rows.add(response).draw();
         },
         error: function (xhr) {
           console.log('xhr =', xhr);

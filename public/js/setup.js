@@ -1,8 +1,9 @@
 const apiUrl = '/ScheduleService/Setup';
 
 $(document).ready(function () {
-  readAll();
   enableOptionChoice();
+  readAll();
+
 });
 
 //讀取全部資料(API-010)
@@ -12,7 +13,7 @@ function readAll() {
     type: 'GET',
     dataType: 'json',
     success: function (response) {
-      console.log(response);
+      console.log('setup-read-res', response);
       // console.log("$('#enableScheduleService') =", $('#enableScheduleService'));
       // const a = response.enableScheduleService;
       // console.log('a =', a);
@@ -23,26 +24,29 @@ function readAll() {
       // enableOptions.forEach(item=>{
       //   console.log(typeof item.value)
       // })
-
-      $('#enableScheduleService').val(response.enableScheduleService);
-      $('#rabbitMqIp').val(response.queue.IP);
-      $('#rabbitMqPort').val(response.queue.port);
-      $('#rabbitMqAccount').val(response.queue.account);
-      $('#rabbitMqPassword').val(response.queue.password);
-      $('#queueNameInput').val(response.queue.inputQueueName);
-      $('#queueNameOutput').val(response.queue.outputQueueName);
-      $('#account').val(response.admin.account);
-      $('#password').val(response.admin.password);
-      $('#postgreSqlIp').val(response.postgreSQL.IP);
-      $('#postgreSqlPort').val(response.postgreSQL.port);
-      $('#postgreSqlAccount').val(response.postgreSQL.account);
-      $('#postgreSqlPassword').val(response.postgreSQL.password);
-      $('#postgreSqlDbName').val(response.postgreSQL.DBName);
-      $('#mongoIp').val(response.mongoDB.IP);
-      $('#mongoPort').val(response.mongoDB.port);
-      $('#mongoAccount').val(response.mongoDB.account);
-      $('#mongoPassword').val(response.mongoDB.password);
-      $('#mongoDbName').val(response.mongoDB.DBName);
+      const jsonParse = JSON.parse(response)
+      console.log('jsonParse =', jsonParse);
+      // console.log('$("#enableScheduleService") =', $('#enableScheduleService'));
+      // console.log('jsonParse.enableScheduleService =', `${jsonParse.enableScheduleService}`);
+      $('#enableScheduleService').val(`${jsonParse.enableScheduleService}`);
+      $('#rabbitMqIp').val(jsonParse.queue.IP);
+      $('#rabbitMqPort').val(jsonParse.queue.port);
+      $('#rabbitMqAccount').val(jsonParse.queue.account);
+      $('#rabbitMqPassword').val(jsonParse.queue.password);
+      $('#queueNameInput').val(jsonParse.queue.inputQueueName);
+      $('#queueNameOutput').val(jsonParse.queue.outputQueueName);
+      $('#account').val(jsonParse.admin.account);
+      $('#password').val(jsonParse.admin.password);
+      $('#postgreSqlIp').val(jsonParse.postgreSQL.IP);
+      $('#postgreSqlPort').val(jsonParse.postgreSQL.port);
+      $('#postgreSqlAccount').val(jsonParse.postgreSQL.account);
+      $('#postgreSqlPassword').val(jsonParse.postgreSQL.password);
+      $('#postgreSqlDbName').val(jsonParse.postgreSQL.DBName);
+      $('#mongoIp').val(jsonParse.mongoDB.IP);
+      $('#mongoPort').val(jsonParse.mongoDB.port);
+      $('#mongoAccount').val(jsonParse.mongoDB.account);
+      $('#mongoPassword').val(jsonParse.mongoDB.password);
+      $('#mongoDbName').val(jsonParse.mongoDB.DBName);
     },
     error: function (xhr) {
       console.log('xhr =', xhr);

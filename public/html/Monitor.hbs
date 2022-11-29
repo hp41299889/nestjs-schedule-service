@@ -1,180 +1,248 @@
-    <link
-      rel='stylesheet'
-      href='../../kit_module/fullcalendar-5.11.3/lib/main.min.css'
-    />
-    <link
-      rel='stylesheet'
-      href='../../kit_module/bootstrap-icons-1.10.2/bootstrap-icons.css'
-    />
-    {{! <link rel="stylesheet" href="../../kit_module/bootstrap-icons-1.10.2/list-ul.svg"/> }}
-    <script
-      src='../../kit_module/bootstrap-5.2.2-dist/js/bootstrap.js'
-    ></script>
-    <script src='../../kit_module/jquery-3.6.1.min.js'></script>
-    <script src='../../kit_module/moment-with-locales.min.js'></script>
-    <script src='../../kit_module/fullcalendar-5.11.3/lib/main.min.js'></script>
-    <div class='m-4'>
-      <h1>監控</h1>
-      <div id='calendar'></div>
-      <button
-        type='button'
-        class='btn btn-outline-dark monitorBtn'
-        id='list'
-        data-bs-toggle='modal'
-        data-bs-target='#listModal'
-      >
-        <i class='bi bi-list-ul monitorIcon'></i>
-      </button>
-    </div>
-    <div
-      class='modal fade'
-      id='listModal'
-      tabindex='-1'
-      aria-labelledby='listModalLabel'
-      aria-hidden='true'
-      data-bs-backdrop='static'
-    >
-      <div class='modal-dialog modal-dialog-centered'>
-        <div class='modal-content'>
-          <div class='modal-header'>
-            <h1
-              class='modal-title fs-5 fw-bolder'
-              id='listModalLabel'
-            >紀錄卡</h1>
-            <button
-              type='button'
-              class='btn-close'
-              data-bs-dismiss='modal'
-              aria-label='Close'
-              {{! onclick='initDel()' }}
-            ></button>
+<link
+  rel='stylesheet'
+  href='../../kit_module/fullcalendar-5.11.3/lib/main.min.css'
+/>
+<link
+  rel='stylesheet'
+  href='../../kit_module/bootstrap-icons-1.10.2/bootstrap-icons.css'
+/>
+{{! <link rel="stylesheet" href="../../kit_module/bootstrap-icons-1.10.2/list-ul.svg"/> }}
+<script src='../../kit_module/bootstrap-5.2.2-dist/js/bootstrap.js'></script>
+<script src='../../kit_module/jquery-3.6.1.min.js'></script>
+<script src='../../kit_module/moment-with-locales.min.js'></script>
+<script src='../../kit_module/fullcalendar-5.11.3/lib/main.min.js'></script>
+<div class='m-4'>
+  <h1>監控</h1>
+  <div id='calendar'></div>
+  <button
+    type='button'
+    class='btn btn-outline-dark monitorBtn'
+    id='list'
+    data-bs-toggle='modal'
+    data-bs-target='#controlModal'
+  >
+    <i class='bi bi-list-ul monitorIcon'></i>
+  </button>
+</div>
+<div
+  class='modal fade'
+  id='listModal'
+  tabindex='-1'
+  aria-labelledby='listModalLabel'
+  aria-hidden='true'
+  data-bs-backdrop='static'
+>
+  <div class='modal-dialog modal-dialog-centered'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h1 class='modal-title fs-5 fw-bolder' id='listModalLabel'>紀錄卡</h1>
+        <button
+          type='button'
+          class='btn-close'
+          data-bs-dismiss='modal'
+          aria-label='Close'
+          {{! onclick='initDel()' }}
+        ></button>
+      </div>
+      <div class='modal-body'>
+        <form>
+          <div class='d-flex mb-3 row'>
+            <div class='col-6'>
+              <label
+                for='scheduleId'
+                class='col-form-label fw-bolder'
+              >排程ID：</label>
+              <input
+                type='text'
+                class='form-control'
+                id='scheduleId'
+                aria-describedby='inputGroupPrepend'
+                disabled
+              />
+            </div>
+            <div class='col-6'>
+              <label
+                for='scheduleName'
+                class='col-form-label fw-bolder'
+              >排程名稱：</label>
+              <input
+                type='text'
+                class='form-control'
+                id='scheduleName'
+                aria-describedby='inputGroupPrepend'
+                disabled
+              />
+            </div>
           </div>
-          <div class='modal-body'>
-            <form>
-              <div class='d-flex mb-3 row'>
-                <div class='col-6'>
-                  <label
-                    for='scheduleIdDel'
-                    class='col-form-label fw-bolder'
-                  >排程ID：</label>
-                  <input
-                    type='text'
-                    class='form-control'
-                    id='scheduleIdDel'
-                    aria-describedby='inputGroupPrepend'
-                    disabled
-                  />
-                </div>
-                <div class='col-6'>
-                  <label
-                    for='scheduleNameDel'
-                    class='col-form-label fw-bolder'
-                  >排程名稱：</label>
-                  <input
-                    type='text'
-                    class='form-control'
-                    id='scheduleNameDel'
-                    aria-describedby='inputGroupPrepend'
-                    disabled
-                  />
-                </div>
-              </div>
-              <div class='d-flex mb-3 row'>
-                <div class='col-6'>
-                  <label
-                    for='scheduleType'
-                    class='col-form-label fw-bolder'
-                  >排程類型：</label>
-                  <select
-                    class='form-select'
-                    id='scheduleType'
-                    disabled
-                  ></select>
-                </div>
-                <div class='col-6'>
-                  <label
-                    for='processDatetime'
-                    class='col-form-label fw-bolder'
-                  >執行日期時間：</label>
-                  <select
-                    class='form-select'
-                    id='processDatetime'
-                    disabled
-                  ></select>
-                </div>
-              </div>
-              <hr />
-              <div id='regular'>
-                <div class='d-flex mb-3 row d-none' id='regularTemplate'>
-                  <div class='col-3'>
-                    <label
-                      for='regularWeek'
-                      class='col-form-label fw-bolder'
-                    >星期:</label>
-                    <select class='form-select' id='regularWeek' disabled>
-                    </select>
-                  </div>
-                  <div class='col-3'>
-                    <label
-                      for='regularHour'
-                      class='col-form-label fw-bolder'
-                    >小時:</label>
-                    <select class='form-select' id='regularHour' disabled>
-                    </select>
-                  </div>
-                  <div class='col-3'>
-                    <label
-                      for='regularMinute'
-                      class='col-form-label fw-bolder'
-                    >分鐘:</label>
-                    <select class='form-select' id='regularMinute' disabled>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div id='cycle' class='d-none'>
-                <div class='d-flex mb-3 row d-none' id='cycleTemplate'>
-                  <div class='col-3'>
-                    <label
-                      for='cycleHour'
-                      class='col-form-label fw-bolder'
-                    >每小時:</label>
-                    <select
-                      class='form-select'
-                      id='cycleHour'
-                      disabled
-                    ></select>
-                  </div>
-                  <div class='col-3'>
-                    <label
-                      for='cycleMinute'
-                      class='col-form-label fw-bolder'
-                    >每分鐘:</label>
-                    <select
-                      class='form-select'
-                      id='cycleMinute'
-                      disabled
-                    ></select>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div class='mb-3'>
+          <div class='d-flex mb-3 row'>
+            <div class='col-6'>
+              <label
+                for='scheduleType'
+                class='col-form-label fw-bolder'
+              >排程類型：</label>
+              <select class='form-select' id='scheduleType' disabled></select>
+            </div>
+            <div class='col-6'>
+              <label
+                for='processDatetime'
+                class='col-form-label fw-bolder'
+              >執行日期時間：</label>
+              <input
+                type='text'
+                class='form-control'
+                id='processDatetime'
+                aria-describedby='inputGroupPrepend'
+                disabled
+              />
+            </div>
+          </div>
+          <hr />
+          <div id='regular' class='d-none'>
+            <div class='d-flex mb-3 row' id='regularRecord'>
+              <div class='col-3'>
                 <label
-                  for='MQCLI'
+                  for='regularWeek'
                   class='col-form-label fw-bolder'
-                >MQCLI:</label>
-                <textarea
-                  class='form-control'
-                  id='MQCLI'
-                  placeholder='Text Area'
-                  disabled
-                ></textarea>
+                >星期:</label>
+                <select class='form-select' id='regularWeek' disabled>
+                </select>
               </div>
-            </form>
+              <div class='col-3'>
+                <label
+                  for='regularHour'
+                  class='col-form-label fw-bolder'
+                >小時:</label>
+                <select class='form-select' id='regularHour' disabled>
+                </select>
+              </div>
+              <div class='col-3'>
+                <label
+                  for='regularMinute'
+                  class='col-form-label fw-bolder'
+                >分鐘:</label>
+                <select class='form-select' id='regularMinute' disabled>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
+          <div id='cycle' class='d-none'>
+            <div class='d-flex mb-3 row' id='cycleRecord'>
+              <div class='col-3'>
+                <label
+                  for='cycleHour'
+                  class='col-form-label fw-bolder'
+                >每小時:</label>
+                <select class='form-select' id='cycleHour' disabled></select>
+              </div>
+              <div class='col-3'>
+                <label
+                  for='cycleMinute'
+                  class='col-form-label fw-bolder'
+                >每分鐘:</label>
+                <select class='form-select' id='cycleMinute' disabled></select>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class='mb-3'>
+            <label for='MQCLI' class='col-form-label fw-bolder'>MQCLI:</label>
+            <textarea
+              class='form-control'
+              id='MQCLI'
+              placeholder='Text Area'
+              disabled
+            ></textarea>
+          </div>
+        </form>
       </div>
     </div>
-  <script src='../../js/fakeData.js'></script>
-  <script src='../../js/monitor.js'></script>
+  </div>
+</div>
+<div
+  class='modal fade'
+  id='controlModal'
+  tabindex='-1'
+  aria-labelledby='controlModalLabel'
+  aria-hidden='true'
+  data-bs-backdrop='static'
+>
+  <div class='modal-dialog modal-dialog-centered'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h1
+          class='modal-title fs-5 fw-bolder'
+          id='controlModalLabel'
+        >控制卡</h1>
+        <button
+          type='button'
+          class='btn-close'
+          data-bs-dismiss='modal'
+          aria-label='Close'
+        ></button>
+      </div>
+      <div class='modal-body'>
+        <form>
+          <div class='d-flex mb-3 row'>
+            <div class='col-6'>
+              <label
+                for='controlScheduleId'
+                class='col-form-label fw-bolder'
+              >排程ID：</label>
+              <input
+                type='text'
+                class='form-control'
+                id='controlScheduleId'
+                aria-describedby='inputGroupPrepend'
+                disabled
+              />
+            </div>
+          </div>
+          <div class='d-flex mb-3 row'>
+            <div class='col-6'>
+              <label
+                for='controlScheduleName'
+                class='col-form-label fw-bolder'
+              >排程名稱：</label>
+              <input
+                type='text'
+                class='form-control'
+                id='controlScheduleName'
+                aria-describedby='inputGroupPrepend'
+                disabled
+              />
+            </div>
+            <div class='col-6'>
+              <label
+                for='controlScheduleType'
+                class='col-form-label fw-bolder'
+              >排程類型：</label>
+              <select class='form-select' id='controlScheduleType' disabled></select>
+            </div>
+          </div>
+          <hr />
+          <div class='mb-3'>
+            <label for='controlMQCLI' class='col-form-label fw-bolder'>MQCLI:</label>
+            <textarea
+              class='form-control'
+              id='controlMQCLI'
+              placeholder='Text Area'
+              disabled
+            ></textarea>
+          </div>
+          <hr />
+        </form>
+      </div>
+      <div class='modal-footer'>
+        <button
+          id='resendBtn'
+          onclick='resend()'
+          type='button'
+          class='btn btn-warning'
+          data-bs-dismiss='modal'
+        >重新發送命令</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src='../../js/option.js'></script>
+<script src='../../js/monitor.js'></script>

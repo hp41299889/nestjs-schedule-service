@@ -93,9 +93,20 @@
   display: flex;
   justify-content: space-between;
 }
-#calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell .fc-timegrid-event-harness a.fc-timegrid-event .fc-event-main .fc-event-title {
+#calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell .fc-timegrid-event-harness a.fc-timegrid-event .fc-event-main .fc-event-main-frame {
+  word-break: break-all;
+}
+#calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell .fc-timegrid-event-harness a.fc-timegrid-event .fc-event-main .fc-event-main-frame .fc-event-title {
   top: 13px;
   padding-left: 5px;
+}
+#calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell .fc-timegrid-event-harness a.fc-timegrid-event .fc-event-main .twoBtnSpace {
+  width: 68px;
+  white-space: nowrap;
+}
+#calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell .fc-timegrid-event-harness a.fc-timegrid-event .fc-event-main .oneBtnSpace {
+  width: 34px;
+  white-space: nowrap;
 }
 #calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell .fc-timegrid-event-harness a.fc-timegrid-event .fc-event-main .monitorBtn {
   border: unset;

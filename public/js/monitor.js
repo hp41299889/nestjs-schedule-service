@@ -1,5 +1,6 @@
 const apiUrl = '/ScheduleService/Monitor';
 let monitorDatas = [];
+let data = {}; //重送用
 let calendar;
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -28,13 +29,45 @@ document.addEventListener('DOMContentLoaded', async function () {
     contentHeight: 3000,
     dayMaxEvents: true, // when too many events in a day, show the popover
     events: monitorDatas,
+    eventDidMount: function (arg) {
+      // console.log('eventContent-arg =', arg);
+      // console.log('eventContent-arg.event.extendedProps =', arg.event._def);
+      // console.log(
+      //   '$(".fc-timegrid-event-harness") =',
+      //   $('.fc-timegrid-event-harness'),
+      // );
+      // debugger;
+      arg.el.id = arg.event._def.publicId;
+      // console.log('arg =', arg);
+    },
+    windowResize: function (arg) {
+      $('td.fc-timegrid-col > div.fc-timegrid-col-frame')
+        .each(function () {
+          console.log('windowResize-$(this) =', $(this));
+          setTimeout(( () => {
+            console.log('setTimeout');
+            $(this)
+            .children()
+            .eq(1)
+            .remove();
+
+          } ), 100)
+        })
+    },
   });
 
   calendar.render();
 
   itemDisplay();
-  itemBtn()
-  monitor()
+  itemBtn();
+  scheduleTypeOptionChoice();
+  regularWeek();
+  regularHour();
+  regularMinute();
+  cycleHour();
+  cycleMinute();
+  monitor();
+  control();
 });
 
 //讀取全部資料(API-006)
@@ -59,20 +92,22 @@ async function readAll() {
           ? '#F8D7DA'
           : '#E7E8EA';
       const time = moment(item.processDatetime).format('YYYY-MM-DD HH');
-      console.log('item =', item);
+      // console.log('item =', item);
       const timeStr = `${time}:00:00`;
-      const mqcli = JSON.stringify(item.MQCLI)
+      const mqcli = JSON.stringify(item.MQCLI);
       monitorDatas.push({
         id: item._id,
         title: `${item.scheduleID}.${item.scheduleName}`,
         start: timeStr,
         backgroundColor: itemColor,
         MQCLI: mqcli,
-        processDatetime: moment(item.processDatetime).format('YYYY-MM-DD HH:mm:ss'),
-        schedule:item.schedule,
-        scheduleID:item.scheduleID,
-        scheduleName:item.scheduleName,
-        scheduleType:item.scheduleType,
+        processDatetime: moment(item.processDatetime).format(
+          'YYYY-MM-DD HH:mm:ss',
+        ),
+        schedule: item.schedule,
+        scheduleID: item.scheduleID,
+        scheduleName: item.scheduleName,
+        scheduleType: item.scheduleType,
       });
     });
   });
@@ -154,8 +189,16 @@ function itemDisplay() {
     // for-each week column
     let accumulator = 0;
     let previousRowElement = null;
-    let newHtmlStr = '<div class="fc-timegrid-col-events">';
+    let newHtmlStr = '';
 
+    // console.log(
+    //   "$('.fc-timegrid-col-events').length",
+    //   $('.fc-timegrid-col-events').length,
+    // );
+    // console.log('$(this)', $(this));
+    // console.log('$(this).children().length', $(this).children().length);
+    // if ($(this).children().length > 0) {
+    //   console.log('$(this).children().length > 0');
     $(this)
       .find('> div.fc-timegrid-event-harness.fc-timegrid-event-harness-inset')
       .each(function () {
@@ -178,8 +221,8 @@ function itemDisplay() {
       .each(function () {
         // for-each event on week column
         // select the current event time and its row
-        // console.log('$(this) =', $(this))
-        // console.log("$(this).find('> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time') =", $(this).find('> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time'))
+        console.log('each-2')
+        // console.log("$(this).find('> div.fc-event-main > div') =", $(this).find('> div.fc-event-main > div'))
         const time = $(this)
           .find(
             '> div.fc-event-main > div.fc-event-main-frame > div.fc-event-time',
@@ -212,12 +255,12 @@ function itemDisplay() {
 
           // move down the event (with margin-top prop. IT HAS TO BE THAT PROPERTY TO AVOID CONFLICTS WITH FullCalendar BEHAVIOR)
           // console.log('$(this) =', $(this))
-          $(this).css(
-            'margin-top',
-            '+=' + (accumulator * defaultItemHeight).toString() + 'px',
-          );
+          // $(this).css(
+          //   'margin-top',
+          //   '+=' + (accumulator * defaultItemHeight).toString() + 'px',
+          // );
           // console.log('after-$(this) =', $(this))
-
+          console.log('currentEventRowElement =', currentEventRowElement);
           // increse the heigth of current row if it overcome its current max-items
           const maxItemsOnRow =
             currentEventRowElement.attr('data-max-items') || 1;
@@ -244,15 +287,63 @@ function itemDisplay() {
         previousRowElement = currentEventRowElement;
         rowIndex = 0;
         // console.log('$(this) =', $(this));
-        // console.log('$(this).parent() =', $(this).parent())
+        // console.log('$(this).parent() =', $($(this).parent().parent()))
+        // $($(this).parent().parent()).each(function () {
+        //   let itemCount = 0;
+        //   let defaultInset = '';
+        //   newHtmlStr = '<div class="fc-timegrid-col-events">';
+        //   console.log('each-3')
+        //   console.log('.parent()-$(this) =', $(this));
+        //   $(this)
+        //     .children()
+        //     .each(function () {
+        //       console.log('each-3-this =', $(this));
+        //       const zIndex = $(this).css('z-index');
+        //       console.log('zIndex =', zIndex);
+        //       console.log('itemCount =', itemCount);
+        //       if (zIndex > itemCount) {
+        //         defaultInset = $(this).css('inset');
+        //         console.log('zIndex > itemCount =', defaultInset);
+        //         $(this).css('inset', '2px 0 0 0');
+        //         // console.log(
+        //         //   'zIndex > itemCount-$(this).prop("outerHTML") =',
+        //         //   $(this).prop('outerHTML'),
+        //         // );
+        //         if (itemCount == 0) {
+        //           newHtmlStr += `<div class="selfCell" style="inset:${defaultInset}">${$(
+        //             this,
+        //           ).prop('outerHTML')}`;
+        //         } else {
+        //           newHtmlStr += $(this).prop('outerHTML');
+        //         }
+        //         itemCount = zIndex;
+        //       } else if (zIndex <= itemCount) {
+        //         console.log('zIndex <= itemCount');
+        //         defaultInset = $(this).css('inset');
+        //         $(this).css('inset', '2px 0 0 0');
+        //         newHtmlStr += `</div><div class="selfCell" style="inset:${defaultInset}">${$(
+        //           this,
+        //         ).prop('outerHTML')}`;
+        //         itemCount = zIndex;
+        //       } else {
+        //         console.log('else');
+        //         alert('else-302');
+        //       }
+        //     });
+        //   // newHtmlStr += '</div>';
+        //   newHtmlStr += '</div></div>';
+        //   // console.log('newHtmlStr =', newHtmlStr);
+        // })
+        // .prop('outerHTML', newHtmlStr);
       })
       .parent()
       .parent()
       .each(function () {
         let itemCount = 0;
         let defaultInset = '';
-
-        // console.log('after-a-$(this) =',$(this))
+        newHtmlStr = '<div class="fc-timegrid-col-events">';
+        console.log('each-3')
+        console.log('.parent()-$(this) =', $(this));
         $(this)
           .children()
           .each(function () {
@@ -261,70 +352,320 @@ function itemDisplay() {
             // console.log('itemCount =', itemCount);
             if (zIndex > itemCount) {
               defaultInset = $(this).css('inset');
-              // console.log('c>a-e =', defaultInset);
-              $(this).css('inset', '2px 0 0 0');
-              // console.log('c>a-$(this).prop("outerHTML") =', $(this).prop("outerHTML"));
+              // console.log('zIndex > itemCount =', defaultInset);
+              $(this).css('inset', `${2+((zIndex-1)*defaultItemHeight)}px 0 0 0`);
+              // console.log(
+              //   'zIndex > itemCount-$(this).prop("outerHTML") =',
+              //   $(this).prop('outerHTML'),
+              // );
               if (itemCount == 0) {
                 newHtmlStr += `<div class="selfCell" style="inset:${defaultInset}">${$(
                   this,
                 ).prop('outerHTML')}`;
-                
               } else {
                 newHtmlStr += $(this).prop('outerHTML');
               }
               itemCount = zIndex;
             } else if (zIndex <= itemCount) {
-              // console.log('c < a');
+              console.log('zIndex <= itemCount');
               defaultInset = $(this).css('inset');
-              $(this).css('inset', '2px 0 0 0');
+              $(this).css('inset', `${2+((zIndex-1)*defaultItemHeight)}px 0 0 0`);
               newHtmlStr += `</div><div class="selfCell" style="inset:${defaultInset}">${$(
                 this,
               ).prop('outerHTML')}`;
               itemCount = zIndex;
-              
             } else {
               console.log('else');
-              alert('else-273');
+              alert('else-302');
             }
           });
+        // newHtmlStr += '</div>';
         newHtmlStr += '</div></div>';
         // console.log('newHtmlStr =', newHtmlStr);
       })
       .prop('outerHTML', newHtmlStr);
+    // }
+    // console.log('before-newHtmlStr =', newHtmlStr);
+    // newHtmlStr = '';
+    // console.log('after-newHtmlStr =', newHtmlStr);
+    console.log('end');
   });
+
+  // $('td.fc-timegrid-col > div.fc-timegrid-col-frame').children().eq(2).remove()
 }
 
 //依狀態添加按鈕
-function itemBtn(){
-  $('div.selfCell > .fc-timegrid-event-harness > a.fc-timegrid-event').each(function(){
-    // console.log($(this))
-    const backgroundColor = $(this).css("background-color")
-    // console.log('backgroundColor =', backgroundColor)
-    $(this).find('> .fc-event-main > .fc-event-main-frame').each(function(){
-      // console.log('fc-event-main-this =', $(this))
-      $(this).after(`<button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon" data-logId=""></i></button>`)
-    })
+function itemBtn() {
+  $('div.selfCell > .fc-timegrid-event-harness > a.fc-timegrid-event').each(
+    function () {
+      // console.log($(this))
+      const backgroundColor = $(this).css('background-color');
+      // console.log('backgroundColor =', backgroundColor)
 
-    if(backgroundColor == 'rgb(248, 215, 218)'){
-      console.log('backgroundColor-if')
-      $(this).find('> .fc-event-main > .fc-event-main-frame').each(function(){
-        // console.log('fc-event-main-this =', $(this))
-        $(this).after('<button type="button" class="btn btn-outline-dark monitorBtn" id="reloadBtn" data-bs-toggle="modal" data-bs-target="#reloadModal"><i class="bi bi-arrow-clockwise monitorIcon"></i></button>')
-      })
-    }else{
-      console.log('backgroundColor-else')
-    }
-  })
+      if (backgroundColor == 'rgb(248, 215, 218)') {
+        console.log('backgroundColor-if');
+        $(this)
+          .find('> .fc-event-main > .fc-event-main-frame')
+          .each(function () {
+            // console.log('fc-event-main-this =', $(this))
+            $(this).after(
+              '<div class="twoBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="reloadBtn" data-bs-toggle="modal" data-bs-target="#controlModal"><i class="bi bi-arrow-clockwise monitorIcon"></i></button><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon"></i></button></div>',
+            );
+          });
+      } else {
+        console.log('backgroundColor-else');
+        $(this)
+          .find('> .fc-event-main > .fc-event-main-frame')
+          .each(function () {
+            // console.log('fc-event-main-this =', $(this))
+            $(this).after(
+              `<div class="oneBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon"></i></button></div>`,
+            );
+          });
+      }
+    },
+  );
 }
 
-function monitor(){
-  $('#listBtn > i.monitorIcon').click(function (e) { 
+//紀錄卡
+function monitor() {
+  $('#listBtn > i.monitorIcon').click(function (e) {
     e.preventDefault();
-    console.log('e =', e)
-    const listData = e.target.dataset.x
-    console.log('listData =', listData)
-    console.log('monitor-this =', $(this))
+    const calendarEvents = calendar.getEvents();
+    // console.log('calendarEvents =', calendarEvents);
+    const calendarEventId = $(this)
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .attr('id');
+    console.log('calendarEventId =', calendarEventId);
+    calendarEvents.forEach((calendarEvent) => {
+      const def = calendarEvent._def;
+      const extendedProps = def.extendedProps;
+      if (def.publicId == calendarEventId) {
+        $('#scheduleId').val(extendedProps.scheduleID);
+        $('#scheduleName').val(extendedProps.scheduleName);
+        const scheduleType = extendedProps.scheduleType;
+        $('#scheduleType').val(scheduleType);
+        $('#processDatetime').val(extendedProps.processDatetime);
+        console.log('extendedProps =', extendedProps);
+
+        if (scheduleType == 'regular') {
+          $('#cycle').addClass('d-none');
+          $('#regular').removeClass('d-none');
+          const regularStr = extendedProps.schedule;
+          // console.log('regularStr =', regularStr);
+          const splitFinish = splitStr(regularStr);
+          // console.log('splitFinish =', splitFinish);
+          splitFinish.forEach((element) => {
+            console.log('element =', element);
+            element.forEach((item, i) => {
+              $('#regularRecord').children().eq(i).children().eq(1).val(item);
+            });
+          });
+        } else if (scheduleType == 'cycle') {
+          $('#regular').addClass('d-none');
+          $('#cycle').removeClass('d-none');
+          const cycleStr = extendedProps.schedule;
+          // console.log('cycleStr =', cycleStr);
+          const splitFinish = splitStr(cycleStr);
+          // console.log('splitFinish =', splitFinish);
+          splitFinish.forEach((element) => {
+            element.forEach((item, i) => {
+              $('#cycleRecord').children().eq(i).children().eq(1).val(item);
+            });
+          });
+        }
+        $('#MQCLI').val(extendedProps.MQCLI);
+      }
+    });
   });
-  const a = calendar.getEvents()
-  console.log('a =', a)
+}
+
+//字串拆分
+function splitStr(str) {
+  let splitArr = [];
+  const splitBr = str.split('<br>');
+  // console.log('splitBr =', splitBr);
+  splitBr.forEach((element, index) => {
+    // console.log('element =', element);
+    const splitHashtag = element.split('#');
+    // console.log('splitHashtag =', splitHashtag);
+    const splitSlash = splitHashtag[1].split('/');
+    // console.log('splitSlash =', splitSlash);
+    splitArr.push(splitSlash);
+    // console.log('splitArr =', splitArr);
+  });
+  return splitArr;
+}
+
+//控制卡
+function control() {
+  $('#reloadBtn > i.monitorIcon').click(function (e) {
+    e.preventDefault();
+    const calendarEvents = calendar.getEvents();
+    // console.log('calendarEvents =', calendarEvents);
+    const calendarEventId = $(this)
+      .parent()
+      .parent()
+      .parent()
+      .parent()
+      .attr('id');
+    console.log('calendarEventId =', calendarEventId);
+    calendarEvents.forEach((calendarEvent) => {
+      const def = calendarEvent._def;
+      const extendedProps = def.extendedProps;
+      if (def.publicId == calendarEventId) {
+        $('#controlScheduleId').val(extendedProps.scheduleID);
+        $('#controlScheduleName').val(extendedProps.scheduleName);
+        const scheduleType = extendedProps.scheduleType;
+        $('#controlScheduleType').val(scheduleType);
+        $('#controlMQCLI').val(extendedProps.MQCLI);
+        data = {
+          scheduleID: extendedProps.scheduleID,
+          scheduleName: extendedProps.scheduleName,
+          scheduleType: scheduleType,
+          schedule: extendedProps.schedule,
+          MQCLI: extendedProps.MQCLI,
+        };
+      }
+    });
+  });
+}
+
+//排程類型option動態塞入
+function scheduleTypeOptionChoice() {
+  const scheduleTypeSelect = document.getElementById('scheduleType');
+  const controlScheduleTypeSelect = document.getElementById(
+    'controlScheduleType',
+  );
+
+  let scheduleTypeOption = '';
+  scheduleTypeOptions.forEach((element) => {
+    scheduleTypeOption =
+      scheduleTypeOption +
+      '<option value=' +
+      element.value +
+      '>' +
+      element.label +
+      '</option>';
+  });
+
+  scheduleTypeSelect.innerHTML = scheduleTypeOption;
+  controlScheduleTypeSelect.innerHTML = scheduleTypeOption;
+}
+
+//定期排程-星期
+function regularWeek() {
+  const regularWeekSelect = document.getElementById('regularWeek');
+
+  let regularWeekOption = '';
+
+  //空白選項
+  // if(regularWeekOption == ""){
+  //   regularWeekOption = regularWeekOption+'<option value='+-1+'></option>'
+  // }
+
+  regularWeekOptions.forEach((element) => {
+    regularWeekOption =
+      regularWeekOption +
+      '<option value=' +
+      element.value +
+      '>' +
+      element.label +
+      '</option>';
+  });
+
+  regularWeekSelect.innerHTML = regularWeekOption;
+}
+
+//定期排程-小時
+function regularHour() {
+  const regularHourSelect = document.getElementById('regularHour');
+
+  let regularHourOption = '';
+
+  if (regularHourOption == '') {
+    regularHourOption = regularHourOption + '<option value="">0-23</option>';
+  }
+
+  for (let i = 0; i < 24; i++) {
+    regularHourOption =
+      regularHourOption + '<option value=' + i + '>' + i + '</option>';
+  }
+
+  regularHourSelect.innerHTML = regularHourOption;
+}
+
+//定期排程-分鐘
+function regularMinute() {
+  const regularMinuteSelect = document.getElementById('regularMinute');
+
+  let regularMinuteOption = '';
+
+  if (regularMinuteOption == '') {
+    regularMinuteOption =
+      regularMinuteOption + '<option value="">0-59</option>';
+  }
+
+  for (let i = 0; i < 60; i++) {
+    regularMinuteOption =
+      regularMinuteOption + '<option value=' + i + '>' + i + '</option>';
+  }
+
+  regularMinuteSelect.innerHTML = regularMinuteOption;
+}
+
+//週期排程-小時
+function cycleHour() {
+  const cycleHourSelect = document.getElementById('cycleHour');
+
+  let cycleHourOption = '';
+
+  if (cycleHourOption == '') {
+    cycleHourOption = cycleHourOption + '<option value="">0-23</option>';
+  }
+
+  for (let i = 0; i < 24; i++) {
+    cycleHourOption =
+      cycleHourOption + '<option value=' + i + '>' + i + '</option>';
+  }
+
+  cycleHourSelect.innerHTML = cycleHourOption;
+}
+
+//週期排程-分鐘
+function cycleMinute() {
+  const cycleMinuteSelect = document.getElementById('cycleMinute');
+
+  let cycleMinuteOption = '';
+
+  if (cycleMinuteOption == '') {
+    cycleMinuteOption = cycleMinuteOption + '<option value="">0-59</option>';
+  }
+
+  for (let i = 0; i < 60; i++) {
+    cycleMinuteOption =
+      cycleMinuteOption + '<option value=' + i + '>' + i + '</option>';
+  }
+
+  cycleMinuteSelect.innerHTML = cycleMinuteOption;
+}
+
+//重送命令(SD-API-007)
+function resend() {
+  console.log('data =', data);
+
+  fetch(`${apiUrl}/resend`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    redirect: 'follow',
+  }).then((res) => {
+    res.redirected && (location.href = res.url);
+    data = {};
+  });
 }
