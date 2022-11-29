@@ -449,7 +449,7 @@ function monitor() {
         const scheduleType = extendedProps.scheduleType;
         $('#scheduleType').val(scheduleType);
         $('#processDatetime').val(extendedProps.processDatetime);
-        console.log('extendedProps =', extendedProps);
+        // console.log('extendedProps =', extendedProps);
 
         if (scheduleType == 'regular') {
           $('#cycle').addClass('d-none');
@@ -459,7 +459,7 @@ function monitor() {
           const splitFinish = splitStr(regularStr);
           // console.log('splitFinish =', splitFinish);
           splitFinish.forEach((element) => {
-            console.log('element =', element);
+            // console.log('element =', element);
             element.forEach((item, i) => {
               $('#regularRecord').children().eq(i).children().eq(1).val(item);
             });
