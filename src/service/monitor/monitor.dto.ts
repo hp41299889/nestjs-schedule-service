@@ -1,7 +1,9 @@
 //import packages
 import { ApiProperty } from "@nestjs/swagger";
 
-import { JsonrpcMessageDto } from "../jobQueue/jobQueue.dto";
+//import dtos
+import { JsonrpcMessageDto } from "../../provider/jobQueue/jobQueue.dto";
+//import models
 import { ScheduleExecutionLog } from "src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema";
 
 export class WeekLogsDto {

@@ -4,16 +4,17 @@ import { Injectable } from '@nestjs/common';
 //import constants
 import { SERVICE } from './monitor.constants';
 //import dtos
-import { CreateTaskDto } from '../task/task.dto';
 import { ResendMonitorDto, WeekLogsDto } from './monitor.dto';
 //import models
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
+import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
 import { TimeHelperService } from 'src/util/time/timeHelper.service';
-import { JobQueueService } from '../jobQueue/jobQueue.service';
-import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
+import { JobQueueService } from '../../provider/jobQueue/jobQueue.service';
+import { ExecutionLogService } from '../executionLog/executionLog.service';
+import { TaskService } from '../../provider/task/task.service';
 
 const {
     READ_METHOD,    //read()
@@ -27,7 +28,9 @@ export class MonitorService {
         private readonly scheduleSetupModel: ScheduleSetupModel,
         private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel,
         private readonly timeHelperService: TimeHelperService,
-        private readonly jobQueueService: JobQueueService
+        private readonly jobQueueService: JobQueueService,
+        private readonly executionLogService: ExecutionLogService,
+        private readonly taskService: TaskService
     ) {
         this.logger.setContext(MonitorService.name);
     };
@@ -36,21 +39,35 @@ export class MonitorService {
         try {
             this.logger.serviceDebug(READ_METHOD);
             const today = new Date();
-            const { start, end } = this.timeHelperService.getWeekPeriod(today);
+            const { start, end } = this.timeHelperService.getCurrentWeek(today);
             const schedules = await this.scheduleSetupModel.readAll();
             const weekLogs: WeekLogsDto[] = await Promise.all(schedules.map(async schedule => {
-                const { scheduleID } = schedule;
+                const { scheduleID, scheduleType, scheduleName, MQCLI } = schedule;
                 const period = {
                     start: start,
                     end: end,
                     scheduleID: scheduleID
                 };
                 const documents = await this.scheduleExecutionLogModel.readPeriod(period);
+                const logs = await this.executionLogService.switchLogID(documents);
+                const executeTimes = await this.taskService.buildWeekWaitingTasksTime(schedule);
+                executeTimes.forEach(item => {
+                    const { time, schedule } = item;
+                    logs.push({
+                        scheduleID: scheduleID,
+                        scheduleName: scheduleName,
+                        schedule: schedule,
+                        scheduleType: scheduleType,
+                        processDatetime: time,
+                        processStatus: 'waiting',
+                        MQCLI: MQCLI
+                    })
+                });
                 return {
                     scheduleID: schedule.scheduleID,
                     scheduleType: schedule.scheduleType,
                     schedule: schedule.cycle || schedule.regular,
-                    weekLog: documents
+                    weekLog: logs
                 };
             }));
             return weekLogs;

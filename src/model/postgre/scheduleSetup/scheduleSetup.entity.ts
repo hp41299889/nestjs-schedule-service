@@ -1,6 +1,7 @@
 //import packages
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
+//import dtos
 import { JsonrpcMessageDto } from "src/provider/jobQueue/jobQueue.dto";
 
 @Entity()

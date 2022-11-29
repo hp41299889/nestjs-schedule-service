@@ -1,6 +1,8 @@
-import { JsonrpcMessageDto } from "../jobQueue/jobQueue.dto";
+//import packages
 import { ApiProperty } from "@nestjs/swagger";
-import { CreateScheduleDto, ReadScheduleDto, UpdateScheduleDto, DeleteScheduleDto } from "../schedule/schedule.dto";
+
+//import dtos
+import { CreateScheduleDto, ReadScheduleDto, UpdateScheduleDto, DeleteScheduleDto } from "../../service/schedule/schedule.dto";
 
 export class ScheduleQueueMessageDto {
     @ApiProperty({ default: '2.0' })

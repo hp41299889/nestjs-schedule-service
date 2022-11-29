@@ -11,7 +11,7 @@ import { EnvModule } from 'src/config/env/env.module';
 //import constants
 import { MODULE } from './postgres.constants';
 //import dtos
-import { DatabaseConnectionDto } from 'src/provider/setup/setup.dto';
+import { DatabaseConnectionDto } from 'src/service/setup/setup.dto';
 //import models
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 //import services
@@ -21,7 +21,10 @@ import { ConnectionService } from '../connection/connection.service';
 
 const {
     CONNECTION_NAME,    //connection name for TypeOrmModule
-    SETUP_ALIAS,        //alias for JsonSerivce
+    SETUP_ALIAS,        //alias for JsonSerivce,
+    ENV_ALIAS,          //alias for ConfigService
+    RETRY_ATTEMPTS,     //retry attempts for connection
+    FAIL_USEING_ENV,    //connect by setup.json fail and useing default .env
 } = MODULE;
 
 @Module({
@@ -49,12 +52,12 @@ const {
                         port: +port,
                         database: DBName,
                         autoLoadEntities: true,
-                        retryAttempts: 3,
+                        retryAttempts: RETRY_ATTEMPTS,
                         // synchronize: true,
                     };
                 } catch (err) {
-                    logger.error('Warning!postgres connect by setup.json fail,useing default env');
-                    const postgresEnv: DatabaseConnectionDto = configService.get('postgres');
+                    logger.error(FAIL_USEING_ENV);
+                    const postgresEnv: DatabaseConnectionDto = configService.get(ENV_ALIAS);
                     const material = {
                         connectionName: CONNECTION_NAME,
                         config: postgresEnv
@@ -69,7 +72,7 @@ const {
                         port: +port,
                         database: DBName,
                         autoLoadEntities: true,
-                        retryAttempts: 3
+                        retryAttempts: RETRY_ATTEMPTS
                     };
                 };
             },

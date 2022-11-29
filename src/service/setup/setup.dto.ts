@@ -2,9 +2,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AdminDto {
-    @ApiProperty()
+    @ApiProperty({ default: 'admin' })
     readonly account: string;
-    @ApiProperty()
+    @ApiProperty({ default: 'admin' })
     readonly password: string;
 };
 export class ConnectionDto extends AdminDto {

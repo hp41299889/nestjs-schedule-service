@@ -10,7 +10,6 @@ import { SERVICE } from './scheduleExecutionLog.constants';
 //import models
 import { ScheduleExecutionLog, ScheduleExecutionLogDocument } from './scheduleExecutionLog.schema';
 //import services
-import { TimeHelperService } from 'src/util/time/timeHelper.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
@@ -25,7 +24,6 @@ export class ScheduleExecutionLogModel {
     constructor(
         @InjectModel(ScheduleExecutionLog.name, CONNECTION_NAME)
         private scheduleExecutionLogModel: Model<ScheduleExecutionLogDocument>,
-        private readonly timeHelperService: TimeHelperService,
         private readonly logger: LoggerService
     ) {
         this.logger.setContext(ScheduleExecutionLogModel.name);
@@ -58,16 +56,6 @@ export class ScheduleExecutionLogModel {
                     .exec();
                 return await documents;
             };
-        } catch (err) {
-            throw err;
-        };
-    };
-
-    async readAll(): Promise<ScheduleExecutionLog[]> {
-        try {
-            this.logger.serviceDebug(READALL_METHOD);
-            const documents = this.scheduleExecutionLogModel.find().exec();
-            return await documents;
         } catch (err) {
             throw err;
         };

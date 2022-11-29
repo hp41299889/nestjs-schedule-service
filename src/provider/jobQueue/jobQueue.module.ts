@@ -8,7 +8,7 @@ import { LoggerModule } from 'src/common/logger/logger.module';
 //import constants
 import { MODULE } from './jobQueue.constants';
 //import dtos
-import { QueueConnectionDto } from '../setup/setup.dto';
+import { QueueConnectionDto } from '../../service/setup/setup.dto';
 //import services
 import { JobQueueService } from './jobQueue.service';
 import { JsonService } from 'src/config/json/json.service';

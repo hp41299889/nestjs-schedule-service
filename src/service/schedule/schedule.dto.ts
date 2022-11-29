@@ -1,7 +1,9 @@
 //import packages
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import { JsonrpcMessageDto } from "../jobQueue/jobQueue.dto";
+//import dtos
+import { JsonrpcMessageDto } from "../../provider/jobQueue/jobQueue.dto";
+//import models
 import { ScheduleSetup } from "src/model/postgre/scheduleSetup/scheduleSetup.entity";
 
 export class CreateScheduleDto {
@@ -30,13 +32,30 @@ export class CreateScheduleDto {
     MQCLI: JsonrpcMessageDto;
 };
 
+
+export class ScheduleSetupsDto {
+    scheduleID: number;
+
+    createDatetime: Date;
+
+    lastEditDatetime: Date;
+
+    commandSource: string;
+
+    scheduleName: string;
+
+    scheduleType: string;
+
+    regular: string[];
+
+    cycle: string[];
+
+    MQCLI: string;
+};
+
 export class ReadScheduleDto {
     @ApiProperty({ default: 1 })
     scheduleID: number;
-};
-
-export class SchedulesDto extends ScheduleSetup {
-    MQCLI: JsonrpcMessageDto;
 };
 
 export class UpdateScheduleDto extends ReadScheduleDto {

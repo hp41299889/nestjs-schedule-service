@@ -9,8 +9,6 @@ import { CONTROLLER } from './schedule.constants';
 import { CreateScheduleDto, DeleteScheduleDto, UpdateScheduleDto } from './schedule.dto';
 //import others
 import { Exception } from 'src/util/exception/exception';
-//import models
-import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 //import service
 import { ScheduleService } from './schedule.service';
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -28,6 +26,7 @@ const {
 
 @ApiTags(API_TAGS)
 @Controller(API_ROUTES)
+//TODO
 @UseFilters(Exception)
 export class ScheduleController {
     constructor(

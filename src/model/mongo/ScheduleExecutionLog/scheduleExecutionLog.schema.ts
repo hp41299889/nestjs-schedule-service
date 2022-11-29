@@ -2,6 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+//import dtos
 import { JsonrpcMessageDto } from 'src/provider/jobQueue/jobQueue.dto';
 
 export type ScheduleExecutionLogDocument = HydratedDocument<ScheduleExecutionLog>;
@@ -17,8 +18,8 @@ export class ScheduleExecutionLog {
     @Prop()
     scheduleType: string;
 
-    @Prop()
-    processDatetime: Date;
+    @Prop({ required: false })
+    processDatetime?: Date;
 
     @Prop()
     processStatus: string;

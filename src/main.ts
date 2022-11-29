@@ -2,8 +2,9 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as session from 'express-session';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import * as session from 'express-session';
 import * as hbs from 'hbs';
 
 //import modules
@@ -11,7 +12,6 @@ import { AppModule } from './app.module';
 //import services
 import { SwaggerService } from './swagger/swagger.service';
 import { TaskService } from './provider/task/task.service';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -26,8 +26,8 @@ async function bootstrap() {
 
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'public', 'html'));
-  app.setViewEngine('hbs');
   hbs.registerPartials(join(__dirname, '..', 'public', 'html', 'partials'));
+  app.setViewEngine('hbs');
   app.use(
     session({
       secret: 'abc',
@@ -35,7 +35,6 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: { maxAge: 1000 * 60 * 10 }
-      // cookie: { maxAge: 1000 * 3 }
     })
   );
   app.connectMicroservice<MicroserviceOptions>({

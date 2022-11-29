@@ -1,6 +1,6 @@
 //import packages
-import { Injectable, Logger } from '@nestjs/common';
-import pm2, { restart } from 'pm2';
+import { Injectable } from '@nestjs/common';
+import pm2 from 'pm2';
 
 //import constants
 import { SERVICE } from './setup.constants';

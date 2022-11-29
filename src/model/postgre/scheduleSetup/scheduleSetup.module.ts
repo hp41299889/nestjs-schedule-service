@@ -1,8 +1,9 @@
 //import packages
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LoggerModule } from 'src/common/logger/logger.module';
 
+//import modules
+import { LoggerModule } from 'src/common/logger/logger.module';
 //import constants
 import { MODULE } from './scheduleSetup.constants';
 //import models

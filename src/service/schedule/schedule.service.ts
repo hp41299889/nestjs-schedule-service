@@ -4,13 +4,14 @@ import { Injectable } from '@nestjs/common';
 //import constants
 import { SERVICE } from './schedule.constants';
 //import dtos
-import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto, SchedulesDto } from './schedule.dto';
+import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto, ScheduleSetupsDto } from './schedule.dto';
 //import models
 import { ScheduleSetup } from 'src/model/postgre/scheduleSetup/scheduleSetup.entity';
 import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetup.service';
 //import services
-import { TaskService } from '../task/task.service';
+import { TaskService } from '../../provider/task/task.service';
 import { LoggerService } from 'src/common/logger/logger.service';
+import { JsonrpcMessageDto } from '../../provider/jobQueue/jobQueue.dto';
 
 const {
     CREATE_METHOD,  //create()
@@ -32,7 +33,10 @@ export class ScheduleService {
     async create(data: CreateScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(CREATE_METHOD);
-            data.MQCLI = JSON.parse(String(data.MQCLI));
+            const { MQCLI } = data;
+            if (typeof (MQCLI) === 'string') {
+                data.MQCLI = JSON.parse(MQCLI);
+            };
             const schedule = await this.scheduleSetupModel.create(data);
             const target = await this.scheduleSetupModel.read(schedule);
             this.taskService.create(target);
@@ -41,9 +45,8 @@ export class ScheduleService {
         };
     };
 
-    async readAll(): Promise<any[]> {
+    async readAll(): Promise<ScheduleSetupsDto[]> {
         try {
-            //TODO
             this.logger.serviceDebug(READALL_METHOD);
             const rows = await this.scheduleSetupModel.readAll();
             const schedules = rows.map(row => {

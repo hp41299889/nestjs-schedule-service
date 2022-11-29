@@ -6,7 +6,8 @@ import * as fs from 'fs';
 //import constants
 import { SERVICE } from './json.constants';
 //import dtos
-import { SaveSetupDto } from 'src/provider/setup/setup.dto';
+import { SaveSetupDto } from 'src/service/setup/setup.dto';
+//import services
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {

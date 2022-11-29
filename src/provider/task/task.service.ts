@@ -6,7 +6,7 @@ import { CronJob } from 'cron';
 //import constants
 import { SERVICE, CRONWEEKDAY } from './task.constants';
 //import dtos
-import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto, TaskExecuteDto } from './task.dto';
+import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto, TaskExecuteDto, BuildWeekTasksTimeDto } from './task.dto';
 //import models
 import { CreateScheduleExecutionLogDto } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.dto';
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
@@ -15,6 +15,7 @@ import { ScheduleSetupModel } from 'src/model/postgre/scheduleSetup/scheduleSetu
 import { JobQueueService } from '../jobQueue/jobQueue.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 import { JsonService } from 'src/config/json/json.service';
+import { TimeHelperService } from 'src/util/time/timeHelper.service';
 
 const {
     CREATE_METHOD,          //create()
@@ -34,7 +35,8 @@ export class TaskService {
         private readonly jobQueueService: JobQueueService,
         private readonly scheduleExecutionLogModel: ScheduleExecutionLogModel,
         private readonly scheduleSetupModel: ScheduleSetupModel,
-        private readonly jsonService: JsonService
+        private readonly jsonService: JsonService,
+        private readonly timeHelperService: TimeHelperService
     ) {
         this.logger.setContext(TaskService.name);
     };
@@ -183,6 +185,9 @@ export class TaskService {
                 throw err;
             };
             this.logger.serviceDebug('now taskCount is');
+            // console.log(this.schedulerRegistry.getIntervals());
+            // console.log(this.schedulerRegistry.getInterval('cycle_EVERYHOUR_cycle#1/0'));
+
             console.log(this.taskCount);
         };
     };
@@ -205,5 +210,38 @@ export class TaskService {
         } catch (err) {
             throw err;
         };
+    };
+
+    async buildWeekWaitingTasksTime(data: BuildWeekTasksTimeDto): Promise<Array<any>> {
+        this.logger.serviceDebug('build');
+        const executeTimes = [];
+        const { scheduleName, scheduleType, cycle, regular } = data;
+        if (scheduleType === SCHEDULE_TYPE_CYCLE) {
+            this.logger.serviceDebug('cycle');
+            cycle.forEach(item => {
+                const cycleTask = {
+                    scheduleType: scheduleType,
+                    cycle: item
+                };
+                const interval = Number(this.splitExecuteTime(cycleTask));
+                const now = new Date();
+                const { end } = this.timeHelperService.getCurrentWeek(now);
+                const startTime = now.getTime();
+                const endTime = end.getTime();
+                let time = 0;
+                while ((startTime + interval * time) <= endTime) {
+                    const nextTime = new Date(startTime + interval * time++);
+                    executeTimes.push({ time: nextTime, schedule: item });
+                };
+            });
+        } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
+            this.logger.serviceDebug('regular');
+            regular.forEach(item => {
+                const cronJobName = `${scheduleName}_${item}`;
+                const nextTime = new Date(this.schedulerRegistry.getCronJob(cronJobName).nextDate()['ts']);
+                executeTimes.push({ time: nextTime, schedule: item });
+            });
+        };
+        return executeTimes;
     };
 };

@@ -1,18 +1,19 @@
 //import packages
 import { Injectable } from '@nestjs/common';
-import { } from '@nestjs/typeorm'
-import { createConnection, DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 //import constants
 import { SERVICE } from './connection.constants';
 //import dtos
-import { DatabaseConnectionDto } from 'src/provider/setup/setup.dto';
+import { DatabaseConnectionDto } from 'src/service/setup/setup.dto';
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     TESTMONGOCONNECTION_METHOD,     //testMongoConnection()
     TESTPOSTGRESCONNECTION_METHOD,  //testPostgresConnection()
+    TESTMONGOCONNECTION_FAIL,       //mongo connection fail
+    TESTPOSTGRESCONNECTION_FAIL,    //postgres connection fail
 } = SERVICE;
 
 @Injectable()
@@ -38,7 +39,7 @@ export class ConnectionService {
             const connection = await dataSource.initialize();
             await connection.destroy();
         } catch (err) {
-            throw 'postgres connection fail'
+            throw TESTPOSTGRESCONNECTION_FAIL;
         };
     };
 
@@ -57,7 +58,7 @@ export class ConnectionService {
             const connection = await dataSource.initialize();
             await connection.destroy();
         } catch (err) {
-            throw 'mongo connection fail';
+            throw TESTMONGOCONNECTION_FAIL;
         };
     };
 };

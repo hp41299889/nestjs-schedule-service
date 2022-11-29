@@ -1,4 +1,6 @@
+//import dtos
 import { JsonrpcMessageDto } from "src/provider/jobQueue/jobQueue.dto";
+
 export class CreateScheduleExecutionLogDto {
     readonly scheduleID: number;
     readonly scheduleName: string;

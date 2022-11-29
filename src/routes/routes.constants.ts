@@ -9,5 +9,7 @@ export const CONTROLLER = {
     SETUP_VIEW_FILE: 'Setup',
     AUTH_VIEW_ROUTES: '/Auth/view',
     AUTH_VIEW_FILE: 'Auth',
-    REDIRECT_ROUTES: '../Auth/view'
+    REDIRECT_ROUTES: '../Auth/view',
+    INDEX_LAYOUT_FILE: 'pages/index',
+    LOGIN_LAYOUT_FILE: 'pages/login'
 };

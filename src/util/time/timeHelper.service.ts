@@ -7,6 +7,19 @@ import { TimePeriodDto } from "./timeHelper.dto";
 @Injectable()
 export class TimeHelperService {
 
+    getCurrentWeek(data: Date): TimePeriodDto {
+        const now = new Date();
+        const startDate = new Date(data.setDate(data.getDate() - data.getDay() + 1));
+        const start = new Date(startDate.setHours(0, 0, 0, 0));
+        const endDate = new Date(now.setDate(7 - now.getDay() + now.getDate()));
+        const end = new Date(endDate.setHours(23, 59, 59, 999));
+        const period = {
+            start: start,
+            end: end
+        };
+        return period;
+    };
+
     getDayPeriod(data: Date): TimePeriodDto {
         const now = new Date();
         const startDate = new Date(data.setDate(data.getDate() - 1));
@@ -23,8 +36,6 @@ export class TimeHelperService {
             start: start,
             end: end
         };
-        console.log(period);
-
         return period;
     };
 
@@ -44,8 +55,6 @@ export class TimeHelperService {
             start: start,
             end: end
         };
-        console.log(period);
-
         return period;
     };
 
@@ -65,8 +74,6 @@ export class TimeHelperService {
             start: start,
             end: end
         };
-        console.log(period);
-
         return period;
     };
 
@@ -86,8 +93,6 @@ export class TimeHelperService {
             start: start,
             end: end
         };
-        console.log(period);
-
         return period;
     };
 };
