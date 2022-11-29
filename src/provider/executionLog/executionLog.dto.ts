@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { JsonrpcMessageDto } from '../jobQueue/jobQueue.dto';
+import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema';
 
 export enum dateIntervalEnum {
     '前一日' = 'day',
@@ -13,4 +15,8 @@ export class QueryDto {
 
     @ApiProperty({ enum: Object.keys(dateIntervalEnum) })
     dateInterval: dateIntervalEnum;
+};
+
+export class ExecutionLogsDto extends ScheduleExecutionLog {
+    scheduleLogID?: object;
 };

@@ -47,6 +47,7 @@ export class ScheduleController {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
                 await this.scheduleService.create(data);
+                return response.send(this.http.successResponse())
                 return response.json(this.http.successResponse());
             };
         } catch (err) {

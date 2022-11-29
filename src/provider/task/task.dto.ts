@@ -22,3 +22,10 @@ export class TaskExecuteDto {
     cycle?: string;
     regular?: string;
 };
+
+export class BuildWeekTasksTimeDto {
+    scheduleName: string;
+    scheduleType: string;
+    cycle?: string[];
+    regular?: string[];
+};

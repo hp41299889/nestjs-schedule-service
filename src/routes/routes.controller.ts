@@ -1,10 +1,12 @@
 //import packages
-import { Get, Controller, Render, Req, Res, Session, BadRequestException } from '@nestjs/common';
+import { Get, Controller, Req, Res, Session, BadRequestException } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { Request, Response } from 'express';
-import { LoggerService } from 'src/common/logger/logger.service';
 
+//import constants
 import { CONTROLLER } from './routes.constants';
+//import services
+import { LoggerService } from 'src/common/logger/logger.service';
 
 const {
     SCHEDULE_VIEW_ROUTES,       //./Schedule/view
@@ -17,7 +19,9 @@ const {
     SETUP_VIEW_FILE,            //Setup
     AUTH_VIEW_ROUTES,           //./Auth/view
     AUTH_VIEW_FILE,             //Auth
-    REDIRECT_ROUTES             //../Auth/view
+    REDIRECT_ROUTES,            //../Auth/view
+    INDEX_LAYOUT_FILE,          //
+    LOGIN_LAYOUT_FILE,          //
 } = CONTROLLER;
 
 @ApiExcludeController()
@@ -37,7 +41,7 @@ export class RoutesController {
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                return response.render('Schedule', { layout: 'pages/index' });
+                return response.render(SCHEDULE_VIEW_FILE, { layout: INDEX_LAYOUT_FILE });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -53,7 +57,7 @@ export class RoutesController {
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                return response.render('Monitor', { layout: 'pages/index' });
+                return response.render(MONITOR_VIEW_FILE, { layout: INDEX_LAYOUT_FILE });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -69,7 +73,7 @@ export class RoutesController {
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                return response.render('ExecutionLog', { layout: 'pages/index' });
+                return response.render(EXECUTIONLOG_VIEW_FILE, { layout: INDEX_LAYOUT_FILE });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -85,7 +89,7 @@ export class RoutesController {
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                return response.render('Setup', { layout: 'pages/index' });
+                return response.render(SETUP_VIEW_FILE, { layout: INDEX_LAYOUT_FILE });
             };
         } catch (err) {
             this.logger.errorMessage(err);
@@ -96,8 +100,7 @@ export class RoutesController {
     @Get(AUTH_VIEW_ROUTES)
     auth(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
-            console.log('in login page');
-            return response.render('Auth', { layout: 'pages/login' });
+            return response.render(AUTH_VIEW_FILE, { layout: LOGIN_LAYOUT_FILE });
         } catch (err) {
             this.logger.errorMessage(err);
             throw new BadRequestException(err);

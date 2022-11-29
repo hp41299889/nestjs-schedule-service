@@ -62,14 +62,4 @@ export class ScheduleExecutionLogModel {
             throw err;
         };
     };
-
-    async readAll(): Promise<ScheduleExecutionLog[]> {
-        try {
-            this.logger.serviceDebug(READALL_METHOD);
-            const documents = this.scheduleExecutionLogModel.find().exec();
-            return await documents;
-        } catch (err) {
-            throw err;
-        };
-    };
 };

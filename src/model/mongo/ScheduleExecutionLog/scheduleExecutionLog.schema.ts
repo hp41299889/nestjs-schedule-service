@@ -17,8 +17,8 @@ export class ScheduleExecutionLog {
     @Prop()
     scheduleType: string;
 
-    @Prop()
-    processDatetime: Date;
+    @Prop({ required: false })
+    processDatetime?: Date;
 
     @Prop()
     processStatus: string;

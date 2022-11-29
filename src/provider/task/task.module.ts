@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { JobQueueModule } from '../jobQueue/jobQueue.module';
 import { LoggerModule } from 'src/common/logger/logger.module';
 import { JsonModule } from 'src/config/json/json.module';
+import { TimeHelperModule } from 'src/util/time/timeHelper.module';
 //import models
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
@@ -19,7 +20,8 @@ import { TaskService } from './task.service';
         ScheduleExecutionLogModelModule,
         ScheduleSetupModelModule,
         JobQueueModule,
-        JsonModule
+        JsonModule,
+        TimeHelperModule
     ],
     providers: [TaskService],
     exports: [TaskService]

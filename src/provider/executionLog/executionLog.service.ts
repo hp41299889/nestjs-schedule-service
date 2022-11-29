@@ -4,7 +4,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 //import constants
 import { SERVICE } from './executionLog.constants';
 //import dtos
-import { QueryDto } from './executionLog.dto'
+import { ExecutionLogsDto, QueryDto } from './executionLog.dto'
 //import models
 import { ScheduleExecutionLogModel } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.service';
 import { ScheduleExecutionLog } from 'src/model/mongo/ScheduleExecutionLog/scheduleExecutionLog.schema';
@@ -33,23 +33,44 @@ export class ExecutionLogService {
             switch (dateInterval) {
                 case 'day': {
                     const period = this.timeHelperServuice.getDayPeriod(today);
-                    return await this.scheduleExecutionLogModel.readPeriod(period);
+                    const documents = await this.scheduleExecutionLogModel.readPeriod(period);
+                    const logs = await this.switchLogID(documents);
+                    return logs;
                 };
                 case 'week': {
                     const period = this.timeHelperServuice.getWeekPeriod(today);
-                    return await this.scheduleExecutionLogModel.readPeriod(period);
+                    const documents = await this.scheduleExecutionLogModel.readPeriod(period);
+                    const logs = await this.switchLogID(documents);
+                    return logs;
                 };
                 case 'month': {
                     const period = this.timeHelperServuice.getMonthPeriod(today);
-                    return await this.scheduleExecutionLogModel.readPeriod(period);
+                    const documents = await this.scheduleExecutionLogModel.readPeriod(period);
+                    const logs = await this.switchLogID(documents);
+                    return logs;
                 };
                 case 'year': {
                     const period = this.timeHelperServuice.getYearPeriod(today);
-                    return await this.scheduleExecutionLogModel.readPeriod(period);
+                    const documents = await this.scheduleExecutionLogModel.readPeriod(period);
+                    const logs = await this.switchLogID(documents);
+                    return logs;
                 };
             };
         } catch (err) {
             throw err;
         };
+    };
+
+    async switchLogID(data: ScheduleExecutionLog[]): Promise<ExecutionLogsDto[]> {
+        const logs: ExecutionLogsDto[] = data.map(document => {
+            const log: ExecutionLogsDto = {
+                scheduleLogID: document['_id'],
+                ...document['_doc']
+            };
+            delete log['_id'];
+            delete log['__v'];
+            return log;
+        });
+        return logs;
     };
 };

@@ -5,6 +5,8 @@ import { Module } from '@nestjs/common';
 import { CommonModule } from 'src/common/common.module';
 import { TimeHelperModule } from 'src/util/time/timeHelper.module';
 import { JobQueueModule } from '../jobQueue/jobQueue.module';
+import { ExecutionLogModule } from '../executionLog/executionLog.module';
+import { TaskModule } from '../task/task.module';
 //import models
 import { ScheduleSetupModelModule } from 'src/model/postgre/scheduleSetup/scheduleSetup.module';
 import { ScheduleExecutionLogModelModule } from 'src/model/mongo/ScheduleExecutionLog/ScheduleExecutionLog.module';
@@ -19,7 +21,9 @@ import { MonitorService } from './monitor.service';
     ScheduleSetupModelModule,
     ScheduleExecutionLogModelModule,
     TimeHelperModule,
-    JobQueueModule
+    JobQueueModule,
+    ExecutionLogModule,
+    TaskModule
   ],
   providers: [MonitorService],
   controllers: [MonitorController]

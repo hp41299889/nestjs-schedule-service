@@ -33,3 +33,8 @@ export class ResendMonitorDto {
     })
     MQCLI: JsonrpcMessageDto;
 };
+
+export class BuildWeekTasksDto {
+    cycle?: string;
+    regular?: string;
+};
