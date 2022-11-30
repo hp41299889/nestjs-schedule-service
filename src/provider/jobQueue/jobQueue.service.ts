@@ -9,9 +9,11 @@ import { SERVICE } from './jobQueue.constants';
 import { BuildMessageDto, JsonrpcMessageDto, SendMessageDto } from './jobQueue.dto';
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
+import { ScheduleClient } from 'src/util/scheduleClient/scheduleClient';
 
 const {
     CONNECTION_NAME,      //connection name for JobQueue
+    PATTERN,
     BUILDMESSAGE_METHOD,  //buildMessage()
     SENDMESSAGE_METHOD,   //sendMessage()
 } = SERVICE;
@@ -21,6 +23,8 @@ export class JobQueueService {
     constructor(
         @Inject(CONNECTION_NAME)
         private readonly client: ClientRMQ,
+        @Inject(CONNECTION_NAME)
+        private readonly client2: ScheduleClient,
         private readonly logger: LoggerService
     ) {
         this.logger.setContext(JobQueueService.name);
@@ -44,7 +48,7 @@ export class JobQueueService {
         try {
             this.logger.serviceDebug(SENDMESSAGE_METHOD);
             this.client
-                .emit(CONNECTION_NAME, await this.buildMessage(data))
+                .emit(PATTERN, await this.buildMessage(data))
                 .pipe(timeout(10000));
         } catch (err) {
             throw err;

@@ -54,7 +54,6 @@ export class AuthController {
     async logout(@Req() request: Request, @Res() response: Response, @Session() session: Record<string, any>): Promise<void> {
         try {
             this.logger.controllerDebug(LOGOUT_METHOD);
-            //TODO
             request.session.destroy(() => {
                 response.redirect('../Auth/view');
             });

@@ -5,6 +5,7 @@ import { CronJob } from 'cron';
 
 //import constants
 import { SERVICE, CRONWEEKDAY } from './task.constants';
+import { TASK } from './task.constants';
 //import dtos
 import { CreateTaskDto, UpdateTaskDto, DeleteTaskDto, TaskExecuteDto, BuildWeekTasksTimeDto } from './task.dto';
 //import models
@@ -26,6 +27,12 @@ const {
     TASK_MESSAGE_CYCLE,     //Message when cycle task execute
     TASK_MESSAGE_REGULAR,   //Message when regular task execute
 } = SERVICE;
+
+const {
+    OK,                     //
+    WAITING,                //
+    ERROR,                  //
+} = TASK;
 
 @Injectable()
 export class TaskService {
@@ -68,7 +75,7 @@ export class TaskService {
                                 scheduleID: scheduleID,
                                 schedule: item,
                                 processDatetime: new Date(),
-                                processStatus: 'ok'
+                                processStatus: OK
                             };
                             this.scheduleExecutionLogModel.create(createdLog);
                             this.jobQueueService.sendMessage(MQCLI);
@@ -93,7 +100,7 @@ export class TaskService {
                                 scheduleID: scheduleID,
                                 schedule: item,
                                 processDatetime: new Date(),
-                                processStatus: 'ok'
+                                processStatus: OK
                             };
                             this.scheduleExecutionLogModel.create(createdLog);
                             this.jobQueueService.sendMessage(MQCLI);

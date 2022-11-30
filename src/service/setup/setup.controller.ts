@@ -85,16 +85,14 @@ export class SetupController {
     };
 
     @Patch(SAVE_ROUTES)
-    save(@Body() data: SaveSetupDto, @Res() response: Response, @Session() session: Record<string, any>): void {
+    save(@Body() data: SaveSetupDto, @Res() response: Response, @Session() session: Record<string, any>) {
         try {
             this.logger.controllerDebug(SAVE_ROUTES);
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                //TODO
                 this.setupService.save(data);
-                // const setup = await this.setupService.read();
-                // return response.json(setup);
+                return response.redirect(REDIRECT_ROUTES);
             };
         } catch (err) {
             this.logger.error(err);

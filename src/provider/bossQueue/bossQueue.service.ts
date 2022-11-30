@@ -29,7 +29,6 @@ export class BossQueueService {
     private messageID = 1;
 
     async handleMessage(data: BossQueueMessageDto) {
-        //TODO dto
         try {
             this.logger.serviceDebug('handleMessage');
             const { method, params } = data;

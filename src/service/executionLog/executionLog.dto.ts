@@ -20,5 +20,5 @@ export class QueryDto {
 };
 
 export class ExecutionLogsDto extends ScheduleExecutionLog {
-    scheduleLogID?: object;
+    scheduleLogID?: object | string;
 };

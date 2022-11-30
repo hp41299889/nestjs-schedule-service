@@ -1,6 +1,6 @@
 {
   "name": "nest-server",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "ba220904 ScheduleService",
   "author": "LNT_Danny Lu",
   "private": true,
@@ -39,6 +39,7 @@
     "@nestjs/serve-static": "^3.0.0",
     "@nestjs/swagger": "^6.1.2",
     "@nestjs/typeorm": "^9.0.1",
+    "@types/crypto-js": "^4.1.1",
     "amqp-connection-manager": "^4.1.7",
     "amqplib": "^0.10.3",
     "class-transformer": "^0.5.1",

@@ -180,39 +180,39 @@ function save() {
 
   const saveData = {
     enableScheduleService: enableScheduleService,
-    bossQueue:{
-      IP:bossRabbitMqIp,
-      port:bossRabbitMqPort,
-      account:bossRabbitMqAccount,
-      password:bossRabbitMqPassword,
-      inputQueueName:bossQueueNameInput,
-      outputQueueName:bossQueueNameOutput
+    bossQueue: {
+      IP: bossRabbitMqIp,
+      port: bossRabbitMqPort,
+      account: bossRabbitMqAccount,
+      password: bossRabbitMqPassword,
+      inputQueueName: bossQueueNameInput,
+      outputQueueName: bossQueueNameOutput
     },
-    jobQueue:{
-      IP:jobRabbitMqIp,
-      port:jobRabbitMqPort,
-      account:jobRabbitMqAccount,
-      password:jobRabbitMqPassword,
-      inputQueueName:jobQueueNameInput,
-      outputQueueName:jobQueueNameOutput
+    jobQueue: {
+      IP: jobRabbitMqIp,
+      port: jobRabbitMqPort,
+      account: jobRabbitMqAccount,
+      password: jobRabbitMqPassword,
+      inputQueueName: jobQueueNameInput,
+      outputQueueName: jobQueueNameOutput
     },
-    admin:{
-      account:account,
-      password:password
+    admin: {
+      account: account,
+      password: password
     },
-    postgreSQL:{
-      IP:postgreSqlIp,
-      port:postgreSqlPort,
-      account:postgreSqlAccount,
-      password:postgreSqlPassword,
-      DBName:postgreSqlDbName
+    postgreSQL: {
+      IP: postgreSqlIp,
+      port: postgreSqlPort,
+      account: postgreSqlAccount,
+      password: postgreSqlPassword,
+      DBName: postgreSqlDbName
     },
-    mongoDB:{
-      IP:mongoIp,
-      port:mongoPort,
-      account:mongoAccount,
-      password:mongoPassword,
-      DBName:mongoDbName
+    mongoDB: {
+      IP: mongoIp,
+      port: mongoPort,
+      account: mongoAccount,
+      password: mongoPassword,
+      DBName: mongoDbName
     }
   }
 
@@ -223,15 +223,19 @@ function save() {
     dataType: 'json',
     success: function (response) {
       console.log(response);
-      
+
     },
     error: function (xhr) {
       console.log('xhr =', xhr);
       // alert('Error: ' + xhr.status + ' ' + xhr.statusText);
-      if(xhr){
-        location.reload();
-        // fetch(authUrl)
-
+      if (xhr) {
+        // location.reload();
+        setInterval(() => {
+          fetch(authUrl)
+            .then(res => {
+              location.href = res.url;
+            })
+        }, 500);
       }
     },
   });

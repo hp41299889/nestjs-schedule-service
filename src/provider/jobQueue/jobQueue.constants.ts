@@ -7,6 +7,7 @@ export const MODULE = {
 
 export const SERVICE = {
     CONNECTION_NAME: 'JOB_QUEUE',
+    PATTERN: 'job_queue',
     BUILDMESSAGE_METHOD: 'buildMessage()',
     SENDMESSAGE_METHOD: 'sendMessage()',
 };

@@ -1,5 +1,6 @@
 //import packages
 import { Injectable } from '@nestjs/common';
+import * as crypto from 'crypto';
 
 //import constants
 import { SERVICE } from './monitor.constants';
@@ -61,6 +62,7 @@ export class MonitorService {
                 executeTimes.forEach(item => {
                     const { time, schedule } = item;
                     logs.push({
+                        scheduleLogID: this.randomScheduleLogID(),
                         scheduleID: scheduleID,
                         scheduleName: scheduleName,
                         schedule: schedule,
@@ -97,5 +99,9 @@ export class MonitorService {
         } catch (err) {
             throw err;
         };
+    };
+
+    randomScheduleLogID(): string {
+        return crypto.randomBytes(20).toString('hex');
     };
 };

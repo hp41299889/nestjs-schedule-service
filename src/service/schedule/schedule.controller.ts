@@ -26,7 +26,6 @@ const {
 
 @ApiTags(API_TAGS)
 @Controller(API_ROUTES)
-//TODO
 @UseFilters(Exception)
 export class ScheduleController {
     constructor(
