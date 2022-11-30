@@ -185,9 +185,6 @@ export class TaskService {
                 throw err;
             };
             this.logger.serviceDebug('now taskCount is');
-            // console.log(this.schedulerRegistry.getIntervals());
-            // console.log(this.schedulerRegistry.getInterval('cycle_EVERYHOUR_cycle#1/0'));
-
             console.log(this.taskCount);
         };
     };
@@ -213,6 +210,8 @@ export class TaskService {
     };
 
     async buildWeekWaitingTasksTime(data: BuildWeekTasksTimeDto): Promise<Array<any>> {
+        //TS -> time stamp
+        //Time -> Date object
         this.logger.serviceDebug('build');
         const executeTimes = [];
         const { scheduleName, scheduleType, cycle, regular } = data;
@@ -225,21 +224,26 @@ export class TaskService {
                 };
                 const interval = Number(this.splitExecuteTime(cycleTask));
                 const now = new Date();
-                const { end } = this.timeHelperService.getCurrentWeek(now);
-                const startTime = now.getTime();
-                const endTime = end.getTime();
-                let time = 0;
-                while ((startTime + interval * time) <= endTime) {
-                    const nextTime = new Date(startTime + interval * time++);
+                const { end } = this.timeHelperService.getCurrentWeek(new Date());
+                const startTS = now.getTime();
+                const endTS = end.getTime();
+                let times = 0;
+                while ((startTS + interval * times) <= endTS) {
+                    const nextTime = new Date(startTS + interval * times++);
                     executeTimes.push({ time: nextTime, schedule: item });
                 };
             });
         } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
             this.logger.serviceDebug('regular');
+            const { end } = this.timeHelperService.getCurrentWeek(new Date());
+            const endTS = end.getTime();
             regular.forEach(item => {
                 const cronJobName = `${scheduleName}_${item}`;
                 const nextTime = new Date(this.schedulerRegistry.getCronJob(cronJobName).nextDate()['ts']);
-                executeTimes.push({ time: nextTime, schedule: item });
+                const nextTS = nextTime.getTime();
+                if (nextTS <= endTS) {
+                    executeTimes.push({ time: nextTime, schedule: item });
+                };
             });
         };
         return executeTimes;

@@ -5,36 +5,34 @@ import { Payload, RmqContext, Ctx } from "@nestjs/microservices";
 import { ApiTags } from "@nestjs/swagger";
 
 //import constants
-import { CONTROLLER } from './scheduleQueue.constants';
+import { CONTROLLER } from './bossQueue.constants';
 //import dtos
-import { ScheduleQueueMessageDto } from "./scheduleQueue.dto";
+import { BossQueueMessageDto } from "./bossQueue.dto";
 //import services
 import { LoggerService } from "src/common/logger/logger.service";
-import { ScheduleQueueService } from "./scheduleQueue.service";
+import { BossQueueService } from "./bossQueue.service";
 
 const {
     PATTERN
 } = CONTROLLER;
 
-//TODO use constants and debug message
 @ApiTags('test')
 @Controller('schedulequeue')
-export class ScheduleQueueController {
+export class BossQueueController {
     constructor(
         private readonly logger: LoggerService,
-        private readonly scheduleQueueService: ScheduleQueueService
+        private readonly scheduleQueueService: BossQueueService
     ) {
-        this.logger.setContext(ScheduleQueueController.name);
+        this.logger.setContext(BossQueueController.name);
     };
 
     @MessagePattern(PATTERN)
-    async customMessage(@Payload() data: ScheduleQueueMessageDto, @Ctx() context: RmqContext) {
+    async customMessage(@Payload() data: BossQueueMessageDto, @Ctx() context: RmqContext) {
         try {
             const channel = context.getChannelRef();
             const originMessage = context.getMessage();
-            channel.ack(originMessage);
             await this.scheduleQueueService.handleMessage(data);
-            channel.ack(originMessage);
+            await channel.ack(originMessage);
         } catch (err) {
             throw err;
         };
@@ -42,7 +40,7 @@ export class ScheduleQueueController {
 
     //測試用send message to schedule_queue
     @Post('create')
-    create(@Body() data: ScheduleQueueMessageDto) {
+    create(@Body() data: BossQueueMessageDto) {
         this.scheduleQueueService.testMessage(data);
     };
 
@@ -52,6 +50,5 @@ export class ScheduleQueueController {
         const channel = context.getChannelRef();
         const originMessage = context.getMessage();
         channel.ack(originMessage);
-
     };
 };

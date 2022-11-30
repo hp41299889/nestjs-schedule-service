@@ -1,11 +1,19 @@
 {
   "enableScheduleService": true,
-  "queue": {
+  "bossQueue": {
     "IP": "192.168.36.51",
     "port": "5672",
     "account": "root",
     "password": "a3345678",
-    "inputQueueName": "schedule_queue",
+    "inputQueueName": "boss_queue",
+    "outputQueueName": "boss_queue"
+  },
+  "jobQueue": {
+    "IP": "192.168.36.51",
+    "port": "5672",
+    "account": "root",
+    "password": "a3345678",
+    "inputQueueName": "job_queue",
     "outputQueueName": "job_queue"
   },
   "admin": {

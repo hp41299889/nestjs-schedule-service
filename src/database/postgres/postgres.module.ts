@@ -56,7 +56,7 @@ const {
                         // synchronize: true,
                     };
                 } catch (err) {
-                    logger.error(FAIL_USEING_ENV);
+                    logger.errorMessage(FAIL_USEING_ENV);
                     const postgresEnv: DatabaseConnectionDto = configService.get(ENV_ALIAS);
                     const material = {
                         connectionName: CONNECTION_NAME,

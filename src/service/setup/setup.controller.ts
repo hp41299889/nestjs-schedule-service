@@ -44,7 +44,7 @@ export class SetupController {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
                 const setup = await this.setupService.read();
-                return response.json(setup);
+                return response.json(JSON.parse(setup));
             };
         } catch (err) {
             this.logger.errorMessage(err);

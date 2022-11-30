@@ -4,9 +4,9 @@ import { ClientRMQ } from '@nestjs/microservices';
 import { timeout } from 'rxjs';
 
 //import constants
-import { SERVICE } from './scheduleQueue.constants';
+import { SERVICE } from './bossQueue.constants';
 //import dtos
-import { ScheduleQueueMessageDto } from './scheduleQueue.dto';
+import { BossQueueMessageDto } from './bossQueue.dto';
 import { CreateScheduleDto, DeleteScheduleDto, ReadScheduleDto, UpdateScheduleDto } from '../../service/schedule/schedule.dto';
 //import services
 import { LoggerService } from 'src/common/logger/logger.service';
@@ -16,19 +16,19 @@ const {
     CONNECTION_NAME
 } = SERVICE;
 @Injectable()
-export class ScheduleQueueService {
+export class BossQueueService {
     constructor(
         @Inject(CONNECTION_NAME)
         private readonly client: ClientRMQ,
         private readonly logger: LoggerService,
         private readonly scheduleService: ScheduleService
     ) {
-        this.logger.setContext(ScheduleQueueService.name);
+        this.logger.setContext(BossQueueService.name);
     };
 
     private messageID = 1;
 
-    async handleMessage(data: ScheduleQueueMessageDto) {
+    async handleMessage(data: BossQueueMessageDto) {
         //TODO dto
         try {
             this.logger.serviceDebug('handleMessage');
@@ -36,8 +36,7 @@ export class ScheduleQueueService {
             const action = method.split('/')[2];
             switch (action) {
                 case 'create': {
-                    const schedule = params;
-                    await this.scheduleService.create(schedule as CreateScheduleDto);
+                    await this.scheduleService.create(params as CreateScheduleDto);
                     this.sendAPIServerMessage({
                         jsonrpc: '2.0',
                         results: 'Success',
@@ -57,8 +56,7 @@ export class ScheduleQueueService {
                     break;
                 };
                 case 'queryID': {
-                    const scheduleID = params;
-                    const schedule = await this.scheduleService.read(scheduleID as ReadScheduleDto);
+                    const schedule = await this.scheduleService.read(params as ReadScheduleDto);
                     this.sendAPIServerMessage({
                         jsonrpc: '2.0',
                         results: schedule,
@@ -68,8 +66,7 @@ export class ScheduleQueueService {
                     break;
                 };
                 case 'update': {
-                    const schedule = params;
-                    await this.scheduleService.update(schedule as UpdateScheduleDto);
+                    await this.scheduleService.update(params as UpdateScheduleDto);
                     this.sendAPIServerMessage({
                         jsonrpc: '2.0',
                         results: 'Success',
@@ -79,8 +76,7 @@ export class ScheduleQueueService {
                     break;
                 };
                 case 'delete': {
-                    const schedule = params;
-                    await this.scheduleService.delete(schedule as DeleteScheduleDto);
+                    await this.scheduleService.delete(params as DeleteScheduleDto);
                     this.sendAPIServerMessage({
                         jsonrpc: '2.0',
                         results: 'Success',
@@ -107,16 +103,14 @@ export class ScheduleQueueService {
     };
 
     //測試用send message to schedule_queue
-    testMessage(data: ScheduleQueueMessageDto) {
+    testMessage(data: BossQueueMessageDto) {
         try {
             this.logger.serviceDebug('testMessage');
             this.client
-                .emit(CONNECTION_NAME, data)
+                .emit('boss_queue', data)
                 .pipe(timeout(10000));
         } catch (err) {
             throw err;
         };
     };
-
-
 };
