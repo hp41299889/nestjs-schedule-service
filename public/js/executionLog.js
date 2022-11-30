@@ -12,6 +12,7 @@ $(document).ready(function () {
     buttons: ['excel'],
     // data: executionLogData,
     columns: executionLogColumns,
+    scrollX: true,
   });
 
   $('.dt-buttons').addClass('d-none');
@@ -113,9 +114,22 @@ function query() {
         success: function (response) {
           console.log(response);
           // location.reload();
+          const res = response
+          res.forEach((item)=>{
+            console.log('item.MQCLI =', item.MQCLI);
+            let mqcli
+            if(item.MQCLI){
+              mqcli = JSON.stringify(item.MQCLI)
+            }else{
+              mqcli = JSON.stringify({})
+            }
+            
+            console.log('mqcli =', mqcli);
+            item.MQCLI = mqcli
+          })
 
           //將資料新增到table上
-          table.rows.add(response).draw();
+          table.rows.add(res).draw();
         },
         error: function (xhr) {
           console.log('xhr =', xhr);
@@ -129,3 +143,8 @@ function query() {
   // console.log('dateRangeVal =', dateRangeVal);
 }
 //--
+
+//匯出
+function exportExcel(){
+  $('button.buttons-excel').trigger('click');
+}

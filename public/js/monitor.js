@@ -39,21 +39,34 @@ document.addEventListener('DOMContentLoaded', async function () {
       // debugger;
       arg.el.id = arg.event._def.publicId;
       // console.log('arg =', arg);
+      // console.log(
+      //   '$(".fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion") =',
+      //   $('.fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion'),
+      // );
+      $('.fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion').each(function(){
+        // console.log("$(this) =", $(this))
+        // console.log("$(this).attr('innerHTML') =", $(this).html())
+        if($(this).html() == '24時'){
+          $(this).html('00時')
+        }
+      })
     },
     windowResize: function (arg) {
-      $('td.fc-timegrid-col > div.fc-timegrid-col-frame')
-        .each(function () {
-          console.log('windowResize-$(this) =', $(this));
-          setTimeout(( () => {
-            console.log('setTimeout');
-            $(this)
-            .children()
-            .eq(1)
-            .remove();
-
-          } ), 100)
-        })
+      $('td.fc-timegrid-col > div.fc-timegrid-col-frame').each(function () {
+        console.log('windowResize-$(this) =', $(this));
+        setTimeout(() => {
+          console.log('setTimeout');
+          $(this).children().eq(1).remove();
+        }, 100);
+      });
     },
+    // eventClassNames: function(arg){
+    //   console.log('eventClassNames-arg =', arg);
+    //   const status = arg.event._def.extendedProps.processStatus
+    //   if(status == 'waiting'){
+    //     return ['alert-danger']
+    //   }
+    // }
   });
 
   calendar.render();
@@ -87,19 +100,34 @@ async function readAll() {
     element.weekLog.forEach((item) => {
       const itemColor =
         item.processStatus == 'ok'
-          ? '#D4EDDA'
+          ? '#d1e7dd'
           : item.processStatus == 'fail'
-          ? '#F8D7DA'
-          : '#E7E8EA';
+          ? '#f8d7da'
+          : '#e2e3e5';
+      const borderColor =
+        item.processStatus == 'ok'
+          ? '#badbcc'
+          : item.processStatus == 'fail'
+          ? '#f5c2c7'
+          : '#d3d6d8';
+      const textColor =
+        item.processStatus == 'ok'
+          ? '#0f5132'
+          : item.processStatus == 'fail'
+          ? '#842029'
+          : '#41464b';
+
       const time = moment(item.processDatetime).format('YYYY-MM-DD HH');
       // console.log('item =', item);
       const timeStr = `${time}:00:00`;
       const mqcli = JSON.stringify(item.MQCLI);
       monitorDatas.push({
-        id: item._id,
+        id: item.scheduleLogID,
         title: `${item.scheduleID}.${item.scheduleName}`,
         start: timeStr,
         backgroundColor: itemColor,
+        borderColor: borderColor,
+        textColor: textColor,
         MQCLI: mqcli,
         processDatetime: moment(item.processDatetime).format(
           'YYYY-MM-DD HH:mm:ss',
@@ -108,6 +136,7 @@ async function readAll() {
         scheduleID: item.scheduleID,
         scheduleName: item.scheduleName,
         scheduleType: item.scheduleType,
+        processStatus: item.processStatus,
       });
     });
   });
@@ -158,6 +187,7 @@ function itemDisplay() {
   $('div.fc-timegrid-slots > table > tbody > tr').each(function () {
     rows.push($(this));
   });
+  console.log('rows', rows);
 
   let rowIndex = 0;
   const getRowElement = function (time) {
@@ -221,7 +251,7 @@ function itemDisplay() {
       .each(function () {
         // for-each event on week column
         // select the current event time and its row
-        console.log('each-2')
+        console.log('each-2');
         // console.log("$(this).find('> div.fc-event-main > div') =", $(this).find('> div.fc-event-main > div'))
         const time = $(this)
           .find(
@@ -342,7 +372,7 @@ function itemDisplay() {
         let itemCount = 0;
         let defaultInset = '';
         newHtmlStr = '<div class="fc-timegrid-col-events">';
-        console.log('each-3')
+        console.log('each-3');
         console.log('.parent()-$(this) =', $(this));
         $(this)
           .children()
@@ -353,7 +383,10 @@ function itemDisplay() {
             if (zIndex > itemCount) {
               defaultInset = $(this).css('inset');
               // console.log('zIndex > itemCount =', defaultInset);
-              $(this).css('inset', `${2+((zIndex-1)*defaultItemHeight)}px 0 0 0`);
+              $(this).css(
+                'inset',
+                `${2 + (zIndex - 1) * defaultItemHeight}px 0 0 0`,
+              );
               // console.log(
               //   'zIndex > itemCount-$(this).prop("outerHTML") =',
               //   $(this).prop('outerHTML'),
@@ -369,7 +402,10 @@ function itemDisplay() {
             } else if (zIndex <= itemCount) {
               console.log('zIndex <= itemCount');
               defaultInset = $(this).css('inset');
-              $(this).css('inset', `${2+((zIndex-1)*defaultItemHeight)}px 0 0 0`);
+              $(this).css(
+                'inset',
+                `${2 + (zIndex - 1) * defaultItemHeight}px 0 0 0`,
+              );
               newHtmlStr += `</div><div class="selfCell" style="inset:${defaultInset}">${$(
                 this,
               ).prop('outerHTML')}`;
@@ -443,13 +479,14 @@ function monitor() {
     calendarEvents.forEach((calendarEvent) => {
       const def = calendarEvent._def;
       const extendedProps = def.extendedProps;
+      console.log('calendarEvent =', calendarEvent);
+      console.log('extendedProps =', extendedProps);
       if (def.publicId == calendarEventId) {
         $('#scheduleId').val(extendedProps.scheduleID);
         $('#scheduleName').val(extendedProps.scheduleName);
         const scheduleType = extendedProps.scheduleType;
         $('#scheduleType').val(scheduleType);
         $('#processDatetime').val(extendedProps.processDatetime);
-        // console.log('extendedProps =', extendedProps);
 
         if (scheduleType == 'regular') {
           $('#cycle').addClass('d-none');

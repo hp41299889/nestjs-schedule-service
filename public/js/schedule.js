@@ -13,9 +13,10 @@ $(document).ready(function () {
     dom: 'Brft<"bottom"lp>',
     buttons: ['excel'],
     columns: scheduleColumns,
+    scrollX: true,
   });
 
-  $('.dt-buttons').addClass('d-none')
+  $('.dt-buttons').addClass('d-none');
 
   //搜尋框自訂義
   $('#schedule_filter').hide();
@@ -531,9 +532,10 @@ function save() {
   } else {
     return false;
   }
-  // console.log('datas =', datas);
+  console.log('datas =', datas);
 
   if (state == 'new' || state == 'clone') {
+    console.log('save-new or clone');
     // $.ajax({
     //   url: `${apiUrl}/create/`,
     //   type: 'POST',
@@ -551,14 +553,16 @@ function save() {
     fetch(`${apiUrl}/create`, {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(datas),
-      redirect: "follow"
-    }).then(res => {
-      res.redirected && (location.href = res.url)
-    })
+      redirect: 'follow',
+    }).then((res) => {
+      res.redirected && (location.href = res.url);
+      location.reload();
+    });
   } else {
+    console.log('save-update');
     const scheduleID = sessionStorage.getItem('scheduleID');
     datas['scheduleID'] = scheduleID;
 
@@ -600,6 +604,8 @@ function init() {
   $('input').val('');
   $('select[name!="schedule_length"]').val('');
   $('select#scheduleType').val('regular');
+  $('#regular').removeClass('d-none');
+  $('#cycle').addClass('d-none');
   const regularRecordChildren = $('#regularRecord').children();
   for (let i = 0; i < regularRecordChildren.length; i++) {
     const attrId = regularRecordChildren.eq(i).attr('id');
@@ -660,6 +666,6 @@ function initDel() {
 }
 
 //匯出
-function exportExcel(){
+function exportExcel() {
   $('button.buttons-excel').trigger('click');
 }

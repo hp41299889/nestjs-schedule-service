@@ -29,12 +29,18 @@ function readAll() {
       // console.log('$("#enableScheduleService") =', $('#enableScheduleService'));
       // console.log('jsonParse.enableScheduleService =', `${jsonParse.enableScheduleService}`);
       $('#enableScheduleService').val(`${jsonParse.enableScheduleService}`);
-      $('#rabbitMqIp').val(jsonParse.queue.IP);
-      $('#rabbitMqPort').val(jsonParse.queue.port);
-      $('#rabbitMqAccount').val(jsonParse.queue.account);
-      $('#rabbitMqPassword').val(jsonParse.queue.password);
-      $('#queueNameInput').val(jsonParse.queue.inputQueueName);
-      $('#queueNameOutput').val(jsonParse.queue.outputQueueName);
+      $('#bossRabbitMqIp').val(jsonParse.bossQueue.IP);
+      $('#bossRabbitMqPort').val(jsonParse.bossQueue.port);
+      $('#bossRabbitMqAccount').val(jsonParse.bossQueue.account);
+      $('#bossRabbitMqPassword').val(jsonParse.bossQueue.password);
+      $('#bossQueueNameInput').val(jsonParse.bossQueue.inputQueueName);
+      $('#bossQueueNameOutput').val(jsonParse.bossQueue.outputQueueName);
+      $('#jobRabbitMqIp').val(jsonParse.jobQueue.IP);
+      $('#jobRabbitMqPort').val(jsonParse.jobQueue.port);
+      $('#jobRabbitMqAccount').val(jsonParse.jobQueue.account);
+      $('#jobRabbitMqPassword').val(jsonParse.jobQueue.password);
+      $('#jobQueueNameInput').val(jsonParse.jobQueue.inputQueueName);
+      $('#jobQueueNameOutput').val(jsonParse.jobQueue.outputQueueName);
       $('#account').val(jsonParse.admin.account);
       $('#password').val(jsonParse.admin.password);
       $('#postgreSqlIp').val(jsonParse.postgreSQL.IP);
@@ -146,12 +152,18 @@ function mongoTest() {
 //儲存 SD-API-013
 function save() {
   const enableScheduleService = $('#enableScheduleService').val();
-  const rabbitMqIp = $('#rabbitMqIp').val();
-  const rabbitMqPort = $('#rabbitMqPort').val();
-  const rabbitMqAccount = $('#rabbitMqAccount').val();
-  const rabbitMqPassword = $('#rabbitMqPassword').val();
-  const queueNameInput = $('#queueNameInput').val();
-  const queueNameOutput = $('#queueNameOutput').val();
+  const bossRabbitMqIp = $('#bossRabbitMqIp').val();
+  const bossRabbitMqPort = $('#bossRabbitMqPort').val();
+  const bossRabbitMqAccount = $('#bossRabbitMqAccount').val();
+  const bossRabbitMqPassword = $('#bossRabbitMqPassword').val();
+  const bossQueueNameInput = $('#bossQueueNameInput').val();
+  const bossQueueNameOutput = $('#bossQueueNameOutput').val();
+  const jobRabbitMqIp = $('#jobRabbitMqIp').val();
+  const jobRabbitMqPort = $('#jobRabbitMqPort').val();
+  const jobRabbitMqAccount = $('#jobRabbitMqAccount').val();
+  const jobRabbitMqPassword = $('#jobRabbitMqPassword').val();
+  const jobQueueNameInput = $('#jobQueueNameInput').val();
+  const jobQueueNameOutput = $('#jobQueueNameOutput').val();
   const account = $('#account').val();
   const password = $('#password').val();
   const postgreSqlIp = $('#postgreSqlIp').val();
@@ -167,13 +179,21 @@ function save() {
 
   const saveData = {
     enableScheduleService: enableScheduleService,
-    queue:{
-      IP:rabbitMqIp,
-      port:rabbitMqPort,
-      account:rabbitMqAccount,
-      password:rabbitMqPassword,
-      inputQueueName:queueNameInput,
-      outputQueueName:queueNameOutput
+    bossQueue:{
+      IP:bossRabbitMqIp,
+      port:bossRabbitMqPort,
+      account:bossRabbitMqAccount,
+      password:bossRabbitMqPassword,
+      inputQueueName:bossQueueNameInput,
+      outputQueueName:bossQueueNameOutput
+    },
+    jobQueue:{
+      IP:jobRabbitMqIp,
+      port:jobRabbitMqPort,
+      account:jobRabbitMqAccount,
+      password:jobRabbitMqPassword,
+      inputQueueName:jobQueueNameInput,
+      outputQueueName:jobQueueNameOutput
     },
     admin:{
       account:account,

@@ -80,6 +80,9 @@
 }
 #calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-slots .fc-timegrid-slot-label {
   border: unset;
+  vertical-align: unset;
+  color: #b2b2b2;
+  font-weight: bold;
 }
 #calendar .fc-timegrid .fc-scrollgrid tbody .fc-scroller-harness .fc-timegrid-body .fc-timegrid-cols .fc-timegrid-col .fc-timegrid-col-frame .fc-timegrid-col-events .selfCell {
   position: absolute;

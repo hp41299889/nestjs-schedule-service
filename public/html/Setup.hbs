@@ -1,5 +1,5 @@
     <div class='m-4'>
-      <h1>排程</h1>
+      <h1>設定</h1>
       <div class='card'>
         <div class='card-body'>
           <form>
@@ -11,29 +11,30 @@
               </div>
               <hr />
             </div>
+            <h3 class="fw-bold">RabbitMQ BossQueue</h3>
             <div class='d-flex'>
               <div class='row w-50'>
                 <div class='col-6'>
                   <label
-                    for='rabbitMqIp'
+                    for='bossRabbitMqIp'
                     class='col-form-label fw-bolder'
                   >RabbitMq IP：</label>
                   <input
                     type='text'
                     class='form-control'
-                    id='rabbitMqIp'
+                    id='bossRabbitMqIp'
                     required
                   />
                 </div>
                 <div class='col-6'>
                   <label
-                    for='rabbitMqPort'
+                    for='bossRabbitMqPort'
                     class='col-form-label fw-bolder'
                   >RabbitMq Port：</label>
                   <input
                     type='text'
                     class='form-control'
-                    id='rabbitMqPort'
+                    id='bossRabbitMqPort'
                     required
                   />
                 </div>
@@ -41,25 +42,25 @@
               <div class='row w-50 rabbitMqUser'>
                 <div class='col-6'>
                   <label
-                    for='rabbitMqAccount'
+                    for='bossRabbitMqAccount'
                     class='col-form-label fw-bolder'
                   >RabbitMq 帳號：</label>
                   <input
                     type='text'
                     class='form-control'
-                    id='rabbitMqAccount'
+                    id='bossRabbitMqAccount'
                     required
                   />
                 </div>
                 <div class='col-6'>
                   <label
-                    for='rabbitMqPassword'
+                    for='bossRabbitMqPassword'
                     class='col-form-label fw-bolder'
                   >RabbitMq 密碼：</label>
                   <input
                     type='password'
                     class='form-control'
-                    id='rabbitMqPassword'
+                    id='bossRabbitMqPassword'
                     required
                   />
                 </div>
@@ -68,25 +69,107 @@
             <div class='row w-50'>
               <div class='col-6 mb-3'>
                 <label
-                  for='queueNameInput'
+                  for='bossQueueNameInput'
                   class='col-form-label fw-bolder'
                 >輸入Queue名稱：</label>
                 <input
                   type='text'
                   class='form-control'
-                  id='queueNameInput'
+                  id='bossQueueNameInput'
                   required
                 />
               </div>
               <div class='col-6 mb-3'>
                 <label
-                  for='queueNameOutput'
+                  for='bossQueueNameOutput'
                   class='col-form-label fw-bolder'
                 >輸出Queue名稱：</label>
                 <input
                   type='text'
                   class='form-control'
-                  id='queueNameOutput'
+                  id='bossQueueNameOutput'
+                  required
+                />
+              </div>
+              <hr />
+            </div>
+            <h3 class="fw-bold">RabbitMQ JobQueue</h3>
+            <div class='d-flex'>
+              <div class='row w-50'>
+                <div class='col-6'>
+                  <label
+                    for='jobRabbitMqIp'
+                    class='col-form-label fw-bolder'
+                  >RabbitMq IP：</label>
+                  <input
+                    type='text'
+                    class='form-control'
+                    id='jobRabbitMqIp'
+                    required
+                  />
+                </div>
+                <div class='col-6'>
+                  <label
+                    for='jobRabbitMqPort'
+                    class='col-form-label fw-bolder'
+                  >RabbitMq Port：</label>
+                  <input
+                    type='text'
+                    class='form-control'
+                    id='jobRabbitMqPort'
+                    required
+                  />
+                </div>
+              </div>
+              <div class='row w-50 rabbitMqUser'>
+                <div class='col-6'>
+                  <label
+                    for='jobRabbitMqAccount'
+                    class='col-form-label fw-bolder'
+                  >RabbitMq 帳號：</label>
+                  <input
+                    type='text'
+                    class='form-control'
+                    id='jobRabbitMqAccount'
+                    required
+                  />
+                </div>
+                <div class='col-6'>
+                  <label
+                    for='jobRabbitMqPassword'
+                    class='col-form-label fw-bolder'
+                  >RabbitMq 密碼：</label>
+                  <input
+                    type='password'
+                    class='form-control'
+                    id='jobRabbitMqPassword'
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div class='row w-50'>
+              <div class='col-6 mb-3'>
+                <label
+                  for='jobQueueNameInput'
+                  class='col-form-label fw-bolder'
+                >輸入Queue名稱：</label>
+                <input
+                  type='text'
+                  class='form-control'
+                  id='jobQueueNameInput'
+                  required
+                />
+              </div>
+              <div class='col-6 mb-3'>
+                <label
+                  for='jobQueueNameOutput'
+                  class='col-form-label fw-bolder'
+                >輸出Queue名稱：</label>
+                <input
+                  type='text'
+                  class='form-control'
+                  id='jobQueueNameOutput'
                   required
                 />
               </div>
