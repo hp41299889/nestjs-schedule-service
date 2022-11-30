@@ -1,4 +1,5 @@
 const apiUrl = '/ScheduleService/Setup';
+const authUrl = '/ScheduleService/Auth/view'
 
 $(document).ready(function () {
   enableOptionChoice();
@@ -24,35 +25,35 @@ function readAll() {
       // enableOptions.forEach(item=>{
       //   console.log(typeof item.value)
       // })
-      const jsonParse = JSON.parse(response)
-      console.log('jsonParse =', jsonParse);
+      // const jsonParse = JSON.parse(response)
+      // console.log('jsonParse =', jsonParse);
       // console.log('$("#enableScheduleService") =', $('#enableScheduleService'));
       // console.log('jsonParse.enableScheduleService =', `${jsonParse.enableScheduleService}`);
-      $('#enableScheduleService').val(`${jsonParse.enableScheduleService}`);
-      $('#bossRabbitMqIp').val(jsonParse.bossQueue.IP);
-      $('#bossRabbitMqPort').val(jsonParse.bossQueue.port);
-      $('#bossRabbitMqAccount').val(jsonParse.bossQueue.account);
-      $('#bossRabbitMqPassword').val(jsonParse.bossQueue.password);
-      $('#bossQueueNameInput').val(jsonParse.bossQueue.inputQueueName);
-      $('#bossQueueNameOutput').val(jsonParse.bossQueue.outputQueueName);
-      $('#jobRabbitMqIp').val(jsonParse.jobQueue.IP);
-      $('#jobRabbitMqPort').val(jsonParse.jobQueue.port);
-      $('#jobRabbitMqAccount').val(jsonParse.jobQueue.account);
-      $('#jobRabbitMqPassword').val(jsonParse.jobQueue.password);
-      $('#jobQueueNameInput').val(jsonParse.jobQueue.inputQueueName);
-      $('#jobQueueNameOutput').val(jsonParse.jobQueue.outputQueueName);
-      $('#account').val(jsonParse.admin.account);
-      $('#password').val(jsonParse.admin.password);
-      $('#postgreSqlIp').val(jsonParse.postgreSQL.IP);
-      $('#postgreSqlPort').val(jsonParse.postgreSQL.port);
-      $('#postgreSqlAccount').val(jsonParse.postgreSQL.account);
-      $('#postgreSqlPassword').val(jsonParse.postgreSQL.password);
-      $('#postgreSqlDbName').val(jsonParse.postgreSQL.DBName);
-      $('#mongoIp').val(jsonParse.mongoDB.IP);
-      $('#mongoPort').val(jsonParse.mongoDB.port);
-      $('#mongoAccount').val(jsonParse.mongoDB.account);
-      $('#mongoPassword').val(jsonParse.mongoDB.password);
-      $('#mongoDbName').val(jsonParse.mongoDB.DBName);
+      $('#enableScheduleService').val(`${response.enableScheduleService}`);
+      $('#bossRabbitMqIp').val(response.bossQueue.IP);
+      $('#bossRabbitMqPort').val(response.bossQueue.port);
+      $('#bossRabbitMqAccount').val(response.bossQueue.account);
+      $('#bossRabbitMqPassword').val(response.bossQueue.password);
+      $('#bossQueueNameInput').val(response.bossQueue.inputQueueName);
+      $('#bossQueueNameOutput').val(response.bossQueue.outputQueueName);
+      $('#jobRabbitMqIp').val(response.jobQueue.IP);
+      $('#jobRabbitMqPort').val(response.jobQueue.port);
+      $('#jobRabbitMqAccount').val(response.jobQueue.account);
+      $('#jobRabbitMqPassword').val(response.jobQueue.password);
+      $('#jobQueueNameInput').val(response.jobQueue.inputQueueName);
+      $('#jobQueueNameOutput').val(response.jobQueue.outputQueueName);
+      $('#account').val(response.admin.account);
+      $('#password').val(response.admin.password);
+      $('#postgreSqlIp').val(response.postgreSQL.IP);
+      $('#postgreSqlPort').val(response.postgreSQL.port);
+      $('#postgreSqlAccount').val(response.postgreSQL.account);
+      $('#postgreSqlPassword').val(response.postgreSQL.password);
+      $('#postgreSqlDbName').val(response.postgreSQL.DBName);
+      $('#mongoIp').val(response.mongoDB.IP);
+      $('#mongoPort').val(response.mongoDB.port);
+      $('#mongoAccount').val(response.mongoDB.account);
+      $('#mongoPassword').val(response.mongoDB.password);
+      $('#mongoDbName').val(response.mongoDB.DBName);
     },
     error: function (xhr) {
       console.log('xhr =', xhr);
@@ -222,11 +223,16 @@ function save() {
     dataType: 'json',
     success: function (response) {
       console.log(response);
-      location.reload();
+      
     },
     error: function (xhr) {
       console.log('xhr =', xhr);
-      alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+      // alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+      if(xhr){
+        location.reload();
+        // fetch(authUrl)
+
+      }
     },
   });
 }
