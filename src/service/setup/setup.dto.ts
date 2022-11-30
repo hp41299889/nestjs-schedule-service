@@ -31,7 +31,10 @@ export class SaveSetupDto {
     readonly enableScheduleService: boolean;
 
     @ApiPropertyOptional()
-    readonly queue: QueueConnectionDto;
+    readonly bossQueue: QueueConnectionDto;
+
+    @ApiPropertyOptional()
+    readonly jobQueue: QueueConnectionDto;
 
     @ApiPropertyOptional()
     readonly admin: AdminDto;

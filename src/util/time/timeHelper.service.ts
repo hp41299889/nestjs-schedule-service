@@ -9,9 +9,9 @@ export class TimeHelperService {
 
     getCurrentWeek(data: Date): TimePeriodDto {
         const now = new Date();
-        const startDate = new Date(data.setDate(data.getDate() - data.getDay() + 1));
+        const startDate = new Date(data.setDate(data.getDate() - data.getDay()));
         const start = new Date(startDate.setHours(0, 0, 0, 0));
-        const endDate = new Date(now.setDate(7 - now.getDay() + now.getDate()));
+        const endDate = new Date(now.setDate(6 - now.getDay() + now.getDate()));
         const end = new Date(endDate.setHours(23, 59, 59, 999));
         const period = {
             start: start,

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 
 //import constants
 import { SERVICE } from './monitor.constants';
+import { TASK } from 'src/provider/task/task.constants';
 //import dtos
 import { ResendMonitorDto, WeekLogsDto } from './monitor.dto';
 //import models
@@ -20,6 +21,12 @@ const {
     READ_METHOD,    //read()
     RESEND_METHOD,  //resend()
 } = SERVICE;
+
+const {
+    OK,     //
+    WAITING,//
+    ERROR,  //
+} = TASK;
 
 @Injectable()
 export class MonitorService {
@@ -59,7 +66,7 @@ export class MonitorService {
                         schedule: schedule,
                         scheduleType: scheduleType,
                         processDatetime: time,
-                        processStatus: 'waiting',
+                        processStatus: WAITING,
                         MQCLI: MQCLI
                     })
                 });
@@ -83,7 +90,7 @@ export class MonitorService {
             const document: CreateScheduleExecutionLogDto = {
                 ...data,
                 processDatetime: new Date(),
-                processStatus: 'ok'
+                processStatus: OK
             };
             this.scheduleExecutionLogModel.create(document);
             this.jobQueueService.sendMessage(MQCLI);

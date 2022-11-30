@@ -16,6 +16,7 @@ import { JsonrpcMessageDto } from '../../provider/jobQueue/jobQueue.dto';
 const {
     CREATE_METHOD,  //create()
     READALL_METHOD, //readAll()
+    READ_METHOD,    //read()
     UPDATE_METHOD,  //update()
     DELETE_METHOD,  //delete()
 } = SERVICE;
@@ -63,8 +64,7 @@ export class ScheduleService {
 
     async read(data: ReadScheduleDto): Promise<ScheduleSetup> {
         try {
-            //TODO
-            this.logger.serviceDebug('');
+            this.logger.serviceDebug(READALL_METHOD);
             return await this.scheduleSetupModel.read(data);
         } catch (err) {
             throw err;
@@ -74,13 +74,15 @@ export class ScheduleService {
     async update(data: UpdateScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(UPDATE_METHOD);
-            const { scheduleID } = data;
+            const { scheduleID, MQCLI } = data;
             const target = await this.scheduleSetupModel.read({ scheduleID });
             const payload = {
                 oldTask: target,
                 newData: data
             };
-            data.MQCLI = JSON.parse(String(data.MQCLI));
+            if (typeof (MQCLI) === 'string') {
+                data.MQCLI = JSON.parse(MQCLI);
+            };
             await this.scheduleSetupModel.update(data);
             await this.taskService.update(payload);
         } catch (err) {
@@ -91,7 +93,11 @@ export class ScheduleService {
     async delete(data: DeleteScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(DELETE_METHOD);
+            console.log(data);
+
             const target = await this.scheduleSetupModel.read(data);
+            console.log('target', target);
+
             const { scheduleName, scheduleType, cycle, regular } = target;
             const targetTask = {
                 scheduleName: scheduleName,

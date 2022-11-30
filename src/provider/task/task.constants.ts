@@ -21,3 +21,9 @@ export const CRONWEEKDAY = {
     '6': '6',
     '7': '0'
 };
+
+export const TASK = {
+    OK: 'ok',
+    WAITING: 'waiting',
+    ERROR: 'error'
+};

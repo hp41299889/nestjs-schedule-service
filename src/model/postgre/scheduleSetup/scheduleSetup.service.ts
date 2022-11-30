@@ -1,7 +1,7 @@
 //import packages
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { DataSource, FindManyOptions, FindOptionsWhere } from 'typeorm';
 
 //import constants
 import { SERVICE } from './scheduleSetup.constants';
@@ -53,7 +53,12 @@ export class ScheduleSetupModel {
     async readAll(): Promise<ScheduleSetup[]> {
         try {
             this.logger.serviceDebug(READALL_METHOD);
-            const rows = await this.datasource.manager.find(ScheduleSetup);
+            const options: FindManyOptions<ScheduleSetup> = {
+                order: {
+                    scheduleID: 'ASC'
+                }
+            };
+            const rows = await this.datasource.manager.find(ScheduleSetup, options);
             return rows;
         } catch (err) {
             throw err;
@@ -64,10 +69,11 @@ export class ScheduleSetupModel {
         try {
             this.logger.serviceDebug(READ_METHOD);
             const { scheduleID } = data;
-            const schedule = new ScheduleSetup();
-            schedule.scheduleID = scheduleID;
-            const row = await this.datasource.manager.findOneBy(ScheduleSetup, data);
-            return row;
+            const options: FindOptionsWhere<ScheduleSetup> = {
+                scheduleID: scheduleID
+            };
+            const target = await this.datasource.manager.findOneBy(ScheduleSetup, options);
+            return target;
         } catch (err) {
             throw err;
         };
@@ -77,9 +83,10 @@ export class ScheduleSetupModel {
         try {
             this.logger.serviceDebug(UPDATE_METHOD);
             const { scheduleID, commandSource, scheduleName, scheduleType, regular, cycle, MQCLI } = data;
-            const schedule = new ScheduleSetup();
-            schedule.scheduleID = scheduleID;
-            const target = await this.datasource.manager.findOneBy(ScheduleSetup, { scheduleID });
+            const options: FindOptionsWhere<ScheduleSetup> = {
+                scheduleID: scheduleID
+            };
+            const target = await this.datasource.manager.findOneBy(ScheduleSetup, options);
             target.createDatetime = target.createDatetime;
             target.lastEditDatetime = new Date();
             target.commandSource = commandSource;

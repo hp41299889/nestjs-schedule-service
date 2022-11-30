@@ -11,6 +11,7 @@ export const CONTROLLER = {
 export const SERVICE = {
     CREATE_METHOD: 'create()',
     READALL_METHOD: 'readAll()',
+    READ_METHOD: 'read()',
     UPDATE_METHOD: 'update()',
     DELETE_METHOD: 'delete()',
 };

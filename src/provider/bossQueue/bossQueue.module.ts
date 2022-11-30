@@ -6,29 +6,33 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { JsonModule } from 'src/config/json/json.module';
 import { LoggerModule } from 'src/common/logger/logger.module';
 import { ScheduleModule } from '../../service/schedule/schedule.module';
+import { EnvModule } from 'src/config/env/env.module';
 //import constants
-import { MODULE } from './scheduleQueue.constants';
+import { MODULE } from './bossQueue.constants';
 //import dtos
 import { QueueConnectionDto } from '../../service/setup/setup.dto';
 //import controllers
-import { ScheduleQueueController } from './scheduleQueue.controller';
+import { BossQueueController } from './bossQueue.controller';
 //import services
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
-import { ScheduleQueueService } from './scheduleQueue.service';
+import { BossQueueService } from './bossQueue.service';
+import { ConfigService } from '@nestjs/config';
 
 const {
     CONNECTION_NAME,    //connection name for ScueduleQueue
-    SETUP_ALIAS,        //alias for JsonService
+    SETUP_ALIAS,        //alias for JsonService,
+    ENV_ALIAS,          //alias for ConfigService
+    FAIL_USEING_ENV,    //connect by setup.json fail and useing default .env
 } = MODULE;
 
 @Module({
-    imports: [JsonModule, LoggerModule, ScheduleModule],
+    imports: [JsonModule, LoggerModule, ScheduleModule, EnvModule],
     providers: [
         {
             provide: CONNECTION_NAME,
-            inject: [JsonService, LoggerService],
-            useFactory: async (jsonService: JsonService, logger: LoggerService) => {
+            inject: [JsonService, LoggerService, ConfigService],
+            useFactory: async (jsonService: JsonService, logger: LoggerService, configService: ConfigService) => {
                 try {
                     const rabbitmqConfig: QueueConnectionDto = await jsonService.read(SETUP_ALIAS);
                     const { IP, port, account, password, inputQueueName } = rabbitmqConfig;
@@ -49,14 +53,30 @@ const {
                         }
                     });
                 } catch (err) {
-                    logger.errorMessage(err);
-                    return err;
-                }
+                    logger.errorMessage(FAIL_USEING_ENV);
+                    const bossQueueEnv: QueueConnectionDto = configService.get(ENV_ALIAS);
+                    const { IP, port, account, password, inputQueueName, outputQueueName } = bossQueueEnv;
+                    const material = {
+                        connectionName: CONNECTION_NAME,
+                        config: bossQueueEnv
+                    };
+                    logger.factoryDebug(material);
+                    return ClientProxyFactory.create({
+                        transport: Transport.RMQ,
+                        options: {
+                            urls: [`amqp://${account}:${password}@${IP}:${port}`],
+                            queue: inputQueueName,
+                            queueOptions: {
+                                durable: true
+                            }
+                        }
+                    });
+                };
             },
         },
-        ScheduleQueueService
+        BossQueueService
     ],
-    controllers: [ScheduleQueueController],
-    exports: [ScheduleQueueService]
+    controllers: [BossQueueController],
+    exports: [BossQueueService]
 })
-export class ScheduleQueueModule { }
+export class BossQueueModule { };
