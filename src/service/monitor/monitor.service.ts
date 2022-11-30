@@ -72,12 +72,14 @@ export class MonitorService {
                         MQCLI: MQCLI
                     })
                 });
+                console.log(logs);
                 return {
                     scheduleID: schedule.scheduleID,
                     scheduleType: schedule.scheduleType,
                     schedule: schedule.cycle || schedule.regular,
                     weekLog: logs
                 };
+
             }));
             return weekLogs;
         } catch (err) {
