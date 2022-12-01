@@ -72,7 +72,6 @@ export class MonitorService {
                         MQCLI: MQCLI
                     })
                 });
-                console.log(logs);
                 return {
                     scheduleID: schedule.scheduleID,
                     scheduleType: schedule.scheduleType,

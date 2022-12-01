@@ -9,7 +9,7 @@ export class BossQueueMessageDto {
     jsonrpc: string;
 
     @ApiProperty({ default: 'ScheduleService/ScheduleSetup/create' })
-    method: string;
+    method?: string;
 
     @ApiProperty({
         default: {
@@ -26,6 +26,10 @@ export class BossQueueMessageDto {
             }
         }
     })
-    params: CreateScheduleDto | ReadScheduleDto | UpdateScheduleDto | DeleteScheduleDto;
+    params?: CreateScheduleDto | ReadScheduleDto | UpdateScheduleDto | DeleteScheduleDto;
+
+    results?: string;
+    error?: object;
+    id?: number;
     // CreateScheduleDto | ReadScheduleDto | UpdateScheduleDto | DeleteScheduleDto;
 };

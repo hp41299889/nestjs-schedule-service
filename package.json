@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod:pm2": "npm run pm2:D & pm2 start dist/main.js --name ScheduleService --watch",
     "pm2:D": "pm2 delete all",
-    "pm2:dev": "npm run pm2:D & pm2 start dist/main.js --name ScheduleService -l --watch & pm2 logs",
+    "pm2:dev": "npm run pm2:D & pm2 start dist/main.js --name ScheduleService && pm2 logs",
     "docker:build": "docker build . -t test_mvc",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -23,7 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "install:linux": "sudo npm i && sudo npm i pm2 -g",
-    "deploy:linux": "sudo pm2 delete all && sudo pm2 start dist/main.js --name ScheduleService --watch"
+    "deploy:linux": "sudo pm2 delete all & sudo pm2 start dist/main.js --name ScheduleService --watch"
   },
   "dependencies": {
     "@nestjs/axios": "^0.1.0",

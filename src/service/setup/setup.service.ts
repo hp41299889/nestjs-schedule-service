@@ -1,6 +1,6 @@
 //import packages
 import { Injectable } from '@nestjs/common';
-import pm2 from 'pm2';
+import * as pm2 from 'pm2';
 
 //import constants
 import { SERVICE } from './setup.constants';
@@ -55,42 +55,24 @@ export class SetupService {
         };
     };
 
-    async save(data: SaveSetupDto): Promise<void> {
+    async save(data: SaveSetupDto) {
         try {
             this.logger.debug(SAVE_METHOD);
             await this.jsonService.save(data);
-            try {
-                await this.restart();
-            } catch (err) {
-                throw err;
-            };
+            this.restart();
         } catch (err) {
             throw err;
         };
     };
 
-    async restart() {
+    restart() {
         pm2.connect(err => {
             if (err) {
                 console.log(err);
                 process.exit(2);
             };
-            pm2.start({
-                script: 'dist/main.js',
-                name: 'ScheduleService',
-            }, (err, apps) => {
-                if (err) {
-                    console.error(err);
-                    return pm2.disconnect();
-                };
-
-                pm2.list((err, list) => {
-                    console.log(err, list);
-
-                    pm2.restart('ScheduleService', (err, proc) => {
-                        pm2.disconnect();
-                    });
-                });
+            pm2.restart('ScheduleService', err => {
+                console.log(err);
             });
         });
     };

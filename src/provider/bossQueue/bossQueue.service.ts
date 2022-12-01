@@ -26,7 +26,8 @@ export class BossQueueService {
         this.logger.setContext(BossQueueService.name);
     };
 
-    private messageID = 1;
+    private inputMessageID = 1;
+    private outputMessageID = 1;
 
     async handleMessage(data: BossQueueMessageDto) {
         try {
@@ -40,7 +41,7 @@ export class BossQueueService {
                         jsonrpc: '2.0',
                         results: 'Success',
                         error: {},
-                        id: this.messageID++
+                        id: this.outputMessageID++
                     });
                     break;
                 };
@@ -50,7 +51,7 @@ export class BossQueueService {
                         jsonrpc: '2.0',
                         results: schedules,
                         error: {},
-                        id: this.messageID++
+                        id: this.outputMessageID++
                     });
                     break;
                 };
@@ -60,7 +61,7 @@ export class BossQueueService {
                         jsonrpc: '2.0',
                         results: schedule,
                         error: {},
-                        id: this.messageID++
+                        id: this.outputMessageID++
                     })
                     break;
                 };
@@ -70,7 +71,7 @@ export class BossQueueService {
                         jsonrpc: '2.0',
                         results: 'Success',
                         error: {},
-                        id: this.messageID++
+                        id: this.outputMessageID++
                     });
                     break;
                 };
@@ -80,12 +81,18 @@ export class BossQueueService {
                         jsonrpc: '2.0',
                         results: 'Success',
                         error: {},
-                        id: this.messageID++
+                        id: this.outputMessageID++
                     });
                     break;
                 };
             };
         } catch (err) {
+            this.sendAPIServerMessage({
+                jsonrpc: '2.0',
+                results: '',
+                err: { ...err },
+                id: this.outputMessageID++
+            })
             throw err;
         };
     };
@@ -94,22 +101,29 @@ export class BossQueueService {
         try {
             this.logger.serviceDebug('sendAPIServerMessage');
             this.client
-                .emit('otherPattern', data)
+                .emit('', data)
                 .pipe(timeout(10000));
         } catch (err) {
             throw err;
         };
     };
 
-    //測試用send message to schedule_queue
+
+    //測試用send message to boss_queue API
     testMessage(data: BossQueueMessageDto) {
         try {
             this.logger.serviceDebug('testMessage');
+            data.id = this.inputMessageID++;
             this.client
-                .emit('boss_queue', data)
+                .emit('', data)
                 .pipe(timeout(10000));
         } catch (err) {
             throw err;
         };
+    };
+
+    //測試用send message to boss_queue
+    testAPIServerHandleResponse(data: any) {
+
     };
 };

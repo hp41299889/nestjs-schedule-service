@@ -44,7 +44,11 @@ const {
             options: {
               urls: [`amqp://${account}:${password}@${IP}:${port}`],
               queue: outputQueueName,
+              serializer: {
+                serialize: value => value.data,
+              },
               noAck: false,
+              persistent: true,
               queueOptions: {
                 durable: true,
               }
@@ -63,7 +67,11 @@ const {
             transport: Transport.RMQ,
             options: {
               urls: [`amqp://${account}:${password}@${IP}:${port}`],
-              queue: inputQueueName,
+              queue: outputQueueName,
+              serializer: {
+                serialize: value => value.data,
+              },
+              noAck: false,
               queueOptions: {
                 durable: true
               }
