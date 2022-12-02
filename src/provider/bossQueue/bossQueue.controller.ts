@@ -9,6 +9,7 @@ import { BossQueueMessageDto } from "./bossQueue.dto";
 //import services
 import { LoggerService } from "src/common/logger/logger.service";
 import { BossQueueService } from "./bossQueue.service";
+import { JobQueueService } from "../jobQueue/jobQueue.service";
 
 
 @ApiTags('test')
@@ -16,7 +17,8 @@ import { BossQueueService } from "./bossQueue.service";
 export class BossQueueController {
     constructor(
         private readonly logger: LoggerService,
-        private readonly scheduleQueueService: BossQueueService
+        private readonly scheduleQueueService: BossQueueService,
+        private readonly job: JobQueueService
     ) {
         this.logger.setContext(BossQueueController.name);
     };
@@ -50,4 +52,10 @@ export class BossQueueController {
     create(@Body() data: BossQueueMessageDto) {
         this.scheduleQueueService.testMessage(data);
     };
+
+    @Post()
+    test() {
+        return this.job.watchClient();
+    };
+
 };

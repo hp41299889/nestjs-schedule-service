@@ -1,5 +1,6 @@
 //import packages
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 //import modules
@@ -17,7 +18,7 @@ import { BossQueueController } from './bossQueue.controller';
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
 import { BossQueueService } from './bossQueue.service';
-import { ConfigService } from '@nestjs/config';
+import { JobQueueModule } from '../jobQueue/jobQueue.module';
 
 const {
     CONNECTION_NAME,    //connection name for ScueduleQueue
@@ -27,7 +28,7 @@ const {
 } = MODULE;
 
 @Module({
-    imports: [JsonModule, LoggerModule, ScheduleModule, EnvModule],
+    imports: [JsonModule, LoggerModule, ScheduleModule, EnvModule, JobQueueModule],
     providers: [
         {
             provide: CONNECTION_NAME,

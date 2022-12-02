@@ -48,4 +48,10 @@ export class JobQueueService {
             throw err;
         };
     };
+
+    watchClient() {
+        this.client.connect
+
+        return '';
+    };
 };

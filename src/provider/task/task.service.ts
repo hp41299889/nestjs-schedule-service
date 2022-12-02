@@ -49,6 +49,7 @@ export class TaskService {
     };
 
     private readonly isScheduleOn = this.jsonService.read('enableScheduleService');
+    private readonly taskBornTime = new Date();
     private readonly taskCount = { interval: 0, cronJob: 0 };
 
 
@@ -250,15 +251,16 @@ export class TaskService {
                     cycle: item
                 };
                 const interval = Number(this.splitExecuteTime(cycleTask));
-                const now = new Date();
                 const { end } = this.timeHelperService.getCurrentWeek(new Date());
-                const startTS = now.getTime();
+                const startTS = this.taskBornTime.getTime();
                 const endTS = end.getTime();
                 let times = 0;
                 while ((startTS + interval * times) <= endTS) {
                     const nextTime = new Date(startTS + interval * times++);
                     executeTimes.push({ time: nextTime, schedule: item });
                 };
+                console.log(executeTimes);
+
             });
         } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
             this.logger.serviceDebug('regular');
