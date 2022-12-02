@@ -101,19 +101,19 @@ async function readAll() {
       const itemColor =
         item.processStatus == 'ok'
           ? '#d1e7dd'
-          : item.processStatus == 'fail'
+          : item.processStatus == 'error'
           ? '#f8d7da'
           : '#e2e3e5';
       const borderColor =
         item.processStatus == 'ok'
           ? '#badbcc'
-          : item.processStatus == 'fail'
+          : item.processStatus == 'error'
           ? '#f5c2c7'
           : '#d3d6d8';
       const textColor =
         item.processStatus == 'ok'
           ? '#0f5132'
-          : item.processStatus == 'fail'
+          : item.processStatus == 'error'
           ? '#842029'
           : '#41464b';
 
@@ -251,7 +251,7 @@ function itemDisplay() {
       .each(function () {
         // for-each event on week column
         // select the current event time and its row
-        console.log('each-2');
+        // console.log('each-2');
         // console.log("$(this).find('> div.fc-event-main > div') =", $(this).find('> div.fc-event-main > div'))
         const time = $(this)
           .find(
@@ -316,55 +316,7 @@ function itemDisplay() {
         $(this).css('margin-right', '0');
         previousRowElement = currentEventRowElement;
         rowIndex = 0;
-        // console.log('$(this) =', $(this));
-        // console.log('$(this).parent() =', $($(this).parent().parent()))
-        // $($(this).parent().parent()).each(function () {
-        //   let itemCount = 0;
-        //   let defaultInset = '';
-        //   newHtmlStr = '<div class="fc-timegrid-col-events">';
-        //   console.log('each-3')
-        //   console.log('.parent()-$(this) =', $(this));
-        //   $(this)
-        //     .children()
-        //     .each(function () {
-        //       console.log('each-3-this =', $(this));
-        //       const zIndex = $(this).css('z-index');
-        //       console.log('zIndex =', zIndex);
-        //       console.log('itemCount =', itemCount);
-        //       if (zIndex > itemCount) {
-        //         defaultInset = $(this).css('inset');
-        //         console.log('zIndex > itemCount =', defaultInset);
-        //         $(this).css('inset', '2px 0 0 0');
-        //         // console.log(
-        //         //   'zIndex > itemCount-$(this).prop("outerHTML") =',
-        //         //   $(this).prop('outerHTML'),
-        //         // );
-        //         if (itemCount == 0) {
-        //           newHtmlStr += `<div class="selfCell" style="inset:${defaultInset}">${$(
-        //             this,
-        //           ).prop('outerHTML')}`;
-        //         } else {
-        //           newHtmlStr += $(this).prop('outerHTML');
-        //         }
-        //         itemCount = zIndex;
-        //       } else if (zIndex <= itemCount) {
-        //         console.log('zIndex <= itemCount');
-        //         defaultInset = $(this).css('inset');
-        //         $(this).css('inset', '2px 0 0 0');
-        //         newHtmlStr += `</div><div class="selfCell" style="inset:${defaultInset}">${$(
-        //           this,
-        //         ).prop('outerHTML')}`;
-        //         itemCount = zIndex;
-        //       } else {
-        //         console.log('else');
-        //         alert('else-302');
-        //       }
-        //     });
-        //   // newHtmlStr += '</div>';
-        //   newHtmlStr += '</div></div>';
-        //   // console.log('newHtmlStr =', newHtmlStr);
-        // })
-        // .prop('outerHTML', newHtmlStr);
+        
       })
       .parent()
       .parent()
@@ -373,7 +325,7 @@ function itemDisplay() {
         let defaultInset = '';
         newHtmlStr = '<div class="fc-timegrid-col-events">';
         console.log('each-3');
-        console.log('.parent()-$(this) =', $(this));
+        // console.log('.parent()-$(this) =', $(this));
         $(this)
           .children()
           .each(function () {

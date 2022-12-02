@@ -21,7 +21,7 @@ function logout() {
     .catch(err=>{
       console.log('err =', err)
     })
+    sessionStorage.clear();
   });
 
-  sessionStorage.clear();
 }
