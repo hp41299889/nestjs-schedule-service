@@ -254,13 +254,11 @@ export class TaskService {
                 const { end } = this.timeHelperService.getCurrentWeek(new Date());
                 const startTS = this.taskBornTime.getTime();
                 const endTS = end.getTime();
-                let times = 0;
+                let times = 1;
                 while ((startTS + interval * times) <= endTS) {
                     const nextTime = new Date(startTS + interval * times++);
                     executeTimes.push({ time: nextTime, schedule: item });
                 };
-                console.log(executeTimes);
-
             });
         } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
             this.logger.serviceDebug('regular');
