@@ -96,7 +96,7 @@ async function readAll() {
   const res = await response.json();
   // ajax 結果新增到 event
   res.map((element) => {
-    console.log(element);
+    console.log('monitor-readall-element =',element);
     element.weekLog.forEach((item) => {
       const itemColor =
         item.processStatus == 'ok'
