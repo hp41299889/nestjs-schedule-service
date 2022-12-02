@@ -4,6 +4,9 @@
 #calendar .fc-timegrid .fc-scrollgrid {
   border: unset;
 }
+#calendar .fc-timegrid .fc-scrollgrid thead tr th {
+  border-right: unset;
+}
 #calendar .fc-timegrid .fc-scrollgrid thead tr th .fc-col-header .fc-timegrid-axis {
   border: unset;
 }

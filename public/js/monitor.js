@@ -655,6 +655,7 @@ function resend() {
     redirect: 'follow',
   }).then((res) => {
     res.redirected && (location.href = res.url);
+    location.reload();
     data = {};
   });
 }

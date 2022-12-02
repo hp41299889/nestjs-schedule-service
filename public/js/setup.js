@@ -227,7 +227,7 @@ function save() {
     },
     error: function (xhr) {
       console.log('xhr =', xhr);
-      alert('Error: ' + xhr.status + ' ' + xhr.statusText);
+      console.log('Error: ', xhr.status + ' ' + xhr.statusText);
       if (xhr) {
         // location.reload();
         setInterval(() => {
