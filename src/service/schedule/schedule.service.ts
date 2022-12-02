@@ -93,11 +93,7 @@ export class ScheduleService {
     async delete(data: DeleteScheduleDto): Promise<void> {
         try {
             this.logger.serviceDebug(DELETE_METHOD);
-            console.log(data);
-
             const target = await this.scheduleSetupModel.read(data);
-            console.log('target', target);
-
             const { scheduleName, scheduleType, cycle, regular } = target;
             const targetTask = {
                 scheduleName: scheduleName,

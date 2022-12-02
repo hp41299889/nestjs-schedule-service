@@ -47,6 +47,10 @@ const {
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
                             queue: inputQueueName,
+                            serializer: {
+                                serialize: value => value.data
+                            },
+                            noAck: false,
                             queueOptions: {
                                 durable: true
                             }
@@ -66,6 +70,10 @@ const {
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
                             queue: inputQueueName,
+                            serializer: {
+                                serialize: value => value.data,
+                            },
+                            noAck: false,
                             queueOptions: {
                                 durable: true
                             }

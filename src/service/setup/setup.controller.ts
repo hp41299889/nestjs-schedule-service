@@ -91,8 +91,12 @@ export class SetupController {
             if (!session.visits) {
                 return response.status(401).redirect(REDIRECT_ROUTES);
             } else {
-                this.setupService.save(data);
-                return response.redirect(REDIRECT_ROUTES);
+                const r = this.setupService.save(data);
+                if (r) {
+                    return 'pm2 not working';
+                } else {
+                    return response.redirect(REDIRECT_ROUTES);
+                }
             };
         } catch (err) {
             this.logger.error(err);

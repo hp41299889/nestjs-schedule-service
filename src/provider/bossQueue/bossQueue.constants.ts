@@ -8,8 +8,3 @@ export const MODULE = {
 export const SERVICE = {
     CONNECTION_NAME: 'BOSS_QUEUE',
 };
-
-export const CONTROLLER = {
-    CONNECTION_NAME: 'BOSS_QUEUE',
-    PATTERN: 'boss_queue',
-};

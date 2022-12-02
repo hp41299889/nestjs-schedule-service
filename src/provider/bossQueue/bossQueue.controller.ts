@@ -4,17 +4,12 @@ import { MessagePattern } from "@nestjs/microservices";
 import { Payload, RmqContext, Ctx } from "@nestjs/microservices";
 import { ApiTags } from "@nestjs/swagger";
 
-//import constants
-import { CONTROLLER } from './bossQueue.constants';
 //import dtos
 import { BossQueueMessageDto } from "./bossQueue.dto";
 //import services
 import { LoggerService } from "src/common/logger/logger.service";
 import { BossQueueService } from "./bossQueue.service";
 
-const {
-    PATTERN
-} = CONTROLLER;
 
 @ApiTags('test')
 @Controller('schedulequeue')
@@ -26,13 +21,25 @@ export class BossQueueController {
         this.logger.setContext(BossQueueController.name);
     };
 
-    @MessagePattern(PATTERN)
+    @MessagePattern()
     async customMessage(@Payload() data: BossQueueMessageDto, @Ctx() context: RmqContext) {
         try {
+            const { jsonrpc, method, results, id } = data;
             const channel = context.getChannelRef();
             const originMessage = context.getMessage();
-            await this.scheduleQueueService.handleMessage(data);
-            await channel.ack(originMessage);
+            console.log(data);
+            channel.ack(originMessage);
+            if (!(jsonrpc == '2.0') || !id) {
+                throw '-32700 Parse error';
+            } else {
+                if (method) {
+                    await this.scheduleQueueService.handleMessage(data);
+                } else if (results) {
+                    this.scheduleQueueService.testAPIServerHandleResponse(data);
+                } else {
+                    throw '-32700 Parse error';
+                };
+            };
         } catch (err) {
             throw err;
         };
@@ -42,13 +49,5 @@ export class BossQueueController {
     @Post('create')
     create(@Body() data: BossQueueMessageDto) {
         this.scheduleQueueService.testMessage(data);
-    };
-
-    @MessagePattern('otherPattern')
-    async apiserverCustom(@Payload() data: any, @Ctx() context: RmqContext) {
-        console.log(data);
-        const channel = context.getChannelRef();
-        const originMessage = context.getMessage();
-        channel.ack(originMessage);
     };
 };

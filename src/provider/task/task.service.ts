@@ -67,18 +67,26 @@ export class TaskService {
                             cycle: item
                         };
                         const executeTime = Number(this.splitExecuteTime(taskExecute));
-                        const task = () => {
+                        const task = async () => {
                             this.logger.warn(`${TASK_MESSAGE_CYCLE} ${scheduleName}`);
                             this.logger.warn({ data });
+                            const messageObserver = await this.jobQueueService.sendMessage(MQCLI);
                             const createdLog: CreateScheduleExecutionLogDto = {
                                 ...data,
                                 scheduleID: scheduleID,
                                 schedule: item,
                                 processDatetime: new Date(),
-                                processStatus: OK
                             };
-                            this.scheduleExecutionLogModel.create(createdLog);
-                            this.jobQueueService.sendMessage(MQCLI);
+                            messageObserver.subscribe({
+                                next: x => {
+                                    createdLog.processStatus = OK;
+                                    this.scheduleExecutionLogModel.create(createdLog);
+                                },
+                                error: e => {
+                                    createdLog.processStatus = ERROR;
+                                    this.scheduleExecutionLogModel.create(createdLog);
+                                }
+                            });
                         };
                         const interval = setInterval(task, executeTime);
                         const taskName = `${scheduleName}_${item}`;
@@ -92,18 +100,28 @@ export class TaskService {
                             regular: item
                         }
                         const executeTime = this.splitExecuteTime(taskExecute).toString();
-                        const task = new CronJob(executeTime, () => {
+                        const task = new CronJob(executeTime, async () => {
                             this.logger.warn(`${TASK_MESSAGE_REGULAR} ${scheduleName}`);
                             this.logger.warn({ data });
+                            const messageObserver = await this.jobQueueService.sendMessage(MQCLI);
                             const createdLog: CreateScheduleExecutionLogDto = {
                                 ...data,
                                 scheduleID: scheduleID,
                                 schedule: item,
                                 processDatetime: new Date(),
-                                processStatus: OK
                             };
-                            this.scheduleExecutionLogModel.create(createdLog);
-                            this.jobQueueService.sendMessage(MQCLI);
+                            messageObserver.subscribe({
+                                next: x => {
+                                    console.log(x);
+                                    createdLog.processStatus = OK;
+                                    this.scheduleExecutionLogModel.create(createdLog);
+                                },
+                                error: e => {
+                                    console.log(e);
+                                    createdLog.processStatus = ERROR;
+                                    this.scheduleExecutionLogModel.create(createdLog);
+                                },
+                            })
                         });
                         const taskName = `${scheduleName}_${item}`;
                         this.schedulerRegistry.addCronJob(taskName, task);
@@ -114,6 +132,8 @@ export class TaskService {
                     throw 'scheduleType error';
                 };
             } catch (err) {
+                console.log('catch in task', err);
+
                 throw err;
             };
         };
