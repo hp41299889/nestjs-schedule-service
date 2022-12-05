@@ -7,7 +7,11 @@ import { LoggerModule } from './logger/logger.module';
 import { HealthModule } from './health/health.module';
 
 @Module({
-    imports: [HttpModule, LoggerModule, HealthModule],
+    imports: [
+        HttpModule,
+        LoggerModule,
+        // HealthModule
+    ],
     exports: [HttpModule, LoggerModule]
 })
 export class CommonModule { };

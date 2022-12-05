@@ -9,15 +9,15 @@ import { LoggerModule } from 'src/common/logger/logger.module';
 import { ScheduleModule } from '../../service/schedule/schedule.module';
 import { EnvModule } from 'src/config/env/env.module';
 //import constants
-import { MODULE } from './bossQueue.constants';
+import { MODULE } from './testBossQueue.constants';
 //import dtos
 import { QueueConnectionDto } from '../../service/setup/setup.dto';
 //import controllers
-import { BossQueueController } from './bossQueue.controller';
+import { TestBossQueueController } from './testBossQueue.controller';
 //import services
 import { JsonService } from 'src/config/json/json.service';
 import { LoggerService } from 'src/common/logger/logger.service';
-import { BossQueueService } from './bossQueue.service';
+import { TestBossQueueService } from './testBossQueue.service';
 import { JobQueueModule } from '../jobQueue/jobQueue.module';
 
 const {
@@ -47,7 +47,7 @@ const {
                         transport: Transport.RMQ,
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
-                            queue: outputQueueName,
+                            queue: inputQueueName,
                             serializer: {
                                 serialize: value => value.data
                             },
@@ -70,7 +70,7 @@ const {
                         transport: Transport.RMQ,
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
-                            queue: outputQueueName,
+                            queue: inputQueueName,
                             serializer: {
                                 serialize: value => value.data,
                             },
@@ -83,9 +83,9 @@ const {
                 };
             },
         },
-        BossQueueService
+        TestBossQueueService
     ],
-    controllers: [BossQueueController],
-    exports: [BossQueueService]
+    controllers: [TestBossQueueController],
+    exports: [TestBossQueueService]
 })
-export class BossQueueModule { };
+export class TestBossQueueModule { };

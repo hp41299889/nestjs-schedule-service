@@ -36,7 +36,7 @@ export class BossQueueService {
             const action = method.split('/')[2];
             switch (action) {
                 case 'create': {
-                    await this.scheduleService.create(params as CreateScheduleDto);
+                    const t = await this.scheduleService.create(params as CreateScheduleDto);
                     this.sendAPIServerMessage({
                         jsonrpc: '2.0',
                         results: 'Success',
@@ -106,24 +106,5 @@ export class BossQueueService {
         } catch (err) {
             throw err;
         };
-    };
-
-
-    //測試用send message to boss_queue API
-    testMessage(data: BossQueueMessageDto) {
-        try {
-            this.logger.serviceDebug('testMessage');
-            data.id = this.inputMessageID++;
-            this.client
-                .emit('', data)
-                .pipe(timeout(10000));
-        } catch (err) {
-            throw err;
-        };
-    };
-
-    //測試用send message to boss_queue
-    testAPIServerHandleResponse(data: any) {
-
     };
 };

@@ -35,6 +35,8 @@ export class ScheduleService {
         try {
             this.logger.serviceDebug(CREATE_METHOD);
             const { MQCLI } = data;
+            console.log(data);
+
             if (typeof (MQCLI) === 'string') {
                 data.MQCLI = JSON.parse(MQCLI);
             };

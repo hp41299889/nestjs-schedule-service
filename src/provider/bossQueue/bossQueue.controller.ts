@@ -2,23 +2,19 @@
 import { Controller, Post, Body } from "@nestjs/common";
 import { MessagePattern } from "@nestjs/microservices";
 import { Payload, RmqContext, Ctx } from "@nestjs/microservices";
-import { ApiTags } from "@nestjs/swagger";
 
 //import dtos
 import { BossQueueMessageDto } from "./bossQueue.dto";
 //import services
 import { LoggerService } from "src/common/logger/logger.service";
 import { BossQueueService } from "./bossQueue.service";
-import { JobQueueService } from "../jobQueue/jobQueue.service";
 
 
-@ApiTags('test')
 @Controller('schedulequeue')
 export class BossQueueController {
     constructor(
         private readonly logger: LoggerService,
         private readonly scheduleQueueService: BossQueueService,
-        private readonly job: JobQueueService
     ) {
         this.logger.setContext(BossQueueController.name);
     };
@@ -29,7 +25,6 @@ export class BossQueueController {
             const { jsonrpc, method, results, id } = data;
             const channel = context.getChannelRef();
             const originMessage = context.getMessage();
-            console.log(data);
             channel.ack(originMessage);
             if (!(jsonrpc == '2.0') || !id) {
                 throw '-32700 Parse error';
@@ -37,7 +32,7 @@ export class BossQueueController {
                 if (method) {
                     await this.scheduleQueueService.handleMessage(data);
                 } else if (results) {
-                    this.scheduleQueueService.testAPIServerHandleResponse(data);
+                    this.scheduleQueueService.sendAPIServerMessage(data);
                 } else {
                     throw '-32700 Parse error';
                 };
@@ -46,16 +41,4 @@ export class BossQueueController {
             throw err;
         };
     };
-
-    //測試用send message to schedule_queue
-    @Post('create')
-    create(@Body() data: BossQueueMessageDto) {
-        this.scheduleQueueService.testMessage(data);
-    };
-
-    @Post()
-    test() {
-        return this.job.watchClient();
-    };
-
 };
