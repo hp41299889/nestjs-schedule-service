@@ -36,7 +36,7 @@ const {
             useFactory: async (jsonService: JsonService, logger: LoggerService, configService: ConfigService) => {
                 try {
                     const rabbitmqConfig: QueueConnectionDto = await jsonService.read(SETUP_ALIAS);
-                    const { IP, port, account, password, inputQueueName } = rabbitmqConfig;
+                    const { IP, port, account, password, outputQueueName } = rabbitmqConfig;
                     const material = {
                         connectionName: CONNECTION_NAME,
                         config: rabbitmqConfig
@@ -47,7 +47,7 @@ const {
                         transport: Transport.RMQ,
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
-                            queue: inputQueueName,
+                            queue: outputQueueName,
                             serializer: {
                                 serialize: value => value.data
                             },
@@ -60,7 +60,7 @@ const {
                 } catch (err) {
                     logger.errorMessage(FAIL_USEING_ENV);
                     const bossQueueEnv: QueueConnectionDto = configService.get(ENV_ALIAS);
-                    const { IP, port, account, password, inputQueueName, outputQueueName } = bossQueueEnv;
+                    const { IP, port, account, password, outputQueueName } = bossQueueEnv;
                     const material = {
                         connectionName: CONNECTION_NAME,
                         config: bossQueueEnv
@@ -70,7 +70,7 @@ const {
                         transport: Transport.RMQ,
                         options: {
                             urls: [`amqp://${account}:${password}@${IP}:${port}`],
-                            queue: inputQueueName,
+                            queue: outputQueueName,
                             serializer: {
                                 serialize: value => value.data,
                             },

@@ -78,7 +78,6 @@ export class MonitorService {
                     schedule: schedule.cycle || schedule.regular,
                     weekLog: logs
                 };
-
             }));
             return weekLogs;
         } catch (err) {

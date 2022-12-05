@@ -5,16 +5,16 @@
     "port": "5672",
     "account": "root",
     "password": "a3345678",
-    "inputQueueName": "boss_queue",
-    "outputQueueName": "boss_queue"
+    "inputQueueName": "boss_queue_input",
+    "outputQueueName": "boss_queue_output"
   },
   "jobQueue": {
     "IP": "192.168.36.51",
     "port": "5672",
     "account": "root",
     "password": "a3345678",
-    "inputQueueName": "job_queue",
-    "outputQueueName": "job_queue"
+    "inputQueueName": "job_queue_input",
+    "outputQueueName": "job_queue_output"
   },
   "admin": {
     "account": "admin",
