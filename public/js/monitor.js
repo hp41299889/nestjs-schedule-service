@@ -43,13 +43,15 @@ document.addEventListener('DOMContentLoaded', async function () {
       //   '$(".fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion") =',
       //   $('.fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion'),
       // );
-      $('.fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion').each(function(){
+      $(
+        '.fc-timegrid-slot.fc-timegrid-slot-label > .fc-timegrid-slot-label-frame > .fc-timegrid-slot-label-cushion',
+      ).each(function () {
         // console.log("$(this) =", $(this))
         // console.log("$(this).attr('innerHTML') =", $(this).html())
-        if($(this).html() == '24時'){
-          $(this).html('00時')
+        if ($(this).html() == '24時') {
+          $(this).html('00時');
         }
-      })
+      });
     },
     windowResize: function (arg) {
       $('td.fc-timegrid-col > div.fc-timegrid-col-frame').each(function () {
@@ -80,7 +82,9 @@ document.addEventListener('DOMContentLoaded', async function () {
   cycleHour();
   cycleMinute();
   monitor();
+  initMonitor();
   control();
+  initControl()
 });
 
 //讀取全部資料(API-006)
@@ -96,7 +100,7 @@ async function readAll() {
   const res = await response.json();
   // ajax 結果新增到 event
   res.map((element) => {
-    console.log('monitor-readall-element =',element);
+    console.log('monitor-readall-element =', element);
     element.weekLog.forEach((item) => {
       const itemColor =
         item.processStatus == 'ok'
@@ -316,7 +320,6 @@ function itemDisplay() {
         $(this).css('margin-right', '0');
         previousRowElement = currentEventRowElement;
         rowIndex = 0;
-        
       })
       .parent()
       .parent()
@@ -397,8 +400,11 @@ function itemBtn() {
           .each(function () {
             // console.log('fc-event-main-this =', $(this))
             $(this).after(
-              '<div class="twoBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="reloadBtn" data-bs-toggle="modal" data-bs-target="#controlModal"><i class="bi bi-arrow-clockwise monitorIcon"></i></button><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon"></i></button></div>',
+              '<div class="twoBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="reloadBtn" data-bs-toggle="modal" data-bs-target="#controlModal"><i class="bi bi-arrow-clockwise monitorIcon"></i></button><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn"><i class="bi bi-list-ul monitorIcon"></i></button></div>',
             );
+            // $(this).after(
+            //   '<div class="twoBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="reloadBtn" data-bs-toggle="modal" data-bs-target="#controlModal"><i class="bi bi-arrow-clockwise monitorIcon"></i></button><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon"></i></button></div>',
+            // );
           });
       } else {
         console.log('backgroundColor-else');
@@ -407,8 +413,11 @@ function itemBtn() {
           .each(function () {
             // console.log('fc-event-main-this =', $(this))
             $(this).after(
-              `<div class="oneBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon"></i></button></div>`,
+              `<div class="oneBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn"><i class="bi bi-list-ul monitorIcon"></i></button></div>`,
             );
+            // $(this).after(
+            //   `<div class="oneBtnSpace"><button type="button" class="btn btn-outline-dark monitorBtn" id="listBtn" data-bs-toggle="modal" data-bs-target="#listModal"><i class="bi bi-list-ul monitorIcon" onClick="m2()"></i></button></div>`,
+            // );
           });
       }
     },
@@ -417,8 +426,9 @@ function itemBtn() {
 
 //紀錄卡
 function monitor() {
+  console.log('#listBtn > i.monitorIcon beforeClick');
   $('#listBtn > i.monitorIcon').click(function (e) {
-    e.preventDefault();
+    console.log('#listBtn > i.monitorIcon click');
     const calendarEvents = calendar.getEvents();
     // console.log('calendarEvents =', calendarEvents);
     const calendarEventId = $(this)
@@ -431,9 +441,9 @@ function monitor() {
     calendarEvents.forEach((calendarEvent) => {
       const def = calendarEvent._def;
       const extendedProps = def.extendedProps;
-      console.log('calendarEvent =', calendarEvent);
-      console.log('extendedProps =', extendedProps);
       if (def.publicId == calendarEventId) {
+        // console.log('calendarEvent =', calendarEvent);
+        console.log('extendedProps =', extendedProps);
         $('#scheduleId').val(extendedProps.scheduleID);
         $('#scheduleName').val(extendedProps.scheduleName);
         const scheduleType = extendedProps.scheduleType;
@@ -469,6 +479,7 @@ function monitor() {
         $('#MQCLI').val(extendedProps.MQCLI);
       }
     });
+    new bootstrap.Modal($('#listModal')).show();
   });
 }
 
@@ -489,10 +500,26 @@ function splitStr(str) {
   return splitArr;
 }
 
+//紀錄卡初始化
+function initMonitor() {
+  console.log('#initMonitor beforeClick');
+  $('#initLogCard').click(function () {
+    console.log('#initMonitor click');
+    $('#scheduleId').val('');
+    $('#scheduleName').val('');
+    $('#scheduleType').val('');
+    $('#processDatetime').val('');
+    $('#regular').addClass('d-none');
+    $('#cycle').addClass('d-none');
+    $('#MQCLI').val('');
+  });
+}
+
 //控制卡
 function control() {
+  console.log('#reloadBtn > i.monitorIcon beforeClick');
   $('#reloadBtn > i.monitorIcon').click(function (e) {
-    e.preventDefault();
+    console.log('#reloadBtn > i.monitorIcon click');
     const calendarEvents = calendar.getEvents();
     // console.log('calendarEvents =', calendarEvents);
     const calendarEventId = $(this)
@@ -656,6 +683,23 @@ function resend() {
   }).then((res) => {
     res.redirected && (location.href = res.url);
     location.reload();
-    data = {};
+    initControlCard();
   });
+}
+
+//控制卡初始化
+function initControl() {
+  console.log('#initControl beforeClick');
+  $('#initControlCard').click(function (e) {
+    console.log('#initControl click');
+    initControlCard();
+  });
+}
+
+function initControlCard() {
+  $('#controlScheduleId').val('');
+  $('#controlScheduleName').val('');
+  $('#controlScheduleType').val('');
+  $('#controlMQCLI').val('');
+  data = {};
 }
