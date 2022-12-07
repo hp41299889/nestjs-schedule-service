@@ -49,8 +49,9 @@ export class TaskService {
     };
 
     private readonly isScheduleOn = this.jsonService.read('enableScheduleService');
-    private readonly taskBornTime = new Date();
+    private readonly timeFix = new Date().getTimezoneOffset();
     private readonly taskCount = { interval: 0, cronJob: 0 };
+    private taskBornTime = {};
 
 
     create(data: CreateTaskDto): void {
@@ -91,6 +92,7 @@ export class TaskService {
                         };
                         const interval = setInterval(task, executeTime);
                         const taskName = `${scheduleName}_${item}`;
+                        this.taskBornTime[scheduleName] = new Date();
                         this.schedulerRegistry.addInterval(taskName, interval);
                         this.taskCount.interval++;
                     });
@@ -125,6 +127,7 @@ export class TaskService {
                             })
                         });
                         const taskName = `${scheduleName}_${item}`;
+                        this.taskBornTime[scheduleName] = new Date();
                         this.schedulerRegistry.addCronJob(taskName, task);
                         this.taskCount.cronJob++;
                         task.start();
@@ -133,8 +136,6 @@ export class TaskService {
                     throw 'scheduleType error';
                 };
             } catch (err) {
-                console.log('catch in task', err);
-
                 throw err;
             };
         };
@@ -175,6 +176,7 @@ export class TaskService {
             try {
                 this.logger.serviceDebug(`${DELETE_METHOD}`);
                 const { scheduleName, scheduleType } = data;
+                delete this.taskBornTime[scheduleName];
                 if (scheduleType === SCHEDULE_TYPE_CYCLE) {
                     const { cycle } = data;
                     cycle.forEach((item, index, array) => {
@@ -203,11 +205,7 @@ export class TaskService {
             try {
                 const schedules = await this.scheduleSetupModel.readAll();
                 schedules.forEach((item, index, array) => {
-                    const task = {
-                        pattern: 'create',
-                        ...item
-                    };
-                    this.create(task);
+                    this.create(item);
                 });
             } catch (err) {
                 throw err;
@@ -227,10 +225,23 @@ export class TaskService {
                 return hour + minute;
             } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                 const regularSplit = regular.split('#')[1].split('/');
-                const weekday = CRONWEEKDAY[regularSplit[0]];
-                const hour = regularSplit[1];
-                const minute = regularSplit[2];
-                return `0 ${minute} ${hour} * * ${weekday}`;
+                const hour = Number(regularSplit[1]) - this.timeFix / 60 - 8;
+                const minute = regularSplit[2] + this.timeFix % 60;
+                const weekdayIndex = Number(regularSplit[0]);
+                if (hour > 24) {
+                    const weekdayIndexFix = weekdayIndex + 1;
+                    const hourFix = hour - 24;
+                    if (weekdayIndexFix < 0) {
+                        const weekday = CRONWEEKDAY[7];
+                        return `0 ${minute} ${hourFix} * * ${weekday}`;
+                    } else {
+                        const weekday = CRONWEEKDAY[weekdayIndex]
+                        return `0 ${minute} ${hourFix} * * ${weekday}`;
+                    };
+                } else {
+                    const weekday = CRONWEEKDAY[weekdayIndex]
+                    return `0 ${minute} ${hour} * * ${weekday}`;
+                };
             };
         } catch (err) {
             throw err;
@@ -241,6 +252,7 @@ export class TaskService {
         //TS -> time stamp
         //Time -> Date object
         this.logger.serviceDebug('build');
+        const nowTime = new Date();
         const executeTimes = [];
         const { scheduleName, scheduleType, cycle, regular } = data;
         if (scheduleType === SCHEDULE_TYPE_CYCLE) {
@@ -252,12 +264,14 @@ export class TaskService {
                 };
                 const interval = Number(this.splitExecuteTime(cycleTask));
                 const { end } = this.timeHelperService.getCurrentWeek(new Date());
-                const startTS = this.taskBornTime.getTime();
+                const startTS = this.taskBornTime[scheduleName].getTime();
                 const endTS = end.getTime();
                 let times = 1;
                 while ((startTS + interval * times) <= endTS) {
                     const nextTime = new Date(startTS + interval * times++);
-                    executeTimes.push({ time: nextTime, schedule: item });
+                    if (nextTime >= nowTime) {
+                        executeTimes.push({ time: nextTime, schedule: item });
+                    };
                 };
             });
         } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
@@ -268,8 +282,10 @@ export class TaskService {
                 const cronJobName = `${scheduleName}_${item}`;
                 const nextTime = new Date(this.schedulerRegistry.getCronJob(cronJobName).nextDate()['ts']);
                 const nextTS = nextTime.getTime();
-                if (nextTS <= endTS) {
-                    executeTimes.push({ time: nextTime, schedule: item });
+                const nextTimeFix = new Date(nextTS);
+                const nextTSFix = nextTimeFix.getTime();
+                if (nextTSFix <= endTS) {
+                    executeTimes.push({ time: nextTimeFix, schedule: item });
                 };
             });
         };
