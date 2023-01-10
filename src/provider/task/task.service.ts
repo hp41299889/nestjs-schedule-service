@@ -215,6 +215,7 @@ export class TaskService {
         };
     };
 
+    //TODO may has more problems
     splitExecuteTime(data: TaskExecuteDto): string | number {
         try {
             const { scheduleType, cycle, regular } = data;
@@ -226,7 +227,7 @@ export class TaskService {
             } else if (scheduleType === SCHEDULE_TYPE_REGULAR) {
                 const regularSplit = regular.split('#')[1].split('/');
                 const hour = Number(regularSplit[1]) - this.timeFix / 60 - 8;
-                const minute = regularSplit[2] + this.timeFix % 60;
+                const minute = regularSplit[2];
                 const weekdayIndex = Number(regularSplit[0]);
                 if (hour > 24) {
                     const weekdayIndexFix = weekdayIndex + 1;
